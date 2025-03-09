@@ -1,7 +1,7 @@
 package saigonuni.dev.resumeBuilder.domain;
 
 import java.time.LocalDateTime;
-import javax.persistence.*;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

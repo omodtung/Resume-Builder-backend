@@ -77,3 +77,13 @@ model UserSubscription {
 
   @@map("user_subscriptions")
 }
+
+
+	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency> 
+
+        Run Swagger
+
+    http://localhost:8080/swagger-ui/index.html
