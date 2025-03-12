@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -21,8 +22,8 @@ public class WorkExperience {
 
     private String position;
     private String company;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String description;
 
     @ManyToOne
@@ -32,7 +33,7 @@ public class WorkExperience {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime updatedAt;
 
     @PreUpdate
@@ -40,4 +41,15 @@ public class WorkExperience {
         this.updatedAt = LocalDateTime.now();
     }
   // Getters and setters
+
+  
+ public WorkExperience() {}
+
+  public WorkExperience(String position, String company, LocalDate startDate, LocalDate endDate, String description) {
+    this.position = position;
+    this.company = company;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.description = description;
+  }
 }
