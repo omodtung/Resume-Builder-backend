@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import saigonuni.dev.resumeBuilder.domain.Education;
@@ -38,75 +39,24 @@ public class ResumeAdminController {
     return "List of resumes";
   }
 
-  @PostMapping("resume")
+  // API Thêm Resume mới
+  @PostMapping("resumes")
   @Operation(
-    summary = "Create a new resume in admin site",
-    description = "Create a new resume in admin site for user use"
-  )
-  public ResponseEntity<Resume> createResume(@RequestBody ResumeDTO resumeDTO) {
-    List<WorkExperience> workExperiences = resumeDTO.getWorkExperiences() !=
-      null
-      ? resumeDTO
-        .getWorkExperiences()
-        .stream()
-        .map(dto ->
-          new WorkExperience(
-            dto.getPosition(),
-            dto.getCompany(),
-            dto.getStartDate(),
-            dto.getEndDate(),
-            dto.getDescription()
-          )
-        )
-        .collect(Collectors.toList())
-      : null;
-
-    List<Education> educations = resumeDTO.getEducations() != null
-      ? resumeDTO
-        .getEducations()
-        .stream()
-        .map(dto ->
-          new Education(
-            dto.getDegree(),
-            dto.getSchool(),
-            dto.getStartDate(),
-            dto.getEndDate()
-          )
-        )
-        .collect(Collectors.toList())
-      : null;
-
-    User user = new User(); // Set user appropriately
-
-    Resume resume = new Resume(
-      null,
-      resumeDTO.getTitle(),
-      resumeDTO.getDescription(),
-      resumeDTO.getPhotoUrl(),
-      resumeDTO.getColorHex(),
-      resumeDTO.getBorderStyle(),
-      resumeDTO.getSummary(),
-      resumeDTO.getFirstName(),
-      resumeDTO.getLastName(),
-      resumeDTO.getJobTitle(),
-      resumeDTO.getCity(),
-      resumeDTO.getCountry(),
-      resumeDTO.getPhone(),
-      resumeDTO.getEmail(),
-      user,
-      workExperiences,
-      educations,
-      resumeDTO.getSkills()
-    );
-
-    // Associate educations with the resume
-    if (educations != null) {
-      for (Education education : educations) {
-        education.setResume(resume);
-      }
+    summary = "API Thêm Resume mới",
+    description = "Returns a list of all resumes" ;
+    extensions = {
+      @Extension(
+        name = "x-visibility",
+        value = "public"
+      )
     }
-
-    Resume createdResume = resumeService.handleSaveResume(resume);
-    return ResponseEntity.ok(createdResume);
+  )
+  public ResponseEntity<Resume> addResume(@RequestBody Resume resume) {
+    try {
+      Resume newResume = resumeService.addResume(resume);
+      return new ResponseEntity<>(newResume, HttpStatus.CREATED);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

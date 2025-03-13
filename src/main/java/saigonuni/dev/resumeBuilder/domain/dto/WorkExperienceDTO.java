@@ -1,14 +1,24 @@
 package saigonuni.dev.resumeBuilder.domain.dto;
 
 import java.time.LocalDate;
+import saigonuni.dev.resumeBuilder.domain.Resume;
 
-public class WorkExperienceDTO {
+public class  WorkExperienceDTO {
 
   private String position;
   private String company;
   private LocalDate startDate;
   private LocalDate endDate;
   private String description;
+  public Resume resume;
+
+  public Resume getResume() {
+    return resume;
+  }
+
+  public void setResume(Resume resume) {
+    this.resume = resume;
+  }
 
   // Getters and Setters
   public String getPosition() {

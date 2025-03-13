@@ -37,9 +37,7 @@ public class User {
     @Column(name = "refresh_token")
     private String refreshToken;
 
-    
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resume> resumes;
+
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserSubscription userSubscription;
