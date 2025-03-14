@@ -43,13 +43,7 @@ public class ResumeAdminController {
   @PostMapping("resumes")
   @Operation(
     summary = "API Thêm Resume mới",
-    description = "Returns a list of all resumes" ;
-    extensions = {
-      @Extension(
-        name = "x-visibility",
-        value = "public"
-      )
-    }
+    description = "Returns a list of all resumes"
   )
   public ResponseEntity<Resume> addResume(@RequestBody Resume resume) {
     try {
