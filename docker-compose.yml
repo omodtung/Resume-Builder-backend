@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_DB: resume_builder
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+    # maybe change it to 5434:5432 if you have a local postgres running
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: resume_builder_app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/resume_builder
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
