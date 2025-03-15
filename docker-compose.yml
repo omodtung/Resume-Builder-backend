@@ -9,6 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
+    # maybe change it to 5434:5432 if you have a local postgres running
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data

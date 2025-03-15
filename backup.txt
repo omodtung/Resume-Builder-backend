@@ -31,6 +31,10 @@ public class Resume {
   private String phone;
   private String email;
 
+  // @ManyToOne
+  // @JoinColumn(name = "user_id", nullable = false)
+  // private User user;
+
   @OneToMany(mappedBy = "resume", orphanRemoval = true)
   private List<WorkExperience> workExperiences;
 
@@ -63,6 +67,7 @@ public class Resume {
     String country,
     String phone,
     String email,
+    // User user,
     List<WorkExperience> workExperiences,
     List<Education> educations,
     List<String> skills
@@ -81,7 +86,7 @@ public class Resume {
     this.country = country;
     this.phone = phone;
     this.email = email;
-
+    // this.user = user;
     this.workExperiences = workExperiences;
     this.educations = educations;
     this.skills = skills;
@@ -202,6 +207,14 @@ public class Resume {
     this.email = email;
   }
 
+  // public User getUser() {
+  //   return user;
+  // }
+
+  // public void setUser(User user) {
+  //   this.user = user;
+  // }
+
   public List<WorkExperience> getWorkExperiences() {
     return workExperiences;
   }
@@ -241,4 +254,69 @@ public class Resume {
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
+}
+
+
+
+
+
+
+package saigonuni.dev.resumeBuilder.domain;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+
+@Entity
+@Table(name = "users")
+public class User {
+ @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String role;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private List<Resume> resumes;
+    
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserSubscription userSubscription;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(nullable = true)
+    private LocalDateTime updatedAt;
+
+    @PreUpdate
+    public void setLastUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+  // Getters and setters
 }
