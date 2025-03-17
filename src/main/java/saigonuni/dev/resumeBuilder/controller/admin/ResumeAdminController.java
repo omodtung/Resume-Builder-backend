@@ -53,4 +53,34 @@ public class ResumeAdminController {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @GetMapping("resumes")
+  @Operation(
+    summary = " list Get all resumes",
+    description = "Returns a list of all resumes"
+  )
+  public ResponseEntity<List<Resume>> getAllResumes() {
+    try {
+      List<Resume> resumes = resumeService.getAllResumes();
+
+      return new ResponseEntity<>(resumeDTOs, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
+  @GetMapping("resumes/{id}")
+  @Operation(
+    summary = "Get resume by id",
+    description = "Returns a resume by id"
+  )
+  public Resume getResumeById(@RequestBody Resume id) {
+    try {
+      
+    } catch (Exception e) {
+      // TODO: handle exception
+    }
+  }
+  
 }

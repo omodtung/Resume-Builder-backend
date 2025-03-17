@@ -47,4 +47,10 @@ public class ResumeService {
 
     return savedResume;
   }
+  public Resume getAllResume (Resume resume )
+  {
+    Resume  listResume = resumeRepository.findAll();
+    
+    return resumeRepository.save(resume);
+  }
 }
