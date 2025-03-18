@@ -14,7 +14,6 @@ import saigonuni.dev.resumeBuilder.service.*;
 @Service
 @Slf4j
 public class ResumeServiceImplement implements ResumeService {
-    
 
   @Autowired
   private ResumeRepository resumeRepository;
@@ -41,6 +40,7 @@ public class ResumeServiceImplement implements ResumeService {
   }
 
   public Resume addResume(Resume resume) {
+    // log.info("addResume: {}", resume);
     // return resumeRepository.save(resume);
     Resume savedResume = resumeRepository.save(resume);
 

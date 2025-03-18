@@ -6,12 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateResumeAdminResponse {
-    
-    private Resume resume;
+
+  private Resume resume;
 }
