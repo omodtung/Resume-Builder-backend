@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 import saigonuni.dev.resumeBuilder.domain.Education;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.domain.WorkExperience;
 import saigonuni.dev.resumeBuilder.domain.dto.ResumeDTO;
+// dto
+import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
 
 @Tag(
@@ -21,7 +24,7 @@ import saigonuni.dev.resumeBuilder.service.ResumeService;
 )
 @RestController
 @RequestMapping("admin")
-public class ResumeAdminController {
+public class ResumeAdminController extends BaseController {
 
   private final ResumeService resumeService;
 
@@ -30,57 +33,48 @@ public class ResumeAdminController {
     this.resumeService = resumeService;
   }
 
-  @GetMapping("test")
-  @Operation(
-    summary = "Get all resumes",
-    description = "Returns a list of all resumes"
-  )
-  public String getAllResumes() {
-    return "List of resumes";
-  }
-
   // API Thêm Resume mới
   @PostMapping("resumes")
   @Operation(
     summary = "API Thêm Resume mới",
     description = "Returns a list of all resumes"
   )
-  public ResponseEntity<Resume> addResume(@RequestBody Resume resume) {
+  public ResponseEntity<CreateResumeAdminResponse> addResume(
+    @RequestBody Resume resume
+  ) {
     try {
       Resume newResume = resumeService.addResume(resume);
-      return new ResponseEntity<>(newResume, HttpStatus.CREATED);
+      // return new ResponseEntity<>(newResume, HttpStatus.CREATED;)
+      return ResponseEntity.ok(
+        CreateResumeAdminResponse.builder().resume(newResume).build()
+      );
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  // @GetMapping("resumes")
+  // @Operation(
+  //   summary = " list Get all resumes",
+  //   description = "Returns a list of all resumes"
+  // )
+  // public ResponseEntity<List<Resume>> getAllResumes() {
+  //   try {
+  //     List<Resume> resumes = resumeService.getAllResumes();
 
-  @GetMapping("resumes")
-  @Operation(
-    summary = " list Get all resumes",
-    description = "Returns a list of all resumes"
-  )
-  public ResponseEntity<List<Resume>> getAllResumes() {
-    try {
-      List<Resume> resumes = resumeService.getAllResumes();
+  //     return new ResponseEntity<>(resumeDTOs, HttpStatus.OK);
+  //   } catch (Exception e) {
+  //     return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+  //   }
+  // }
 
-      return new ResponseEntity<>(resumeDTOs, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-
-  @GetMapping("resumes/{id}")
-  @Operation(
-    summary = "Get resume by id",
-    description = "Returns a resume by id"
-  )
-  public Resume getResumeById(@RequestBody Resume id) {
-    try {
-      
-    } catch (Exception e) {
-      // TODO: handle exception
-    }
-  }
-  
+  // @GetMapping("resumes/{id}")
+  // @Operation(
+  //   summary = "Get resume by id",
+  //   description = "Returns a resume by id"
+  // )
+  // public Resume getResumeById(@RequestBody Resume id) {
+  //   try {} catch (Exception e) {
+  //     // TODO: handle exception
+  //   }
+  // }
 }
