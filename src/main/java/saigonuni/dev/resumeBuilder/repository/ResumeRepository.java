@@ -8,4 +8,5 @@ import saigonuni.dev.resumeBuilder.domain.Resume;
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, String> {
   Resume save(Resume resume);
+  Resume findById(Resume resume);
 }

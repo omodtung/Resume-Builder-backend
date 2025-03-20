@@ -1,6 +1,7 @@
 package saigonuni.dev.resumeBuilder.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -51,16 +52,16 @@ public class Resume implements Serializable {
 
   @OneToMany(
     mappedBy = "resume",
-    orphanRemoval = true
-
+    orphanRemoval = true,
+    cascade = CascadeType.ALL
   )
   @JsonManagedReference
   private List<WorkExperience> workExperiences;
 
   @OneToMany(
     mappedBy = "resume",
- 
-    orphanRemoval = true
+    orphanRemoval = true,
+    cascade = CascadeType.ALL
   )
   @JsonManagedReference
   private List<Education> educations;
