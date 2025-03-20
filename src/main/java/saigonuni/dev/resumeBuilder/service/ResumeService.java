@@ -1,18 +1,14 @@
 package saigonuni.dev.resumeBuilder.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 import org.springframework.stereotype.Service;
-import saigonuni.dev.resumeBuilder.domain.Education;
 import saigonuni.dev.resumeBuilder.domain.Resume;
-import saigonuni.dev.resumeBuilder.domain.WorkExperience;
-import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdmin;
-import saigonuni.dev.resumeBuilder.repository.EducationRepository;
-import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
-import saigonuni.dev.resumeBuilder.repository.WorkExperienceRepository;
+import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.resume.ListResumesRequest;
 
 @Service
 public interface ResumeService {
-  // Resume addResume(CreateResumeAdmin request);
-  Resume addResume(Resume resume);
-  
+  Resume addResume(CreateResumeAdminRequest request);
+  Resume getResumeById(String id);
+  List<Resume> listResumes();
 }

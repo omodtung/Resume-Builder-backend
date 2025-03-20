@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 
 @Data
-@Builder
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class CreateResumeAdminResponse {
+public class GetResumeAdminResponse {
+
   private Resume resume;
 }

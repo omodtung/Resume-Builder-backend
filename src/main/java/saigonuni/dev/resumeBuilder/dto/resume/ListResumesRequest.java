@@ -7,9 +7,12 @@ import lombok.NoArgsConstructor;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 
 @Data
-@Builder
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
-public class CreateResumeAdminResponse {
-  private Resume resume;
+public class ListResumesRequest {
+
+  private long pivotId;
+  private int prevLimit;
+  private int nextLimit;
 }

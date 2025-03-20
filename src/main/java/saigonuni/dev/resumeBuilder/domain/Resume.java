@@ -1,13 +1,16 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,7 +23,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
-public class Resume {
+@NoArgsConstructor
+public class Resume implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +37,7 @@ public class Resume {
   @Column(nullable = false)
   private String colorHex = "#000000";
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private String borderStyle = "squircle";
 
   private String summary;
@@ -45,10 +49,20 @@ public class Resume {
   private String phone;
   private String email;
 
-  @OneToMany(mappedBy = "resume", orphanRemoval = true)
+  @OneToMany(
+    mappedBy = "resume",
+    orphanRemoval = true
+
+  )
+  @JsonManagedReference
   private List<WorkExperience> workExperiences;
 
-  @OneToMany(mappedBy = "resume", orphanRemoval = true)
+  @OneToMany(
+    mappedBy = "resume",
+ 
+    orphanRemoval = true
+  )
+  @JsonManagedReference
   private List<Education> educations;
 
   @ElementCollection
@@ -59,8 +73,6 @@ public class Resume {
 
   @Column(nullable = true)
   private LocalDateTime updatedAt = LocalDateTime.now();
-
-  public Resume() {}
 
   public Resume(
     Long id,

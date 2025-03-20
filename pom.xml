@@ -18,6 +18,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
+       
         <java.version>17</java.version>
         <!-- <java.version>21</java.version> -->
     </properties>
@@ -69,7 +70,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version> <!-- Updated Lombok to the latest version -->
+            <version>1.18.30</version> 
+            <!-- <version>1.18.26</version> Updated Lombok to the latest version -->
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -100,7 +102,8 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.26</version> <!-- Matches the version above -->
+                            <version>1.18.30</version> 
+                            <!-- <version>1.18.26</version> Matches the version above -->
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

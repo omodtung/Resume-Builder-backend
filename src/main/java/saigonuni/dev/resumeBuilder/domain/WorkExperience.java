@@ -1,5 +1,10 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,14 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import org.hibernate.type.descriptor.java.LocalDateJavaType;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "work_experiences")
@@ -32,6 +30,7 @@ public class WorkExperience {
 
   @ManyToOne
   @JoinColumn(name = "resume_id", nullable = false)
+  @JsonBackReference
   private Resume resume;
 
   @Column(nullable = false, updatable = false)
@@ -50,7 +49,7 @@ public class WorkExperience {
     LocalDate startDate,
     LocalDate endDate,
     String description,
-    Resume resume 
+    Resume resume
   ) {
     this.position = position;
     this.company = company;
@@ -131,7 +130,4 @@ public class WorkExperience {
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
-
-
-  
 }
