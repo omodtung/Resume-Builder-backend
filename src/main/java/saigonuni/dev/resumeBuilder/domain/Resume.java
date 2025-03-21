@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 @Entity
 @Table(name = "resumes")
@@ -50,19 +51,16 @@ public class Resume implements Serializable {
   private String phone;
   private String email;
 
-  @OneToMany(
-    mappedBy = "resume",
-    orphanRemoval = true,
-    cascade = CascadeType.ALL
-  )
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = true)
+  @JsonManagedReference
+  private User user;
+
+  @OneToMany(mappedBy = "resume", orphanRemoval = true)
   @JsonManagedReference
   private List<WorkExperience> workExperiences;
 
-  @OneToMany(
-    mappedBy = "resume",
-    orphanRemoval = true,
-    cascade = CascadeType.ALL
-  )
+  @OneToMany(mappedBy = "resume", orphanRemoval = true)
   @JsonManagedReference
   private List<Education> educations;
 
@@ -90,6 +88,7 @@ public class Resume implements Serializable {
     String country,
     String phone,
     String email,
+    User user,
     List<WorkExperience> workExperiences,
     List<Education> educations,
     List<String> skills
@@ -109,6 +108,7 @@ public class Resume implements Serializable {
     this.phone = phone;
     this.email = email;
 
+    this.user = user;
     this.workExperiences = workExperiences;
     this.educations = educations;
     this.skills = skills;
