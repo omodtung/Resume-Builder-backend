@@ -6,5 +6,7 @@ import saigonuni.dev.resumeBuilder.domain.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-  User findByUserName(String UserName);
+  // User findByUserName(String UserName);
+  User findByUsername(String username);
+  boolean existsByUsername(String username);
 }

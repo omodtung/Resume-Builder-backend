@@ -1,7 +1,7 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
@@ -28,7 +31,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,14 +52,22 @@ public class User implements Serializable {
   @Column(name = "refresh_token")
   private String refreshToken;
 
-// mappedBy = "user" chỉ ra rằng Resume.user là cột chứa khóa ngoại (user_id) trong bảng resumes.
-// Hibernate không tạo bảng trung gian vì Resume đã có cột user_id để liên kết với User.
-// Khi một User bị xóa, toàn bộ Resume của người đó cũng bị xóa (CascadeType.ALL + orphanRemoval = true).
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Resume> resume;
+  // mappedBy = "user" chỉ ra rằng Resume.user là cột chứa khóa ngoại (user_id) trong bảng resumes.
+  // Hibernate không tạo bảng trung gian vì Resume đã có cột user_id để liên kết với User.
+  // Khi một User bị xóa, toàn bộ Resume của người đó cũng bị xóa (CascadeType.ALL + orphanRemoval = true).
+  // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  // private List<Resume> resume;
 
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private UserSubscription userSubscription;
+  // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  // private UserSubscription userSubscription;
+
+  // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  // private UserValue userValue;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonBackReference
+  private List<UserValue> userValues;
+
 
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
@@ -64,81 +75,17 @@ public class User implements Serializable {
   @Column(nullable = true)
   private LocalDateTime updatedAt;
 
-    @PreUpdate
-    public void setLastUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+  @PreUpdate
+  public void setLastUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
 
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    public UserSubscription getUserSubscription() {
-        return userSubscription;
-    }
-
-    public void setUserSubscription(UserSubscription userSubscription) {
-        this.userSubscription = userSubscription;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+  public User(String username, String password, String email, String role) {
+    this.username = username;
+    this.password = password;
+    this.email = email;
+    this.role = role;
+  }
+  // Getters and setters
+ 
 }

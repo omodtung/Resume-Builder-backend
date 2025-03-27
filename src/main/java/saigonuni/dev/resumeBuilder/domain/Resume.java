@@ -51,10 +51,11 @@ public class Resume implements Serializable {
   private String phone;
   private String email;
 
+  
   @ManyToOne
-  @JoinColumn(name = "user_id", nullable = true)
+  @JoinColumn(name = "user_value_id", nullable = true)
   @JsonManagedReference
-  private User user;
+  private UserValue userValue;
 
   @OneToMany(mappedBy = "resume", orphanRemoval = true)
   @JsonManagedReference
@@ -88,7 +89,8 @@ public class Resume implements Serializable {
     String country,
     String phone,
     String email,
-    User user,
+    // User user,
+    UserValue userValue,
     List<WorkExperience> workExperiences,
     List<Education> educations,
     List<String> skills
@@ -108,7 +110,8 @@ public class Resume implements Serializable {
     this.phone = phone;
     this.email = email;
 
-    this.user = user;
+    // this.user = user;
+    this.userValue = userValue;
     this.workExperiences = workExperiences;
     this.educations = educations;
     this.skills = skills;
