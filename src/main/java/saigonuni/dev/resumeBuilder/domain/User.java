@@ -56,7 +56,7 @@ public class User {
 
   // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   // private UserSubscription userSubscription;
-
+    
   // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   // private UserValue userValue;
 
