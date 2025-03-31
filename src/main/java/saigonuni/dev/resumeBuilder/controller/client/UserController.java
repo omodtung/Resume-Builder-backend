@@ -1,4 +1,4 @@
-package saigonuni.dev.resumeBuilder.controller.admin;
+package saigonuni.dev.resumeBuilder.controller.client;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

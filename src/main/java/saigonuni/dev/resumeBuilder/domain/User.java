@@ -33,7 +33,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false, unique = false)
   private String username;
 
   @Column(nullable = false)
@@ -45,7 +45,7 @@ public class User {
   @Column(nullable = false)
   private String role;
 
-  @Column(name = "refresh_token")
+  @Column(name = "refresh_token", nullable = true)
   private String refreshToken;
 
   // mappedBy = "user" chỉ ra rằng Resume.user là cột chứa khóa ngoại (user_id) trong bảng resumes.
@@ -56,14 +56,13 @@ public class User {
 
   // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   // private UserSubscription userSubscription;
-    
+
   // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   // private UserValue userValue;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonBackReference
   private List<UserValue> userValues;
-
 
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
@@ -83,5 +82,5 @@ public class User {
     this.role = role;
   }
   // Getters and setters
- 
+
 }

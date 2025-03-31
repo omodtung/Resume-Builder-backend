@@ -1,15 +1,15 @@
 package saigonuni.dev.resumeBuilder.service;
 
 import java.util.List;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.stereotype.Service;
-import saigonuni.dev.resumeBuilder.domain.User;
-import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
-import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 
+import org.springframework.stereotype.Service;
+
+import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
 @Service
 public interface UserService {
-  User addUser(CreateResumeAdminRequest request);
+  User addUser(CreateUserAdminRequest request);
 
   User getUserById(String id);
 
@@ -17,5 +17,5 @@ public interface UserService {
 
   void deleteUser(String id);
 
-  User updateUser(String resumeId, UpdateResumeAdminRequest request);
+  User updateUser(String resumeId, UpdateUserAdminRequest request);
 }
