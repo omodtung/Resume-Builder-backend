@@ -1,7 +1,9 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
@@ -27,17 +25,17 @@ import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminResponse;
 import saigonuni.dev.resumeBuilder.service.UserService;
 
 @Tag(
-  name = "User Admin Controller",
+  name = "User value Admin Controller",
   description = "Operations pertaining to admin management of Users"
 )
 @RestController
 @RequestMapping("admin")
-public class UserAdminController {
+public class UserValueController {
 
   private final UserService userService;
 
   @Autowired
-  public UserAdminController(UserService userService) {
+  public UserValueController(UserService userService) {
     this.userService = userService;
   }
 
