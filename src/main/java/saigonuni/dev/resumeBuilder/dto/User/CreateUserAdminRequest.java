@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.dto.User;
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -18,11 +19,7 @@ public class CreateUserAdminRequest {
   @NotEmpty(message = "Email cannot be empty")
   private String email;
 
-  @NotEmpty(message = "Role cannot be empty")
-  private String role;
-
   private String refreshToken;
+  // private LocalDateTime createdAt;
 
-  private LocalDateTime createdAt;
-  // private LocalDateTime updatedAt;
 }
