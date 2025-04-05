@@ -3,6 +3,7 @@ package saigonuni.dev.resumeBuilder.controller.admin;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -76,7 +77,9 @@ public class AuthController {
       .password(passwordEncoder.encode(request.getPassword())) // Encrypt the password
       .email(request.getEmail())
       .role("USER") // Default role
-      .refreshToken(request.getRefreshToken() == null ? "" : request.getRefreshToken())
+      .refreshToken(
+        request.getRefreshToken() == null ? "" : request.getRefreshToken()
+      )
       .createdAt(LocalDateTime.now())
       .build();
 
@@ -96,11 +99,22 @@ public class AuthController {
     @RequestParam String username,
     @RequestParam String password
   ) {
-    authenticationManager.authenticate(
-      new UsernamePasswordAuthenticationToken(username, password)
-    );
-    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-    String token = jwtUtil.generateToken(userDetails.getUsername());
-    return ResponseEntity.ok(token);
+    System.out.println("Login request received" + username + "-" + password);
+    try {
+      authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(username, password)
+      );
+      System.out.println("Authentication successful for user: " + username);
+      UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+      System.out.println("User details loaded: " + userDetails);
+
+      String token = jwtUtil.generateToken(userDetails.getUsername());
+      System.out.println("JWT token generated: " + token);
+      return ResponseEntity.ok(token);
+    } catch (Exception e) {
+      return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .body("Invalid username or password");
+    }
   }
 }
