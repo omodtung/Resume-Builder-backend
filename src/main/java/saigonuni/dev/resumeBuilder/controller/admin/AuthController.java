@@ -1,6 +1,9 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +18,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationRequest;
+import saigonuni.dev.resumeBuilder.dto.Auth.AutheticationResponse;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.User.CreateUserRegisterRequest;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
+import saigonuni.dev.resumeBuilder.service.AuthenticationService;
 import saigonuni.dev.resumeBuilder.service.CustomUserDetailsService;
 import saigonuni.dev.resumeBuilder.utils.JwtUtil;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+  @Autowired
+  private AuthenticationService authenticationService;
 
   @Autowired
   private AuthenticationManager authenticationManager;
@@ -42,7 +52,7 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<CreateUserAdminResponse> register(
-    @Valid @RequestBody CreateUserAdminRequest request
+    @Valid @RequestBody CreateUserRegisterRequest request
   ) {
     // Check if the username already exists
     if (userRepository.existsByUsername(request.getUsername())) {
@@ -94,27 +104,20 @@ public class AuthController {
     );
   }
 
-  @PostMapping("/login")
-  public ResponseEntity<String> login(
-    @RequestParam String username,
-    @RequestParam String password
+  @PostMapping("/authenticate")
+  public ResponseEntity<AutheticationResponse> autheticate(
+    @RequestBody AuthenticationRequest request
   ) {
-    System.out.println("Login request received" + username + "-" + password);
-    try {
-      authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(username, password)
-      );
-      System.out.println("Authentication successful for user: " + username);
-      UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-      System.out.println("User details loaded: " + userDetails);
+    System.out.println("User found email " + request.getEmail());
+    System.out.println("User found passowrd " + request.getPassword());
+    return ResponseEntity.ok(authenticationService.authenticate(request));
+  }
 
-      String token = jwtUtil.generateToken(userDetails.getUsername());
-      System.out.println("JWT token generated: " + token);
-      return ResponseEntity.ok(token);
-    } catch (Exception e) {
-      return ResponseEntity
-        .status(HttpStatus.UNAUTHORIZED)
-        .body("Invalid username or password");
-    }
+  @PostMapping("/refresh-token")
+  public void refreshToken(
+    HttpServletRequest request,
+    HttpServletResponse response  
+  ) throws IOException {
+    authenticationService.refreshToken(request, response);
   }
 }

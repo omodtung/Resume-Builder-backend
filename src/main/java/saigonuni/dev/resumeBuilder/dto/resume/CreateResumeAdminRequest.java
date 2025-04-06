@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import saigonuni.dev.resumeBuilder.domain.Education;
+import saigonuni.dev.resumeBuilder.domain.UserValue;
 import saigonuni.dev.resumeBuilder.domain.WorkExperience;
 
 @Data
@@ -62,4 +63,5 @@ public class CreateResumeAdminRequest {
   private List<WorkExperience> workExperiences = new ArrayList<>();
   private List<Education> educations = new ArrayList<>();
   private List<String> skills = new ArrayList<>();
+  // private UserValue userValue;
 }
