@@ -17,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig {
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http)
     throws Exception {
@@ -28,6 +29,7 @@ public class SecurityConfig {
       .authorizeHttpRequests()
       .requestMatchers(
         "/**",
+        "/admin/resumes",
         "/swagger-ui/**", // Allow Swagger UI
         "/swagger-ui/index.html", // Allow Swagger UI
         "/v3/api-docs/**", // Allow API docs
