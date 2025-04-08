@@ -68,10 +68,25 @@ public class UserValue {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
+  @JsonManagedReference
   private List<Resume> resume = new ArrayList<>();
 
-  @ManyToOne
-  @JoinColumn(name = "user_subcription_id", nullable = true)
-  @JsonManagedReference
-  private UserSubscription userSubscription;
+  // @ManyToOne
+  // @JoinColumn(name = "user_subcription_id", nullable = true)
+  // @JsonManagedReference
+  // private UserSubscription userSubscription;
+
+  @Override
+  public String toString() {
+    return (
+      "UserValue{" +
+      "id=" +
+      id +
+      ", createdAt=" +
+      createdAt +
+      ", updatedAt=" +
+      updatedAt +
+      '}'
+    );
+  }
 }

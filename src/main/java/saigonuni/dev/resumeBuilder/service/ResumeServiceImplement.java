@@ -1,19 +1,29 @@
 package saigonuni.dev.resumeBuilder.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import saigonuni.dev.resumeBuilder.domain.Education;
 import saigonuni.dev.resumeBuilder.domain.Resume;
+import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.domain.UserValue;
 import saigonuni.dev.resumeBuilder.domain.WorkExperience;
+import saigonuni.dev.resumeBuilder.domain.dto.EducationDTO;
+import saigonuni.dev.resumeBuilder.domain.dto.WorkExperienceDTO;
+import saigonuni.dev.resumeBuilder.dto.UserValue.CreateUserValueRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.exception.ResumeNotFoundException;
 import saigonuni.dev.resumeBuilder.repository.EducationRepository;
 import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
+import saigonuni.dev.resumeBuilder.repository.UserRepository;
+import saigonuni.dev.resumeBuilder.repository.UserValueRepository;
 import saigonuni.dev.resumeBuilder.repository.WorkExperienceRepository;
 
 @Service
@@ -29,8 +39,49 @@ public class ResumeServiceImplement implements ResumeService {
   @Autowired
   private EducationRepository educationRepository;
 
+  @Autowired
+  private UserValueRepository userValueRepository;
+
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private UserValueService userValueService;
+
   @Override
-  public Resume addResume(CreateResumeAdminRequest request) {
+  public Resume addResume(CreateResumeAdminRequest request, User user) {
+    UserValue userValue = userValueRepository.save(
+      UserValue.builder().user(user).createdAt(LocalDateTime.now()).build()
+    );
+
+    List<WorkExperience> workExperienceEntities = new ArrayList<>();
+    if (request.getWorkExperiences() != null) {
+      for (WorkExperienceDTO dto : request.getWorkExperiences()) {
+        WorkExperience workExperience = WorkExperience
+          .builder()
+          .position(dto.getPosition())
+          .company(dto.getCompany())
+          .startDate(dto.getStartDate())
+          .endDate(dto.getEndDate())
+          .description(dto.getDescription())
+          .build();
+        workExperienceEntities.add(workExperience);
+      }
+    }
+
+    List<Education> educationEntities = new ArrayList<>();
+    if (request.getEducations() != null) {
+      for (EducationDTO dto : request.getEducations()) {
+        Education education = Education
+          .builder()
+          .degree(dto.getDegree())
+          .school(dto.getSchool())
+          .startDate(dto.getStartDate())
+          .endDate(dto.getEndDate())
+          .build();
+        educationEntities.add(education);
+      }
+    }
     Resume resume = Resume
       .builder()
       .title(request.getTitle())
@@ -46,22 +97,34 @@ public class ResumeServiceImplement implements ResumeService {
       .country(request.getCountry())
       .phone(request.getPhone())
       .email(request.getEmail())
-      .workExperiences(request.getWorkExperiences())
-      .educations(request.getEducations())
       .skills(request.getSkills())
+      .userValue(userValue)
       .build();
 
     Resume savedResume = resumeRepository.save(resume);
 
-    for (WorkExperience workExperience : resume.getWorkExperiences()) {
+    for (WorkExperience workExperience : workExperienceEntities) {
       workExperience.setResume(savedResume);
     }
-    for (Education education : resume.getEducations()) {
+    for (Education education : educationEntities) {
       education.setResume(savedResume);
     }
-    workExperienceRepository.saveAll(resume.getWorkExperiences());
-    educationRepository.saveAll(resume.getEducations());
+    if (!workExperienceEntities.isEmpty()) {
+      workExperienceRepository.saveAll(workExperienceEntities);
+    }
+    if (!educationEntities.isEmpty()) {
+      educationRepository.saveAll(educationEntities);
+    }
 
+    savedResume.setWorkExperiences(workExperienceEntities);
+    savedResume.setEducations(educationEntities);
+
+    // CreateUserValueRequest createUserValueRequest = CreateUserValueRequest
+    //   .builder()
+    //   .resume(Collections.singletonList(savedResume))
+    //   .user(user)
+    //   .build();
+    // userValueService.save(createUserValueRequest);
     return savedResume;
   }
 
@@ -83,7 +146,8 @@ public class ResumeServiceImplement implements ResumeService {
       .orElseThrow(ResumeNotFoundException::new);
     resumeRepository.delete(resume);
   }
-// TODO : Fix this Update have Error 500 internal server error 
+
+  // TODO : Fix this Update have Error 500 internal server error
   @Override
   public Resume updateResume(
     String resumeId,
@@ -127,6 +191,6 @@ public class ResumeServiceImplement implements ResumeService {
       educationRepository.saveAll(request.getEducations());
     }
 
-    return savedResume; 
+    return savedResume;
   }
 }

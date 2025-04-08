@@ -1,6 +1,7 @@
 package saigonuni.dev.resumeBuilder.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -69,6 +70,12 @@ public class User implements UserDetails {
   @JsonBackReference
   private List<UserValue> userValues;
 
+  @ManyToOne
+  @JoinColumn(name = "user_subcription_id", nullable = true)
+  //   @JsonBackReference
+  @JsonIgnore
+  private UserSubscription userSubscription;
+
   @Column(nullable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -113,5 +120,24 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "User{" +
+      "id=" +
+      id +
+      ", username='" +
+      username +
+      '\'' +
+      ", email='" +
+      email +
+      '\'' +
+      ", role='" +
+      role +
+      '\'' +
+      '}'
+    );
   }
 }

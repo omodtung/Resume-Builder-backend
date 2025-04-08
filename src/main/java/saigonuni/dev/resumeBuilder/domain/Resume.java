@@ -51,7 +51,6 @@ public class Resume implements Serializable {
   private String phone;
   private String email;
 
-  
   @ManyToOne
   @JoinColumn(name = "user_value_id", nullable = true)
   @JsonManagedReference

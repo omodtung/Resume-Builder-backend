@@ -116,7 +116,7 @@ public class AuthController {
   @PostMapping("/refresh-token")
   public void refreshToken(
     HttpServletRequest request,
-    HttpServletResponse response  
+    HttpServletResponse response
   ) throws IOException {
     authenticationService.refreshToken(request, response);
   }

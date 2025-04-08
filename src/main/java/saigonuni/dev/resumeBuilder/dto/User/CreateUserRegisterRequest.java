@@ -1,7 +1,7 @@
 package saigonuni.dev.resumeBuilder.dto.User;
 
-import jakarta.validation.constraints.NotEmpty;
 import io.micrometer.common.lang.Nullable;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import lombok.Builder;

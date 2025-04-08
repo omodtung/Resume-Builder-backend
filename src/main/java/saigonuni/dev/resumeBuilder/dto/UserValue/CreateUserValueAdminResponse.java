@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.domain.UserValue;
 
 @Data
 @Builder
@@ -13,5 +14,5 @@ import saigonuni.dev.resumeBuilder.domain.User;
 @AllArgsConstructor
 public class CreateUserValueAdminResponse {
 
-  private User user;
+  private UserValue userValue;
 }

@@ -21,7 +21,7 @@ public class CreateUserAdminRequest {
 
   private String refreshToken;
 
-  private String role;  
+  private String role;
   // private LocalDateTime createdAt;
 
 }
