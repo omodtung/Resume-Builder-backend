@@ -27,6 +27,7 @@ import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.ListResumeResponse;
+import saigonuni.dev.resumeBuilder.dto.resume.ResumeResponseDTO;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.service.JwtService;
@@ -86,20 +87,25 @@ public class ResumeAdminController extends BaseController {
   public ResponseEntity<GetResumeAdminResponse> getResumeById(
     @PathVariable String id
   ) {
-    
     Resume resume = resumeService.getResumeById(id);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(GetResumeAdminResponse.builder().resume(resume).build());
   }
 
+  // @GetMapping("resumes")
+  // @LogExecutionTime
+  // public ResponseEntity<ListResumeResponse> getResume() {
+  //   List<Resume> resumes = resumeService.listResumes();
+  //   return ResponseEntity
+  //     .status(HttpStatus.OK)
+  //     .body(ListResumeResponse.builder().resume(resumes).build());
+  // }
+
   @GetMapping("resumes")
-  @LogExecutionTime
-  public ResponseEntity<ListResumeResponse> getResume() {
+  public ResponseEntity<List<Resume>> getResumes() {
     List<Resume> resumes = resumeService.listResumes();
-    return ResponseEntity
-      .status(HttpStatus.OK)
-      .body(ListResumeResponse.builder().resume(resumes).build());
+    return ResponseEntity.ok(resumes);
   }
 
   @PostMapping("resumes/{id}")
@@ -107,9 +113,13 @@ public class ResumeAdminController extends BaseController {
   @LogExecutionTime
   public ResponseEntity<UpdateResumeAdminResponse> updateResume(
     @PathVariable String id,
-    @RequestBody UpdateResumeAdminRequest request
+    @Valid @RequestBody CreateResumeAdminRequest request,
+    @RequestHeader("Authorization") String authorizationHeader
   ) {
-    Resume resume = resumeService.updateResume(id, request);
+    User user = userDC.findUserNameByToken(
+        decode.AuthenticationDecode(authorizationHeader)
+      );
+    Resume resume = resumeService.updateResume(id, request ,user);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
@@ -122,74 +132,4 @@ public class ResumeAdminController extends BaseController {
     resumeService.deleteResume(id);
     return ResponseEntity.ok().build();
   }
-  // @PostMapping("resumes")
-  // @Operation(
-  //   summary = "API Thêm Resume mới",
-  //   description = "Returns a list of all resumes"
-  // )
-  // @SecurityRequirement(name = "bearerAuth")
-  // public String addResume(
-  //   @RequestHeader("Authorization") String authorizationHeader
-  // ) {
-  // if (
-  //   authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")
-  // ) {
-  //   System.err.println("Authorization header is missing or invalid");
-  //   return "Error: Missing or invalid Authorization header"; // Nên trả về lỗi HTTP 401 hoặc 400
-  // }
-  // String token = authorizationHeader.substring(7); // Dùng substring(7) an toàn hơn replace
-  // System.err.println("Token: " + token);
-
-  // String username = null;
-  // try {
-  //   // *** Dòng quan trọng cần kiểm tra ***
-  //   username = jwtService.extractUsername(token);
-
-  //   // Nếu chạy đến đây thành công, tức là extractUsername không lỗi
-  //   System.out.println("Successfully extracted username: " + username);
-  //   System.out.println("User found email " + username); // Tên biến là username nhưng bạn in là email?
-  //   System.out.println("User accessing API: " + username);
-
-  //   // --- Thêm logic xử lý thêm resume của bạn vào đây ---
-
-  //   return "Hello " + username + ", Resume processing started."; // Trả về thông tin hữu ích hơn
-  // } catch (io.jsonwebtoken.ExpiredJwtException e) {
-  //   System.err.println("JWT Token has expired: " + e.getMessage());
-  //   // Trả về lỗi 401 Unauthorized hoặc thông báo lỗi cụ thể
-  //   return "Error: Token has expired";
-  // } catch (io.jsonwebtoken.JwtException e) {
-  //   // Bắt các lỗi JWT khác (sai chữ ký, sai định dạng,...)
-  //   System.err.println("JWT Token is invalid: " + e.getMessage());
-  //   // Trả về lỗi 401 Unauthorized hoặc 403 Forbidden
-  //   return "Error: Invalid Token";
-  // } catch (IllegalArgumentException e) {
-  //   System.err.println("JWT claims string is empty: " + e.getMessage());
-  //   return "Error: Invalid Token data";
-  // } catch (Exception e) {
-  //   // Bắt các lỗi không mong muốn khác
-  //   System.err.println(
-  //     "An error occurred during token processing: " + e.getMessage()
-  //   );
-  //   e.printStackTrace(); // In stack trace để debug
-  //   // Trả về lỗi 500 Internal Server Error
-  //   return "Error: Internal Server Error";
-  // }
-  // decode.AuthenticationDecode(authorizationHeader);
-  // return decode.AuthenticationDecode(authorizationHeader);
-
-  // try {
-  //   // Sử dụng TokenDecoder để giải mã token
-  //   String username = decode.AuthenticationDecode(authorizationHeader);
-
-  //   // Nếu giải mã thành công, thực hiện logic thêm resume
-  //   System.out.println("User accessing API: " + username);
-  //   userDC.findUserNameByToken(
-  //     decode.AuthenticationDecode(authorizationHeader)
-  //   );
-  //   return "Hello " + username + ", Resume processing started.";
-  // } catch (IllegalArgumentException e) {
-  //   // Xử lý lỗi và trả về phản hồi phù hợp
-  //   return "Error: " + e.getMessage();
-  // }
-  // }
 }

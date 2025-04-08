@@ -67,7 +67,8 @@ public class User implements UserDetails {
   // private UserValue userValue;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonBackReference
+  // @JsonBackReference
+  @JsonManagedReference 
   private List<UserValue> userValues;
 
   @ManyToOne

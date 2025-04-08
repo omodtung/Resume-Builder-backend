@@ -14,4 +14,10 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
 
   @Query("SELECT r FROM Resume r WHERE r.userValue.user.id = :userId")
   List<Resume> findByUserId(@Param("userId") Long userId);
+
+  @Query(
+    "SELECT r FROM Resume r LEFT JOIN FETCH r.workExperiences LEFT JOIN FETCH r.educations"
+  )
+  List<Resume> findAllWithDetails();
+
 }

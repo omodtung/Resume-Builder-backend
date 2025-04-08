@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -56,7 +57,7 @@ public class UserValue {
   //   solution 2
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = true)
-  @JsonManagedReference
+  @JsonBackReference
   private User user;
 
   // mappedBy = "user" chỉ ra rằng Resume.user là cột chứa khóa ngoại (user_id) trong bảng resumes.
