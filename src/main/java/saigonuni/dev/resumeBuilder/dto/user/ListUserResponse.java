@@ -1,4 +1,4 @@
-package saigonuni.dev.resumeBuilder.dto.user;
+package saigonuni.dev.resumeBuilder.dto.User;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -12,5 +12,6 @@ import saigonuni.dev.resumeBuilder.domain.User;
 @Builder
 @AllArgsConstructor
 public class ListUserResponse {
-  private List<User> users;
+
+  private List<User> user;
 }
