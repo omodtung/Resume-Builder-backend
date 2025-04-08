@@ -10,7 +10,10 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import saigonuni.dev.resumeBuilder.domain.Education;
+import saigonuni.dev.resumeBuilder.domain.UserValue;
 import saigonuni.dev.resumeBuilder.domain.WorkExperience;
+import saigonuni.dev.resumeBuilder.domain.dto.EducationDTO;
+import saigonuni.dev.resumeBuilder.domain.dto.WorkExperienceDTO;
 
 @Data
 @Builder
@@ -59,7 +62,8 @@ public class CreateResumeAdminRequest {
   @NotEmpty(message = "Email cannot be empty")
   private String email;
 
-  private List<WorkExperience> workExperiences = new ArrayList<>();
-  private List<Education> educations = new ArrayList<>();
+  private List<WorkExperienceDTO> workExperiences = new ArrayList<>();
+  private List<EducationDTO> educations = new ArrayList<>();
   private List<String> skills = new ArrayList<>();
+  // private UserValue userValue;
 }

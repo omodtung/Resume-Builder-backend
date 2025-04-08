@@ -1,23 +1,38 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
-import saigonuni.dev.resumeBuilder.controller.base.BaseController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import saigonuni.dev.resumeBuilder.domain.User;
-import saigonuni.dev.resumeBuilder.dto.user.*;
+import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.User.GetUserAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.User.ListUserResponse;
+import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminResponse;
 import saigonuni.dev.resumeBuilder.service.UserService;
 
+@Tag(
+  name = "User Admin Controller",
+  description = "Operations pertaining to admin management of Users"
+)
 @RestController
-@RequestMapping("/admin/users")
-@Tag(name = "User Admin Controller", description = "APIs for managing users")
-public class UserAdminController extends BaseController {
+@RequestMapping("admin")
+public class UserAdminController {
 
   private final UserService userService;
 
@@ -26,25 +41,20 @@ public class UserAdminController extends BaseController {
     this.userService = userService;
   }
 
-  @PostMapping("/users")
-  @Operation(
-    summary = "API to add a new user",
-    description = "Returns the created user"
-  )
+  @PostMapping("users")
+  @Operation(summary = "Add a new user", description = "Creates a new user")
   public ResponseEntity<CreateUserAdminResponse> addUser(
     @Valid @RequestBody CreateUserAdminRequest request
   ) {
     User user = userService.addUser(request);
+    // return ResponseEntity.status(HttpStatus.CREATED).body(user);
     return ResponseEntity.ok(
       CreateUserAdminResponse.builder().user(user).build()
     );
   }
 
-  @GetMapping("/users/{id}")
-  @Operation(
-    summary = "API to get a user by ID",
-    description = "Returns the user with the specified ID"
-  )
+  @GetMapping("users/{id}")
+  @Operation(summary = "Get user by ID", description = "Fetches a user by ID")
   public ResponseEntity<GetUserAdminResponse> getUserById(
     @PathVariable String id
   ) {
@@ -54,24 +64,20 @@ public class UserAdminController extends BaseController {
       .body(GetUserAdminResponse.builder().user(user).build());
   }
 
-  @GetMapping("/users")
-  @Operation(
-    summary = "API to get all users",
-    description = "Returns a list of all users"
-  )
-  public ResponseEntity<ListUserResponse> getUsers() {
+  @GetMapping("users")
+  @Operation(summary = "List all users", description = "Fetches all users")
+  public ResponseEntity<ListUserResponse> listUsers() {
     List<User> users = userService.listUsers();
     return ResponseEntity
       .status(HttpStatus.OK)
-      .body(ListUserResponse.builder().users(users).build());
+      .body(ListUserResponse.builder().user(users).build());
   }
 
-  @PostMapping("/users/{id}")
-  @Operation(summary = "API to update a user", description = "Update a user")
-  @LogExecutionTime
+  @PutMapping("users/{id}")
+  @Operation(summary = "Update user", description = "Updates an existing user")
   public ResponseEntity<UpdateUserAdminResponse> updateUser(
     @PathVariable String id,
-    @RequestBody UpdateUserAdminRequest request
+    @Valid @RequestBody UpdateUserAdminRequest request
   ) {
     User user = userService.updateUser(id, request);
     return ResponseEntity
@@ -79,13 +85,10 @@ public class UserAdminController extends BaseController {
       .body(UpdateUserAdminResponse.builder().user(user).build());
   }
 
-  @DeleteMapping("/users/{id}")
-  @Operation(
-    summary = "API to delete a user by ID",
-    description = "Deletes the user with the specified ID"
-  )
-  public ResponseEntity<Void> deleteUserById(@PathVariable String id) {
-    userService.deleteUserById(id);
+  @DeleteMapping("users/{id}")
+  @Operation(summary = "Delete user", description = "Deletes a user by ID")
+  public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    userService.deleteUser(id);
     return ResponseEntity.noContent().build();
   }
 }

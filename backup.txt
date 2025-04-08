@@ -388,3 +388,13 @@ https://medium.com/@victoronu/implementing-jwt-authentication-in-a-simple-spring
 
 
 https://medium.com/@max.difranco/building-a-user-registration-and-jwt-authentication-service-with-spring-boot-3-66cf76233204
+
+
+
+{
+  "username": "dothetung",
+  "password": "123",
+  "email": "dothetung@gmail.com",
+  "role": "SUPER_ADMIN",
+
+}
