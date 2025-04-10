@@ -1,26 +1,23 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationRequest;
 import saigonuni.dev.resumeBuilder.dto.Auth.AutheticationResponse;
-import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserRegisterRequest;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
@@ -94,6 +91,7 @@ public class AuthController {
       .build();
 
     User savedUser = userRepository.save(user);
+    System.out.println("Registered user: " + savedUser);
 
     return ResponseEntity.ok(
       CreateUserAdminResponse

@@ -11,6 +11,9 @@ import saigonuni.dev.resumeBuilder.domain.User;
 public class CreateUserValueRequest {
 
     private User user;
-// //   private Long userId;
-//   private List<Resume> resume;
+    private List<Resume> resume;
+
+    public List<Resume> getResume() {
+        return this.resume;
+    }
 }

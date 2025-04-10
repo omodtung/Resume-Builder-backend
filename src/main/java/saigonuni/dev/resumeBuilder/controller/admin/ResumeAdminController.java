@@ -1,10 +1,7 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
@@ -68,10 +70,20 @@ public class ResumeAdminController extends BaseController {
     @Valid @RequestBody CreateResumeAdminRequest request,
     @RequestHeader("Authorization") String authorizationHeader
   ) {
+    // Check that the header exists and starts with "Bearer "
+    if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+      throw new RuntimeException("Missing or invalid Authorization header");
+    }
     try {
-      User user = userDC.findUserNameByToken(
-        decode.AuthenticationDecode(authorizationHeader)
-      );
+      // Remove "Bearer " prefix to extract the token
+      String token = authorizationHeader.substring(7);
+      User user = userDC.findUserNameByToken(decode.AuthenticationDecode(token));
+
+      // Handle null request by instantiating an empty CreateResumeAdminRequest
+      if (request == null) {
+        request = CreateResumeAdminRequest.emptyResume();
+      }
+
       Resume resume = resumeService.addResume(request, user);
       return ResponseEntity.ok(
         CreateResumeAdminResponse.builder().resume(resume).build()

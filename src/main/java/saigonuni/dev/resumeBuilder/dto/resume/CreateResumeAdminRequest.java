@@ -2,16 +2,12 @@ package saigonuni.dev.resumeBuilder.dto.resume;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import saigonuni.dev.resumeBuilder.domain.Education;
-import saigonuni.dev.resumeBuilder.domain.UserValue;
-import saigonuni.dev.resumeBuilder.domain.WorkExperience;
 import saigonuni.dev.resumeBuilder.domain.dto.EducationDTO;
 import saigonuni.dev.resumeBuilder.domain.dto.WorkExperienceDTO;
 
@@ -65,5 +61,25 @@ public class CreateResumeAdminRequest {
   private List<WorkExperienceDTO> workExperiences = new ArrayList<>();
   private List<EducationDTO> educations = new ArrayList<>();
   private List<String> skills = new ArrayList<>();
-  // private UserValue userValue;
+
+  public static CreateResumeAdminRequest emptyResume() {
+    return CreateResumeAdminRequest.builder()
+      .firstName("")
+      .lastName("")
+      .title("Untitled Resume")
+      .description("")
+      .photoUrl("")
+      .colorHex("#000000")
+      .borderStyle("squircle")
+      .summary("")
+      .jobTitle("")
+      .city("")
+      .country("")
+      .phone("")
+      .email("")
+      .workExperiences(List.of())
+      .educations(List.of())
+      .skills(List.of())
+      .build();
+  }
 }

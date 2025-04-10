@@ -1,12 +1,12 @@
 package saigonuni.dev.resumeBuilder.service;
 
 import java.time.LocalDateTime;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import saigonuni.dev.resumeBuilder.domain.User;
+
+import lombok.extern.slf4j.Slf4j;
 import saigonuni.dev.resumeBuilder.domain.UserValue;
 import saigonuni.dev.resumeBuilder.dto.UserValue.CreateUserValueRequest;
 import saigonuni.dev.resumeBuilder.exception.DuplicateKeyException;
