@@ -98,6 +98,7 @@ public class ResumeAdminController extends BaseController {
   public ResponseEntity<GetResumeAdminResponse> getResumeById(
     @PathVariable String id
   ) {
+    
     Resume resume = resumeService.getResumeById(id);
     return ResponseEntity
       .status(HttpStatus.OK)

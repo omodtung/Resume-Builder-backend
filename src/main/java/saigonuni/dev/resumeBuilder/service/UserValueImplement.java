@@ -26,9 +26,8 @@ public class UserValueImplement implements UserValueService {
       UserValue userValues = UserValue
         .builder()
         .createdAt(LocalDateTime.now())
-        .resume(userValue.getResume())
+        // .resume(userValue.getResume())
         .user(userValue.getUser())
-        
         .build();
 
       return useValueRepository.save(userValues);

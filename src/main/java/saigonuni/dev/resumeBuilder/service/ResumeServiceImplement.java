@@ -50,7 +50,7 @@ public class ResumeServiceImplement implements ResumeService {
 
   @Override
   public Resume addResume(CreateResumeAdminRequest request, User user) {
-    UserValue userValue = userValueRepository.save(
+ UserValue userValue = userValueRepository.save(
       UserValue.builder().user(user).createdAt(LocalDateTime.now()).build()
     );
 
@@ -59,7 +59,7 @@ public class ResumeServiceImplement implements ResumeService {
       for (WorkExperienceDTO dto : request.getWorkExperiences()) {
         WorkExperience workExperience = WorkExperience
           .builder()
-          .position(dto.getPosition())
+          .position(dto.getPosition() )
           .company(dto.getCompany())
           .startDate(dto.getStartDate())
           .endDate(dto.getEndDate())
