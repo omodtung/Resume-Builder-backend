@@ -23,6 +23,7 @@ import saigonuni.dev.resumeBuilder.dto.User.CreateUserRegisterRequest;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
 import saigonuni.dev.resumeBuilder.service.AuthenticationService;
 import saigonuni.dev.resumeBuilder.service.CustomUserDetailsService;
+import saigonuni.dev.resumeBuilder.service.UserValueService;
 import saigonuni.dev.resumeBuilder.utils.JwtUtil;
 
 @RestController
@@ -46,6 +47,9 @@ public class AuthController {
 
   @Autowired
   private PasswordEncoder passwordEncoder;
+
+  @Autowired
+  private UserValueService userValueService;
 
   @PostMapping("/register")
   public ResponseEntity<CreateUserAdminResponse> register(
@@ -91,6 +95,10 @@ public class AuthController {
       .build();
 
     User savedUser = userRepository.save(user);
+
+    // Create UserValue for the newly created user
+    userValueService.createUserValueForUser(savedUser);
+
     System.out.println("Registered user: " + savedUser);
 
     return ResponseEntity.ok(
