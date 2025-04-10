@@ -68,14 +68,18 @@ public class User implements UserDetails {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   // @JsonBackReference
-  @JsonManagedReference 
+  @JsonManagedReference
   private List<UserValue> userValues;
 
-  @ManyToOne
-  @JoinColumn(name = "user_subcription_id", nullable = true)
-  //   @JsonBackReference
-  @JsonIgnore
-  private UserSubscription userSubscription;
+  // @ManyToOne
+  // @JoinColumn(name = "user_subscription_id", nullable = true)
+  // //   @JsonBackReference
+  // @JsonIgnore
+  // private UserSubscription userSubscription;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  // @JsonBackReference
+  private List<UserSubscription> userSubscriptions;
 
   @Column(nullable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
