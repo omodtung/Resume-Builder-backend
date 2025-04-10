@@ -1,9 +1,12 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,7 +70,7 @@ public class ResumeAdminController extends BaseController {
   )
   @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<CreateResumeAdminResponse> addResume(
-    @Valid @RequestBody CreateResumeAdminRequest request,
+    @Valid @RequestBody(required = false) CreateResumeAdminRequest request,
     @RequestHeader("Authorization") String authorizationHeader
   ) {
     // Check that the header exists and starts with "Bearer "
@@ -95,14 +98,32 @@ public class ResumeAdminController extends BaseController {
 
   @GetMapping("resumes/{id}")
   @LogExecutionTime
-  public ResponseEntity<GetResumeAdminResponse> getResumeById(
+  public ResponseEntity<?> getResumeById(
     @PathVariable String id
   ) {
-    
+    try {
     Resume resume = resumeService.getResumeById(id);
-    return ResponseEntity
-      .status(HttpStatus.OK)
-      .body(GetResumeAdminResponse.builder().resume(resume).build());
+    if (resume == null) {
+      Map<String, String> error = new HashMap<>();
+      error.put("error", "Resume not found");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                           .contentType(MediaType.APPLICATION_JSON)
+                           .body(error);
+    }
+    
+    GetResumeAdminResponse response = GetResumeAdminResponse.builder()
+                                              .resume(resume)
+                                              .build();
+    return ResponseEntity.ok()
+                         .contentType(MediaType.APPLICATION_JSON)
+                         .body(response);
+  } catch (Exception e) {
+    Map<String, String> error = new HashMap<>();
+    error.put("error", "Error processing request: " + e.getMessage());
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                         .contentType(MediaType.APPLICATION_JSON)
+                         .body(error);
+  }
   }
 
   @GetMapping("resumes")

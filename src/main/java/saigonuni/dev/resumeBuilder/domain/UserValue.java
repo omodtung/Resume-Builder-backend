@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -69,6 +70,7 @@ public class UserValue {
     orphanRemoval = true
   )
   @JsonManagedReference
+  @JsonIgnore
   private List<Resume> resume = new ArrayList<>();
 
   // @ManyToOne
