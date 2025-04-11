@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,85 +17,78 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
-import saigonuni.dev.resumeBuilder.domain.Resume;
-import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
-import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.ListResumeResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
-import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
-import saigonuni.dev.resumeBuilder.service.ResumeService;
+import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.User.GetUserAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.User.ListUserResponse;
+import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminResponse;
+import saigonuni.dev.resumeBuilder.service.UserService;
 
 @Tag(
-  name = "User Admin  Controller",
-  description = "Operations pertaining to admin management of Users Admin Controller "
+  name = "User Admin Controller",
+  description = "Operations pertaining to admin management of Users"
 )
 @RestController
 @RequestMapping("admin")
 public class UserAdminController {
 
-  private final ResumeService resumeService;
+  private final UserService userService;
 
   @Autowired
-  public UserAdminController(ResumeService resumeService) {
-    this.resumeService = resumeService;
+  public UserAdminController(UserService userService) {
+    this.userService = userService;
   }
 
-  @PostMapping("resumes")
-  @Operation(
-    summary = "API Thêm Resume mới",
-    description = "Returns a list of all resumes"
-  )
-  public ResponseEntity<CreateResumeAdminResponse> addResume(
-    @Valid @RequestBody CreateResumeAdminRequest request
+  @PostMapping("users")
+  @Operation(summary = "Add a new user", description = "Creates a new user")
+  public ResponseEntity<CreateUserAdminResponse> addUser(
+    @Valid @RequestBody CreateUserAdminRequest request
   ) {
-    System.out.println("Testing input Data" + request);
-    Resume resume = resumeService.addResume(request);
+    User user = userService.addUser(request);
+    // return ResponseEntity.status(HttpStatus.CREATED).body(user);
     return ResponseEntity.ok(
-      CreateResumeAdminResponse.builder().resume(resume).build()
+      CreateUserAdminResponse.builder().user(user).build()
     );
   }
 
-  @GetMapping("resumes/{id}")
-  @LogExecutionTime
-  public ResponseEntity<GetResumeAdminResponse> getResumeById(
+  @GetMapping("users/{id}")
+  @Operation(summary = "Get user by ID", description = "Fetches a user by ID")
+  public ResponseEntity<GetUserAdminResponse> getUserById(
     @PathVariable String id
   ) {
-    Resume resume = resumeService.getResumeById(id);
+    User user = userService.getUserById(id);
     return ResponseEntity
       .status(HttpStatus.OK)
-      .body(GetResumeAdminResponse.builder().resume(resume).build());
+      .body(GetUserAdminResponse.builder().user(user).build());
   }
 
-  @GetMapping("resumes")
-  @LogExecutionTime
-  public ResponseEntity<ListResumeResponse> getResume() {
-    List<Resume> resumes = resumeService.listResumes();
+  @GetMapping("users")
+  @Operation(summary = "List all users", description = "Fetches all users")
+  public ResponseEntity<ListUserResponse> listUsers() {
+    List<User> users = userService.listUsers();
     return ResponseEntity
       .status(HttpStatus.OK)
-      .body(ListResumeResponse.builder().resume(resumes).build());
+      .body(ListUserResponse.builder().user(users).build());
   }
 
-  @PostMapping("resumes/{id}")
-  @Operation(summary = "API Update Resume ", description = "Update API Resume")
-  @LogExecutionTime
-  public ResponseEntity<UpdateResumeAdminResponse> updateResume(
+  @PutMapping("users/{id}")
+  @Operation(summary = "Update user", description = "Updates an existing user")
+  public ResponseEntity<UpdateUserAdminResponse> updateUser(
     @PathVariable String id,
-    @RequestBody UpdateResumeAdminRequest request
+    @Valid @RequestBody UpdateUserAdminRequest request
   ) {
-    Resume resume = resumeService.updateResume(id, request);
+    User user = userService.updateUser(id, request);
     return ResponseEntity
       .status(HttpStatus.OK)
-      .body(UpdateResumeAdminResponse.builder().resume(resume).build());
+      .body(UpdateUserAdminResponse.builder().user(user).build());
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<DeleteResumeResponse> deleteResume(
-    @PathVariable String id
-  ) {
-    resumeService.deleteResume(id);
-    return ResponseEntity.ok().build();
+  @DeleteMapping("users/{id}")
+  @Operation(summary = "Delete user", description = "Deletes a user by ID")
+  public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    userService.deleteUser(id);
+    return ResponseEntity.noContent().build();
   }
 }

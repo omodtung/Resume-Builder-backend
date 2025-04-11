@@ -1,6 +1,7 @@
 package saigonuni.dev.resumeBuilder.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,11 +16,16 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
@@ -27,13 +33,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false, unique = false)
   private String username;
 
   @Column(nullable = false)
@@ -45,7 +51,7 @@ public class User {
   @Column(nullable = false)
   private String role;
 
-  @Column(name = "refresh_token")
+  @Column(name = "refresh_token", nullable = true)
   private String refreshToken;
 
   // mappedBy = "user" chỉ ra rằng Resume.user là cột chứa khóa ngoại (user_id) trong bảng resumes.
@@ -56,16 +62,26 @@ public class User {
 
   // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   // private UserSubscription userSubscription;
-    
+
   // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   // private UserValue userValue;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonBackReference
+  // @JsonBackReference
+  @JsonManagedReference
   private List<UserValue> userValues;
 
+  // @ManyToOne
+  // @JoinColumn(name = "user_subscription_id", nullable = true)
+  // //   @JsonBackReference
+  // @JsonIgnore
+  // private UserSubscription userSubscription;
 
-  @Column(nullable = false, updatable = false)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  // @JsonBackReference
+  private List<UserSubscription> userSubscriptions;
+
+  @Column(nullable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
 
   @Column(nullable = true)
@@ -82,6 +98,51 @@ public class User {
     this.email = email;
     this.role = role;
   }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    // Return the role as a GrantedAuthority
+    return Collections.singletonList(new SimpleGrantedAuthority(role));
+  }
+
   // Getters and setters
- 
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "User{" +
+      "id=" +
+      id +
+      ", username='" +
+      username +
+      '\'' +
+      ", email='" +
+      email +
+      '\'' +
+      ", role='" +
+      role +
+      '\'' +
+      '}'
+    );
+  }
 }

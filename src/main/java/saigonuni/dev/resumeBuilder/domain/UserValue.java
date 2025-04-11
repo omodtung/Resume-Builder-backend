@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,7 +57,7 @@ public class UserValue {
   //   solution 2
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = true)
-  @JsonManagedReference
+  @JsonBackReference
   private User user;
 
   // mappedBy = "user" chỉ ra rằng Resume.user là cột chứa khóa ngoại (user_id) trong bảng resumes.
@@ -67,10 +69,25 @@ public class UserValue {
     cascade = CascadeType.ALL,
     orphanRemoval = true
   )
-  private List<Resume> resume;
-
-  @ManyToOne
-  @JoinColumn(name = "user_subcription_id", nullable = true)
   @JsonManagedReference
-  private UserSubscription userSubscription;
+  private List<Resume> resume = new ArrayList<>();
+
+  // @ManyToOne
+  // @JoinColumn(name = "user_subcription_id", nullable = true)
+  // @JsonManagedReference
+  // private UserSubscription userSubscription;
+
+  @Override
+  public String toString() {
+    return (
+      "UserValue{" +
+      "id=" +
+      id +
+      ", createdAt=" +
+      createdAt +
+      ", updatedAt=" +
+      updatedAt +
+      '}'
+    );
+  }
 }

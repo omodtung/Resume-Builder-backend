@@ -14,4 +14,5 @@ import saigonuni.dev.resumeBuilder.domain.User;
 public class CreateUserAdminResponse {
 
   private User user;
+  private String message;
 }

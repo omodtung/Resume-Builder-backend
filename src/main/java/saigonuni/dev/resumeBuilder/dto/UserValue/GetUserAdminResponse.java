@@ -1,0 +1,17 @@
+package saigonuni.dev.resumeBuilder.dto.UserValue;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import saigonuni.dev.resumeBuilder.domain.Resume;
+import saigonuni.dev.resumeBuilder.domain.UserValue;
+
+@Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+public class GetUserAdminResponse {
+
+  private UserValue userValue;
+}
