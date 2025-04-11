@@ -90,20 +90,20 @@ public class PlanServiceImplement implements PlanService {
     }
   }
 
-  @Override
-  public void deletePlan(Long id) {
-    try {
-      Plan plan = planRepository
-        .findById(id)
-        .orElseThrow(() ->
-          new BadRequestException(
-            PlanMessage.PLAN_NOT_FOUND_KEY,
-            PlanMessage.PLAN_NOT_FOUND_MESSAGE
-          )
-        );
-      planRepository.delete(plan);
-    } catch (Exception e) {
-      throw new RuntimeException(e); // Wrap the original exception
-    }
-  }
+  // @Override
+  // public void deletePlan(Long id) {
+  //   try {
+  //     Plan plan = planRepository
+  //       .findById(id)
+  //       .orElseThrow(() ->
+  //         new BadRequestException(
+  //           PlanMessage.PLAN_NOT_FOUND_KEY,
+  //           PlanMessage.PLAN_NOT_FOUND_MESSAGE
+  //         )
+  //       );
+  //     planRepository.delete(plan);
+  //   } catch (Exception e) {
+  //     throw new RuntimeException(e); // Wrap the original exception
+  //   }
+  // }
 }
