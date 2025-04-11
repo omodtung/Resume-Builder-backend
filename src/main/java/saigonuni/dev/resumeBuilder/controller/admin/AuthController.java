@@ -97,7 +97,7 @@ public class AuthController {
     User savedUser = userRepository.save(user);
 
     // Create UserValue for the newly created user
-    userValueService.createUserValueForUser(savedUser);
+    //userValueService.createUserValueForUser(savedUser);
 
     System.out.println("Registered user: " + savedUser);
 
