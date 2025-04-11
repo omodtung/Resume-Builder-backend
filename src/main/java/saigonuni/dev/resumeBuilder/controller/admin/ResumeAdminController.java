@@ -73,6 +73,11 @@ public class ResumeAdminController extends BaseController {
       User user = userDC.findUserNameByToken(
         decode.AuthenticationDecode(authorizationHeader)
       );
+
+      if (request == null) {
+        request = CreateResumeAdminRequest.emptyResume();
+      }
+
       Resume resume = resumeService.addResume(request, user);
       return ResponseEntity.ok(
         CreateResumeAdminResponse.builder().resume(resume).build()

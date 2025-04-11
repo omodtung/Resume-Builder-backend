@@ -65,5 +65,27 @@ public class CreateResumeAdminRequest {
   private List<WorkExperienceDTO> workExperiences = new ArrayList<>();
   private List<EducationDTO> educations = new ArrayList<>();
   private List<String> skills = new ArrayList<>();
+
+
+  public static CreateResumeAdminRequest emptyResume() {
+    return CreateResumeAdminRequest.builder()
+      .firstName("")
+      .lastName("")
+      .title("Untitled Resume")
+      .description("")
+      .photoUrl("")
+      .colorHex("#000000")
+      .borderStyle("squircle")
+      .summary("")
+      .jobTitle("")
+      .city("")
+      .country("")
+      .phone("")
+      .email("")
+      .workExperiences(List.of())
+      .educations(List.of())
+      .skills(List.of())
+      .build();
+  }
   // private UserValue userValue;
 }
