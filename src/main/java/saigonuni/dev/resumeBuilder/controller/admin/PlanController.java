@@ -114,8 +114,8 @@ public class PlanController extends BaseController {
       .body(UpdatePlanAdminResponse.builder().plan(plan).build());
   }
 
-  @DeleteMapping("/{id}")
-  public void deletePlan(@PathVariable Long id) {
-    planService.deletePlan(id);
-  }
+  // @DeleteMapping("/{id}")
+  // public void deletePlan(@PathVariable Long id) {
+  //   planService.deletePlan(id);
+  // }
 }
