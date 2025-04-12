@@ -3,10 +3,12 @@ package saigonuni.dev.resumeBuilder.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
@@ -24,6 +26,9 @@ public class UserServiceImplement implements UserService {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private UserValueService userValueService;
+
   @Override
   public User addUser(CreateUserAdminRequest request) {
     try {
@@ -39,7 +44,12 @@ public class UserServiceImplement implements UserService {
         .createdAt(LocalDateTime.now())
         .build();
 
-      return userRepository.save(user);
+      User savedUser = userRepository.save(user);
+
+      // Create UserValue for the newly created user
+      userValueService.createUserValueForUser(savedUser);
+
+      return savedUser;
     } catch (DataIntegrityViolationException e) {
       throw new DuplicateKeyException(CommonMessage.DUPLICATE_KEY.getMessage());
     }
@@ -105,5 +115,4 @@ public class UserServiceImplement implements UserService {
       throw e;
     }
   }
-  @Ove
 }
