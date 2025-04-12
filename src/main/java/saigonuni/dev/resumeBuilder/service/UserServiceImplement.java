@@ -105,5 +105,17 @@ public class UserServiceImplement implements UserService {
       throw e;
     }
   }
-  @Ove
+
+  // @Override
+  // public void findResumeByUserId(User user) {
+  //   try {
+  //     User user = userRepository
+  //       .findById(Long.valueOf(user.getId()))
+  //       .orElseThrow(() -> new UserNotFoundException());
+
+
+  //   } catch (Exception e) {
+  //     throw e;
+  //   }
+  // }
 }

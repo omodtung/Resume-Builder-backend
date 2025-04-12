@@ -17,4 +17,6 @@ public interface ResumeService {
   List<Resume> listResumes();
   void deleteResume(String id);
   Resume updateResume(String resumeId, CreateResumeAdminRequest request,User user );
+
+  
 }
