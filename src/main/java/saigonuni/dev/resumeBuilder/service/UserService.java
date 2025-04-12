@@ -18,4 +18,6 @@ public interface UserService {
   void deleteUser(String id);
 
   User updateUser(String resumeId, UpdateUserAdminRequest request);
+  void findResumeByUserId( User user) ;
+
 }

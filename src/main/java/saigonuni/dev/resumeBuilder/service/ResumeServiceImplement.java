@@ -1,20 +1,18 @@
 package saigonuni.dev.resumeBuilder.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import saigonuni.dev.resumeBuilder.domain.Education;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
@@ -22,10 +20,7 @@ import saigonuni.dev.resumeBuilder.domain.UserValue;
 import saigonuni.dev.resumeBuilder.domain.WorkExperience;
 import saigonuni.dev.resumeBuilder.domain.dto.EducationDTO;
 import saigonuni.dev.resumeBuilder.domain.dto.WorkExperienceDTO;
-import saigonuni.dev.resumeBuilder.dto.UserValue.CreateUserValueRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
-import saigonuni.dev.resumeBuilder.dto.resume.ResumeResponseDTO;
-import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.exception.ResumeNotFoundException;
 import saigonuni.dev.resumeBuilder.repository.EducationRepository;
 import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
@@ -292,4 +287,6 @@ public class ResumeServiceImplement implements ResumeService {
     log.info("Successfully updated resume with id: {}", updatedResume.getId());
     return updatedResume;
   }
+  
+  @O
 }
