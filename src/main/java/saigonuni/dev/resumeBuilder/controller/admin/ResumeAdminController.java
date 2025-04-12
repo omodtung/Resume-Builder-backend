@@ -1,12 +1,10 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
-import org.apache.catalina.connector.Response;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +13,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
+import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
+import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 import saigonuni.dev.resumeBuilder.domain.Resume;
+import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.ListResumeResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
+import saigonuni.dev.resumeBuilder.service.JwtService;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
 
 @Tag(
@@ -37,11 +38,22 @@ import saigonuni.dev.resumeBuilder.service.ResumeService;
 @RequestMapping("admin")
 public class ResumeAdminController extends BaseController {
 
+  private JwtService jwtService;
   private final ResumeService resumeService;
+  private final UserDC userDC;
+  private final Decode decode;
 
   @Autowired
-  public ResumeAdminController(ResumeService resumeService) {
+  public ResumeAdminController(
+    ResumeService resumeService,
+    JwtService jwtService,
+    Decode decode,
+    UserDC userDC
+  ) {
     this.resumeService = resumeService;
+    this.jwtService = jwtService;
+    this.decode = decode;
+    this.userDC = userDC;
   }
 
   @PostMapping("resumes")
@@ -49,14 +61,27 @@ public class ResumeAdminController extends BaseController {
     summary = "API Thêm Resume mới",
     description = "Returns a list of all resumes"
   )
+  @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<CreateResumeAdminResponse> addResume(
-    @Valid @RequestBody CreateResumeAdminRequest request
+    @Valid @RequestBody CreateResumeAdminRequest request,
+    @RequestHeader("Authorization") String authorizationHeader
   ) {
-    System.out.println("Testing input Data" + request);
-    Resume resume = resumeService.addResume(request);
-    return ResponseEntity.ok(
-      CreateResumeAdminResponse.builder().resume(resume).build()
-    );
+    try {
+      User user = userDC.findUserNameByToken(
+        decode.AuthenticationDecode(authorizationHeader)
+      );
+
+      if (request == null) {
+        request = CreateResumeAdminRequest.emptyResume();
+      }
+
+      Resume resume = resumeService.addResume(request, user);
+      return ResponseEntity.ok(
+        CreateResumeAdminResponse.builder().resume(resume).build()
+      );
+    } catch (Exception e) {
+      throw new RuntimeException("Error processing request: " + e.getMessage());
+    }
   }
 
   @GetMapping("resumes/{id}")
@@ -70,13 +95,19 @@ public class ResumeAdminController extends BaseController {
       .body(GetResumeAdminResponse.builder().resume(resume).build());
   }
 
+  // @GetMapping("resumes")
+  // @LogExecutionTime
+  // public ResponseEntity<ListResumeResponse> getResume() {
+  //   List<Resume> resumes = resumeService.listResumes();
+  //   return ResponseEntity
+  //     .status(HttpStatus.OK)
+  //     .body(ListResumeResponse.builder().resume(resumes).build());
+  // }
+
   @GetMapping("resumes")
-  @LogExecutionTime
-  public ResponseEntity<ListResumeResponse> getResume() {
+  public ResponseEntity<List<Resume>> getResumes() {
     List<Resume> resumes = resumeService.listResumes();
-    return ResponseEntity
-      .status(HttpStatus.OK)
-      .body(ListResumeResponse.builder().resume(resumes).build());
+    return ResponseEntity.ok(resumes);
   }
 
   @PostMapping("resumes/{id}")
@@ -84,15 +115,19 @@ public class ResumeAdminController extends BaseController {
   @LogExecutionTime
   public ResponseEntity<UpdateResumeAdminResponse> updateResume(
     @PathVariable String id,
-    @RequestBody UpdateResumeAdminRequest request
+    @Valid @RequestBody CreateResumeAdminRequest request,
+    @RequestHeader("Authorization") String authorizationHeader
   ) {
-    Resume resume = resumeService.updateResume(id, request);
+    User user = userDC.findUserNameByToken(
+      decode.AuthenticationDecode(authorizationHeader)
+    );
+    Resume resume = resumeService.updateResume(id, request, user);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("resumes/{id}")
   public ResponseEntity<DeleteResumeResponse> deleteResume(
     @PathVariable String id
   ) {

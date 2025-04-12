@@ -1,16 +1,8 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 
 @Entity
 @Table(name = "resumes")
@@ -50,19 +43,16 @@ public class Resume implements Serializable {
   private String phone;
   private String email;
 
-  @OneToMany(
-    mappedBy = "resume",
-    orphanRemoval = true,
-    cascade = CascadeType.ALL
-  )
+  @ManyToOne
+  @JoinColumn(name = "user_value_id", nullable = true)
+  @JsonBackReference
+  private UserValue userValue;
+
+  @OneToMany(mappedBy = "resume", orphanRemoval = true)
   @JsonManagedReference
   private List<WorkExperience> workExperiences;
 
-  @OneToMany(
-    mappedBy = "resume",
-    orphanRemoval = true,
-    cascade = CascadeType.ALL
-  )
+  @OneToMany(mappedBy = "resume", orphanRemoval = true)
   @JsonManagedReference
   private List<Education> educations;
 
@@ -90,6 +80,8 @@ public class Resume implements Serializable {
     String country,
     String phone,
     String email,
+    // User user,
+    UserValue userValue,
     List<WorkExperience> workExperiences,
     List<Education> educations,
     List<String> skills
@@ -109,6 +101,8 @@ public class Resume implements Serializable {
     this.phone = phone;
     this.email = email;
 
+    // this.user = user;
+    this.userValue = userValue;
     this.workExperiences = workExperiences;
     this.educations = educations;
     this.skills = skills;
