@@ -1,10 +1,7 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
@@ -26,9 +28,6 @@ import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.ListResumeResponse;
-import saigonuni.dev.resumeBuilder.dto.resume.ResumeResponseDTO;
-import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.service.JwtService;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
@@ -130,11 +129,14 @@ public class ResumeAdminController extends BaseController {
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("resumes/{id}")
   public ResponseEntity<DeleteResumeResponse> deleteResume(
     @PathVariable String id
   ) {
     resumeService.deleteResume(id);
     return ResponseEntity.ok().build();
   }
+
+
+  // @Pos Ma
 }
