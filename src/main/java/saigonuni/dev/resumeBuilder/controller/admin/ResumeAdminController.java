@@ -1,7 +1,10 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
@@ -121,9 +119,9 @@ public class ResumeAdminController extends BaseController {
     @RequestHeader("Authorization") String authorizationHeader
   ) {
     User user = userDC.findUserNameByToken(
-        decode.AuthenticationDecode(authorizationHeader)
-      );
-    Resume resume = resumeService.updateResume(id, request ,user);
+      decode.AuthenticationDecode(authorizationHeader)
+    );
+    Resume resume = resumeService.updateResume(id, request, user);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
@@ -136,7 +134,4 @@ public class ResumeAdminController extends BaseController {
     resumeService.deleteResume(id);
     return ResponseEntity.ok().build();
   }
-
-
-  // @Pos Ma
 }
