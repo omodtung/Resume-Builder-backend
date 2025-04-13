@@ -46,8 +46,6 @@ public class UserServiceImplement implements UserService {
 
       User savedUser = userRepository.save(user);
 
-      // Create UserValue for the newly created user
-      userValueService.createUserValueForUser(savedUser);
 
       return savedUser;
     } catch (DataIntegrityViolationException e) {
