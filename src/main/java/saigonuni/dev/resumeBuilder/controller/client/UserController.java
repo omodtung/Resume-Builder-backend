@@ -44,7 +44,7 @@ public class UserController extends BaseController {
     this.userDC = userDC;
   }
 
-  @GetMapping("resumes/{userId}")
+  @GetMapping("resumes-individual")
   public ResponseEntity<List<Resume>> getResumesByUserId(
     @RequestHeader("Authorization") String authorizationHeader
   ) {
