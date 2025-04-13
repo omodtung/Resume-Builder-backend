@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
@@ -18,6 +19,7 @@ public interface UserService {
   void deleteUser(String id);
 
   User updateUser(String resumeId, UpdateUserAdminRequest request);
-  void findResumeByUserId( User user) ;
+  List<User> fetchCvByUserCreate();
+List<Resume> findResumesByUserId (Long userId);
 
 }

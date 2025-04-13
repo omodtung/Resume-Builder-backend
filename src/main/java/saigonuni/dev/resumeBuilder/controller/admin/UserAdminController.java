@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
@@ -90,5 +91,18 @@ public class UserAdminController {
   public ResponseEntity<Void> deleteUser(@PathVariable String id) {
     userService.deleteUser(id);
     return ResponseEntity.noContent().build();
+  }
+
+  // @GetMapping("users/cv")
+  // public List<User> fetchCvByUserCreate() {
+  //   return userService.fetchCvByUserCreate();
+  // }
+
+  @GetMapping("users/resumes/{userId}")
+  public ResponseEntity<List<Resume>> getResumesByUserId(
+    @PathVariable Long userId
+  ) {
+    List<Resume> resumes = userService.findResumesByUserId(userId);
+    return ResponseEntity.ok(resumes);
   }
 }

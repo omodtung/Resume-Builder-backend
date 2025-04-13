@@ -3,12 +3,12 @@ package saigonuni.dev.resumeBuilder.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
+import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
@@ -47,7 +47,6 @@ public class UserServiceImplement implements UserService {
       User savedUser = userRepository.save(user);
 
       // Create UserValue for the newly created user
-      userValueService.createUserValueForUser(savedUser);
 
       return savedUser;
     } catch (DataIntegrityViolationException e) {
@@ -84,6 +83,22 @@ public class UserServiceImplement implements UserService {
     return userRepository.findAll();
   }
 
+  // lay toan bo resume cua user
+  // cac nay ko toi uu
+  // die server
+  public List<Resume> listAllResumes() { // Renamed for clarity
+    // 1. Fetch all users
+    List<User> users = userRepository.findAll();
+
+    return users
+      .stream() // Stream<User>
+      .filter(user -> user.getUserValues() != null)
+      .flatMap(user -> user.getUserValues().stream()) // Stream<UserValue> - Flattens the lists of userValues from all users
+      .filter(userValue -> userValue.getResume() != null) // Optional: Safety check for null resume list
+      .flatMap(userValue -> userValue.getResume().stream()) // Stream<Resume> - Flattens the lists of resumes from all userValues
+      .collect(Collectors.toList()); // Collect all Resume objects into a single List<Resume>ume objects into a single List<Resume>
+  }
+
   @Override
   public void deleteUser(String id) {
     try {
@@ -112,6 +127,22 @@ public class UserServiceImplement implements UserService {
 
       return userRepository.save(user);
     } catch (Exception e) {
+      throw e;
+    }
+  }
+
+  @Override
+  public List<User> fetchCvByUserCreate() {
+    return userRepository.findAllUsersWithUserValuesAndResumes();
+  }
+
+  @Override
+  public List<Resume> findResumesByUserId(Long userId) {
+    try {
+      return userRepository.findResumesWithUserId(userId);
+    } catch (Exception e) {
+      // TODO: handle exception
+      System.out.println("Error: " + e.getMessage());
       throw e;
     }
   }
