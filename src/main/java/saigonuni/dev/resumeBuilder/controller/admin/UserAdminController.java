@@ -114,7 +114,6 @@ public class UserAdminController {
   @GetMapping("resumes-usersRegisted")
   public List<Object> getResumesByUser() {
     try {
-      // List<Resume> resumes = userService.findResumesByUserId(user.getId());
       return userService.findResumesWithUserFullyRegister();
     } catch (Exception e) {
       throw new RuntimeException("Error fetching resumes: " + e.getMessage());

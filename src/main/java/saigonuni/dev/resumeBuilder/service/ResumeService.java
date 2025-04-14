@@ -1,4 +1,5 @@
 package saigonuni.dev.resumeBuilder.service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -12,9 +13,9 @@ import saigonuni.dev.resumeBuilder.dto.resume.ResumeResponseDTO;
 
 @Service
 public interface ResumeService {
-  Resume addResume(CreateResumeAdminRequest request ,User user);
+  Resume addResume(CreateResumeAdminRequest request ,User user ,MultipartFile file);
   Resume getResumeById(String id);
   List<Resume> listResumes();
   void deleteResume(String id);
-  Resume updateResume(String resumeId, CreateResumeAdminRequest request,User user );
+  Resume updateResume(String resumeId, CreateResumeAdminRequest request,User user ,MultipartFile file);
 }

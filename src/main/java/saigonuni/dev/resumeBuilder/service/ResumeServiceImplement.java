@@ -11,6 +11,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import saigonuni.dev.resumeBuilder.domain.Education;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
@@ -48,11 +49,20 @@ public class ResumeServiceImplement implements ResumeService {
   @Autowired
   private UserValueService userValueService;
 
+  @Autowired
+  private UploadServiceImplement uploadServiceImplement;
+
   @PersistenceContext // Inject EntityManager
   private EntityManager entityManager;
 
   @Override
-  public Resume addResume(CreateResumeAdminRequest request, User user) {
+  public Resume addResume(
+    CreateResumeAdminRequest request,
+    User user,
+    MultipartFile file
+  ) {
+    String avatar =
+      this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
     UserValue userValue = userValueRepository.save(
       UserValue.builder().user(user).createdAt(LocalDateTime.now()).build()
     );
@@ -92,7 +102,7 @@ public class ResumeServiceImplement implements ResumeService {
       .borderStyle(request.getBorderStyle())
       .createdAt(LocalDateTime.now())
       .description(request.getDescription())
-      .photoUrl(request.getPhotoUrl())
+      .photoUrl(avatar)
       .summary(request.getSummary())
       .firstName(request.getFirstName())
       .lastName(request.getLastName())
@@ -204,7 +214,8 @@ public class ResumeServiceImplement implements ResumeService {
   public Resume updateResume(
     String resumeId,
     CreateResumeAdminRequest request,
-    User user
+    User user,
+    MultipartFile file
   ) {
     log.info("Attempting to update resume with id: {}", resumeId);
 
@@ -215,7 +226,8 @@ public class ResumeServiceImplement implements ResumeService {
       log.error("Invalid resume ID format: {}", resumeId);
       throw new IllegalArgumentException("Invalid resume ID format");
     }
-
+    String avatar =
+    this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
     Resume existingResume = resumeRepository
       .findById(resumeId)
       .orElseThrow(() ->
@@ -226,7 +238,7 @@ public class ResumeServiceImplement implements ResumeService {
     existingResume.setColorHex(request.getColorHex());
     existingResume.setBorderStyle(request.getBorderStyle());
     existingResume.setDescription(request.getDescription());
-    existingResume.setPhotoUrl(request.getPhotoUrl());
+    existingResume.setPhotoUrl(avatar);
     existingResume.setSummary(request.getSummary());
     existingResume.setFirstName(request.getFirstName());
     existingResume.setLastName(request.getLastName());

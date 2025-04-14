@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
@@ -64,7 +67,8 @@ public class ResumeAdminController extends BaseController {
   @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<CreateResumeAdminResponse> addResume(
     @Valid @RequestBody CreateResumeAdminRequest request,
-    @RequestHeader("Authorization") String authorizationHeader
+    @RequestHeader("Authorization") String authorizationHeader,
+     @RequestParam("File") MultipartFile file
   ) {
     try {
       User user = userDC.findUserNameByToken(
@@ -75,7 +79,7 @@ public class ResumeAdminController extends BaseController {
         request = CreateResumeAdminRequest.emptyResume();
       }
 
-      Resume resume = resumeService.addResume(request, user);
+      Resume resume = resumeService.addResume(request, user , file);
       return ResponseEntity.ok(
         CreateResumeAdminResponse.builder().resume(resume).build()
       );
@@ -116,12 +120,13 @@ public class ResumeAdminController extends BaseController {
   public ResponseEntity<UpdateResumeAdminResponse> updateResume(
     @PathVariable String id,
     @Valid @RequestBody CreateResumeAdminRequest request,
-    @RequestHeader("Authorization") String authorizationHeader
+    @RequestHeader("Authorization") String authorizationHeader,
+    @RequestParam("File") MultipartFile file
   ) {
     User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
-    Resume resume = resumeService.updateResume(id, request, user);
+    Resume resume = resumeService.updateResume(id, request, user,file);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
