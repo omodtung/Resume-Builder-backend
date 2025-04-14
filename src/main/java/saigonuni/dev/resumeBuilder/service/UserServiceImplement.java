@@ -146,4 +146,14 @@ public class UserServiceImplement implements UserService {
       throw e;
     }
   }
+
+  @Override
+  public Object[] fetchUserMakeCV() {
+    return userRepository.fetchUserMakeCV();
+  }
+
+  @Override
+  public List<Object> findResumesWithUserFullyRegister() {
+    return userRepository.findResumesWithUserFullyRegister();
+  }
 }

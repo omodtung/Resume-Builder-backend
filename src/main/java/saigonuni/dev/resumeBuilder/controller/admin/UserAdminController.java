@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.domain.Resume;
@@ -23,6 +24,7 @@ import saigonuni.dev.resumeBuilder.dto.User.GetUserAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.User.ListUserResponse;
 import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminResponse;
+import saigonuni.dev.resumeBuilder.repository.UserRepository;
 import saigonuni.dev.resumeBuilder.service.UserService;
 
 @Tag(
@@ -102,5 +104,20 @@ public class UserAdminController {
   ) {
     List<Resume> resumes = userService.findResumesByUserId(userId);
     return ResponseEntity.ok(resumes);
+  }
+
+  @GetMapping("user-created-cv")
+  public Object[] getResumesByUserId() {
+    return userService.fetchUserMakeCV();
+  }
+
+  @GetMapping("resumes-usersRegisted")
+  public List<Object> getResumesByUser() {
+    try {
+      // List<Resume> resumes = userService.findResumesByUserId(user.getId());
+      return userService.findResumesWithUserFullyRegister();
+    } catch (Exception e) {
+      throw new RuntimeException("Error fetching resumes: " + e.getMessage());
+    }
   }
 }
