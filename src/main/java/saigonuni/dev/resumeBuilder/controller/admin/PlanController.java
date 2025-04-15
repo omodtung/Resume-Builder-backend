@@ -71,6 +71,7 @@ public class PlanController extends BaseController {
       User user = userDC.findUserNameByToken(
         decode.AuthenticationDecode(authorizationHeader)
       );
+
       Plan plan = planService.addPlan(request, user);
       return ResponseEntity.ok(
         CreatePlanAdminResponse.builder().plan(plan).build()
@@ -113,7 +114,6 @@ public class PlanController extends BaseController {
       .status(HttpStatus.OK)
       .body(UpdatePlanAdminResponse.builder().plan(plan).build());
   }
-
   // @DeleteMapping("/{id}")
   // public void deletePlan(@PathVariable Long id) {
   //   planService.deletePlan(id);

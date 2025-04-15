@@ -1,7 +1,9 @@
 package saigonuni.dev.resumeBuilder.service;
 
 import com.fasterxml.jackson.annotation.OptBoolean;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,21 +33,23 @@ public class PlanServiceImplement implements PlanService {
   @Override
   public Plan addPlan(CreatePlanAdminRequest request, User user) {
     try {
-      Plan existingPlan = planRepository.findByPlansName(
-        request.getPlansName()
-      );
+      // Plan existingPlan = planRepository.findByPlansName(
+      //   request.getPlansName()
+      // );
 
-      if (!existingPlan.equals(null)) {
-        throw new BadRequestException(
-          PlanMessage.PLAN_NAME_EXIST_KEY,
-          PlanMessage.PLAN_NAME_EXIST_MESSAGE
-        );
-      }
+      // if (existingPlan.equals(null)) {
+      //   throw new BadRequestException(
+      //     PlanMessage.PLAN_NAME_EXIST_KEY,
+      //     PlanMessage.PLAN_NAME_EXIST_MESSAGE
+      //   );
+      // }
       Plan plan = Plan
         .builder()
         .plansName(request.getPlansName())
+        .stripePriceId(request.getStripePriceId())
         .Description(request.getDescription())
         .price(request.getPrice())
+        .createdAt(LocalDateTime.now())
         .build();
       return planRepository.save(plan);
     } catch (Exception e) {
@@ -90,6 +94,21 @@ public class PlanServiceImplement implements PlanService {
     }
   }
 
+  @Override
+  public Plan findStripePriceByPlanId(Long id) {
+    try {
+      return planRepository
+        .findById(id)
+        .orElseThrow(() ->
+          new BadRequestException(
+            PlanMessage.PLAN_NOT_FOUND_KEY,
+            PlanMessage.PLAN_NOT_FOUND_MESSAGE
+          )
+        );
+    } catch (Exception e) {
+      throw e;
+    }
+  }
   // @Override
   // public void deletePlan(Long id) {
   //   try {

@@ -1,6 +1,7 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
 import com.stripe.exception.StripeException;
+import com.stripe.service.PlanService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
+import saigonuni.dev.resumeBuilder.domain.Plan;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.Stripe.StripeRequest;
 import saigonuni.dev.resumeBuilder.dto.Stripe.StripeResponse;
 import saigonuni.dev.resumeBuilder.service.JwtService;
+import saigonuni.dev.resumeBuilder.service.PlanServiceImplement;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
 import saigonuni.dev.resumeBuilder.service.StripeService;
 
@@ -25,6 +28,9 @@ public class CheckOutController {
 
   @Autowired
   private StripeService stripeService;
+
+  @Autowired
+  private PlanServiceImplement planServiceImp;
 
   private JwtService jwtService;
   private final UserDC userDC;
@@ -42,17 +48,19 @@ public class CheckOutController {
     this.userDC = userDC;
   }
 
-  @PostMapping("/checkout")
+  @PostMapping("/checkout-payment")
   public ResponseEntity<StripeResponse> checkoutProducts(
-    @RequestParam("priceId") String priceId,
+    @RequestParam("PlanId") Long PlanId,
     @RequestHeader("Authorization") String authorizationHeader
   ) throws StripeException {
     User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
 
+    Plan plan = planServiceImp.findStripePriceByPlanId(PlanId);
+
     StripeResponse stripeResponse = stripeService.createCheckoutSession(
-      priceId,
+      plan.getStripePriceId(),
       user
     );
     return ResponseEntity.status(HttpStatus.OK).body(stripeResponse);

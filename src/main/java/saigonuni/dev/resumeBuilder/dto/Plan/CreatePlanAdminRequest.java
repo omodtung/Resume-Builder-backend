@@ -12,4 +12,6 @@ public class CreatePlanAdminRequest {
   private String Description;
 
   private String price;
+
+  private String stripePriceId;
 }
