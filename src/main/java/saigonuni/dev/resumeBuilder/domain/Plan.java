@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Plan extends BaseEntity {
 
+  private Long stripePriceId;
+
   private String plansName;
 
   private String Description;
