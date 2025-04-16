@@ -218,7 +218,6 @@ public class ResumeServiceImplement implements ResumeService {
 
   // TODO : Fix this Update have Error 500 internal server error
   @Override
-  @Transactional
   public Resume updateResume(
     String resumeId,
     CreateResumeAdminRequest request,
@@ -227,82 +226,101 @@ public class ResumeServiceImplement implements ResumeService {
   ) {
     log.info("Attempting to update resume with id: {}", resumeId);
 
-    Long id;
     try {
-      id = Long.parseLong(resumeId);
-    } catch (NumberFormatException e) {
-      log.error("Invalid resume ID format: {}", resumeId);
-      throw new IllegalArgumentException("Invalid resume ID format");
-    }
-    String avatar =
-      this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
-    Resume existingResume = resumeRepository
-      .findById(resumeId)
-      .orElseThrow(() ->
-        new ResumeNotFoundException("Resume not found with id: " + resumeId)
+      Long id;
+      try {
+        id = Long.parseLong(resumeId);
+      } catch (NumberFormatException e) {
+        log.error("Invalid resume ID format: {}", resumeId);
+        throw new IllegalArgumentException("Invalid resume ID format");
+      }
+      // String avatar =
+      //   this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
+
+      String avatar = "";
+      if (file != null && !file.isEmpty()) {
+        try {
+          avatar =
+            this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
+        } catch (Exception e) {
+          System.err.println(e.getMessage());
+        }
+      }
+      System.err.println("Hello 1");
+      Resume existingResume = resumeRepository
+        .findById(resumeId)
+        .orElseThrow(() ->
+          new ResumeNotFoundException("Resume not found with id: " + resumeId)
+        );
+
+      existingResume.setTitle(request.getTitle());
+      existingResume.setColorHex(request.getColorHex());
+      existingResume.setBorderStyle(request.getBorderStyle());
+      existingResume.setDescription(request.getDescription());
+      existingResume.setPhotoUrl(avatar);
+      existingResume.setSummary(request.getSummary());
+      existingResume.setFirstName(request.getFirstName());
+      existingResume.setLastName(request.getLastName());
+      existingResume.setJobTitle(request.getJobTitle());
+      existingResume.setCity(request.getCity());
+      existingResume.setCountry(request.getCountry());
+      existingResume.setPhone(request.getPhone());
+      existingResume.setEmail(request.getEmail());
+
+      if (request.getSkills() != null) {
+        existingResume.setSkills(new ArrayList<>(request.getSkills()));
+      } else {
+        existingResume.getSkills().clear();
+      }
+      existingResume.setUpdatedAt(LocalDateTime.now());
+
+      existingResume.getWorkExperiences().clear();
+
+      if (request.getWorkExperiences() != null) {
+        List<WorkExperience> newWorkExperiences = new ArrayList<>();
+        for (WorkExperienceDTO dto : request.getWorkExperiences()) {
+          WorkExperience workExperience = WorkExperience
+            .builder()
+            .position(dto.getPosition())
+            .company(dto.getCompany())
+            .startDate(dto.getStartDate())
+            .endDate(dto.getEndDate())
+            .description(dto.getDescription())
+            .resume(existingResume)
+            .build();
+          newWorkExperiences.add(workExperience);
+        }
+        existingResume.getWorkExperiences().addAll(newWorkExperiences);
+      }
+
+      existingResume.getEducations().clear();
+
+      if (request.getEducations() != null) {
+        List<Education> newEducations = new ArrayList<>();
+        for (EducationDTO dto : request.getEducations()) {
+          Education education = Education
+            .builder()
+            .degree(dto.getDegree())
+            .school(dto.getSchool())
+            .startDate(dto.getStartDate())
+            .endDate(dto.getEndDate())
+            .resume(existingResume)
+            .build();
+          newEducations.add(education);
+        }
+        existingResume.getEducations().addAll(newEducations);
+      }
+
+      Resume updatedResume = resumeRepository.save(existingResume);
+
+      log.info(
+        "Successfully updated resume with id: {}",
+        updatedResume.getId()
       );
-
-    existingResume.setTitle(request.getTitle());
-    existingResume.setColorHex(request.getColorHex());
-    existingResume.setBorderStyle(request.getBorderStyle());
-    existingResume.setDescription(request.getDescription());
-    existingResume.setPhotoUrl(avatar);
-    existingResume.setSummary(request.getSummary());
-    existingResume.setFirstName(request.getFirstName());
-    existingResume.setLastName(request.getLastName());
-    existingResume.setJobTitle(request.getJobTitle());
-    existingResume.setCity(request.getCity());
-    existingResume.setCountry(request.getCountry());
-    existingResume.setPhone(request.getPhone());
-    existingResume.setEmail(request.getEmail());
-
-    if (request.getSkills() != null) {
-      existingResume.setSkills(new ArrayList<>(request.getSkills()));
-    } else {
-      existingResume.getSkills().clear();
+      return updatedResume;
+    } catch (Exception e) {
+      System.err.println("Error" + e.getMessage());
+      return null; // Added return statement
     }
-    existingResume.setUpdatedAt(LocalDateTime.now());
-
-    existingResume.getWorkExperiences().clear();
-
-    if (request.getWorkExperiences() != null) {
-      List<WorkExperience> newWorkExperiences = new ArrayList<>();
-      for (WorkExperienceDTO dto : request.getWorkExperiences()) {
-        WorkExperience workExperience = WorkExperience
-          .builder()
-          .position(dto.getPosition())
-          .company(dto.getCompany())
-          .startDate(dto.getStartDate())
-          .endDate(dto.getEndDate())
-          .description(dto.getDescription())
-          .resume(existingResume)
-          .build();
-        newWorkExperiences.add(workExperience);
-      }
-      existingResume.getWorkExperiences().addAll(newWorkExperiences);
-    }
-
-    existingResume.getEducations().clear();
-
-    if (request.getEducations() != null) {
-      List<Education> newEducations = new ArrayList<>();
-      for (EducationDTO dto : request.getEducations()) {
-        Education education = Education
-          .builder()
-          .degree(dto.getDegree())
-          .school(dto.getSchool())
-          .startDate(dto.getStartDate())
-          .endDate(dto.getEndDate())
-          .resume(existingResume)
-          .build();
-        newEducations.add(education);
-      }
-      existingResume.getEducations().addAll(newEducations);
-    }
-
-    Resume updatedResume = resumeRepository.save(existingResume);
-
-    log.info("Successfully updated resume with id: {}", updatedResume.getId());
-    return updatedResume;
   }
 }

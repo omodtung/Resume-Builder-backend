@@ -121,19 +121,22 @@ public class ResumeAdminController extends BaseController {
     return ResponseEntity.ok(resumes);
   }
 
-  @PostMapping("resumes/{id}")
+  @PatchMapping("resumes/{id}")
   @Operation(summary = "API Update Resume ", description = "Update API Resume")
   @LogExecutionTime
   public ResponseEntity<UpdateResumeAdminResponse> updateResume(
     @PathVariable String id,
     @Valid @RequestBody CreateResumeAdminRequest request,
-    @RequestHeader("Authorization") String authorizationHeader,
-    @RequestPart(value = "File", required = false) MultipartFile file
+    @RequestHeader("Authorization") String authorizationHeader
+    // Removed MultipartFile parameter
   ) {
     User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
-    Resume resume = resumeService.updateResume(id, request, user, file);
+    System.err.println("Test 1");
+    // Pass null for the file parameter in the service call
+    Resume resume = resumeService.updateResume(id, request, user, null);
+    System.err.println("Test 2");
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
