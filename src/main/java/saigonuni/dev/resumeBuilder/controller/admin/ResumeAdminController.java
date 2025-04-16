@@ -1,12 +1,15 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
@@ -59,7 +62,11 @@ public class ResumeAdminController extends BaseController {
     this.userDC = userDC;
   }
 
-  @PostMapping("resumes")
+  // @PostMapping("resumes")
+  @PostMapping(
+    value = "resumes",
+    consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }
+  )
   @Operation(
     summary = "API Thêm Resume mới",
     description = "Returns a list of all resumes"
@@ -68,7 +75,7 @@ public class ResumeAdminController extends BaseController {
   public ResponseEntity<CreateResumeAdminResponse> addResume(
     @Valid @RequestBody CreateResumeAdminRequest request,
     @RequestHeader("Authorization") String authorizationHeader,
-     @RequestParam("File") MultipartFile file
+    @RequestPart(value = "File", required = false) MultipartFile file
   ) {
     try {
       User user = userDC.findUserNameByToken(
@@ -79,11 +86,12 @@ public class ResumeAdminController extends BaseController {
         request = CreateResumeAdminRequest.emptyResume();
       }
 
-      Resume resume = resumeService.addResume(request, user , file);
+      Resume resume = resumeService.addResume(request, user, file);
       return ResponseEntity.ok(
         CreateResumeAdminResponse.builder().resume(resume).build()
       );
     } catch (Exception e) {
+      System.err.println(e.getMessage());
       throw new RuntimeException("Error processing request: " + e.getMessage());
     }
   }
@@ -121,12 +129,12 @@ public class ResumeAdminController extends BaseController {
     @PathVariable String id,
     @Valid @RequestBody CreateResumeAdminRequest request,
     @RequestHeader("Authorization") String authorizationHeader,
-    @RequestParam("File") MultipartFile file
+    @RequestPart(value = "File", required = false) MultipartFile file
   ) {
     User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
-    Resume resume = resumeService.updateResume(id, request, user,file);
+    Resume resume = resumeService.updateResume(id, request, user, file);
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());

@@ -46,6 +46,8 @@ public class UserSubscription {
   @JsonIgnore
   private Plan plan;
 
+
+
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
 

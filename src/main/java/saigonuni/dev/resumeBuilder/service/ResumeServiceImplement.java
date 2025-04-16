@@ -61,8 +61,16 @@ public class ResumeServiceImplement implements ResumeService {
     User user,
     MultipartFile file
   ) {
-    String avatar =
-      this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
+    String avatar = "";
+    if (file != null && !file.isEmpty()) {
+      try {
+        avatar =
+          this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
+      } catch (Exception e) {
+        System.err.println(e.getMessage());
+      }
+    }
+
     UserValue userValue = userValueRepository.save(
       UserValue.builder().user(user).createdAt(LocalDateTime.now()).build()
     );
@@ -227,7 +235,7 @@ public class ResumeServiceImplement implements ResumeService {
       throw new IllegalArgumentException("Invalid resume ID format");
     }
     String avatar =
-    this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
+      this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
     Resume existingResume = resumeRepository
       .findById(resumeId)
       .orElseThrow(() ->
