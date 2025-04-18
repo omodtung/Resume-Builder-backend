@@ -73,8 +73,7 @@ public class ResumeAdminController extends BaseController {
   @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<CreateResumeAdminResponse> addResume(
     @Valid @RequestBody CreateResumeAdminRequest request,
-    @RequestHeader("Authorization") String authorizationHeader,
-    @RequestParam(value = "File", required = false) MultipartFile file
+    @RequestHeader("Authorization") String authorizationHeader
   ) {
     try {
       User user = userDC.findUserNameByToken(
@@ -85,7 +84,7 @@ public class ResumeAdminController extends BaseController {
         request = CreateResumeAdminRequest.emptyResume();
       }
 
-      Resume resume = resumeService.addResume(request, user, file);
+      Resume resume = resumeService.addResume(request, user, null);
       return ResponseEntity.ok(
         CreateResumeAdminResponse.builder().resume(resume).build()
       );

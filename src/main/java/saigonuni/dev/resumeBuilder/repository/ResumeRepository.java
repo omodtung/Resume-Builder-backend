@@ -1,12 +1,11 @@
 package saigonuni.dev.resumeBuilder.repository;
 
 import java.util.List;
-
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import saigonuni.dev.resumeBuilder.domain.Resume;
 
 @Repository
@@ -21,6 +20,10 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
   //   "SELECT r FROM Resume r LEFT JOIN FETCH r.workExperiences LEFT JOIN FETCH r.educations"
   // )
   // List<Resume> findAllWithDetails();
-
-
+  @Modifying
+  @Query("UPDATE Resume r SET r.photoUrl = :photoUrl WHERE r.id = :idResume")
+  void updatePhotoUrlByResumeId(
+    @Param("idResume") Long idResume ,
+    @Param("photoUrl") String photoUrl
+  );  
 }

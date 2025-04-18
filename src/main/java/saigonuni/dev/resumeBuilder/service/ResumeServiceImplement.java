@@ -323,4 +323,14 @@ public class ResumeServiceImplement implements ResumeService {
       return null; // Added return statement
     }
   }
+
+  @Transactional
+  @Override
+  public void findIdResumeToUpdatePhotoUrl(Long idResume, String photoUrl) {
+    try {
+      resumeRepository.updatePhotoUrlByResumeId(idResume, photoUrl);
+    } catch (Exception e) {
+      System.err.println("Messege Error -" + e.getMessage());
+    }
+  }
 }

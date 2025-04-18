@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public interface UploadService {
-  public String handleSaveUpLoadFile(MultipartFile file, String targetFoler);
+  public String handleSaveUpLoadFile(MultipartFile file, String targetFolder);
 }

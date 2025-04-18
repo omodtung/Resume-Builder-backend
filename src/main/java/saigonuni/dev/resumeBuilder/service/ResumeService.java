@@ -18,4 +18,6 @@ public interface ResumeService {
   List<Resume> listResumes();
   void deleteResume(String id);
   Resume updateResume(String resumeId, CreateResumeAdminRequest request,User user ,MultipartFile file);
+  void findIdResumeToUpdatePhotoUrl(Long id ,String photoUrl);
+
 }
