@@ -31,9 +31,7 @@ public class UploadFileController {
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE
   )
   @LogExecutionTime
-  public void HandleUploadFile(@RequestPart("File") MultipartFile file) {
-    System.err.println(file);
-    String targetFoler = "avatar";
-    this.uploadService.handleSaveUpLoadFile(file, targetFoler);
+  public String HandleUploadFile(@RequestPart("File") MultipartFile file) {
+    return this.uploadService.handleSaveUpLoadFile(file, "avatar");
   }
 }
