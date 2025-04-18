@@ -2,6 +2,7 @@ package saigonuni.dev.resumeBuilder.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +26,14 @@ public class UploadFileController {
     this.uploadService = uploadService;
   }
 
-  @PostMapping("upload-file")
+  @PostMapping(
+    value = "upload-file",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+  )
   @LogExecutionTime
-  public void HandleUploadFile(
-    @RequestPart(value = "File", required = false) MultipartFile file
-  ) {
-    String targetFoler = "photoUrl";
+  public void HandleUploadFile(@RequestPart("File") MultipartFile file) {
+    System.err.println(file);
+    String targetFoler = "avatar";
     this.uploadService.handleSaveUpLoadFile(file, targetFoler);
   }
 }

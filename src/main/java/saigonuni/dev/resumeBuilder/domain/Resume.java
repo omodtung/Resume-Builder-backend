@@ -48,11 +48,19 @@ public class Resume implements Serializable {
   @JsonBackReference
   private UserValue userValue;
 
-  @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true) // Added cascade
+  @OneToMany(
+    mappedBy = "resume",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  ) // Added cascade
   @JsonManagedReference
   private List<WorkExperience> workExperiences;
 
-  @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true) // Added cascade
+  @OneToMany(
+    mappedBy = "resume",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  ) // Added cascade
   @JsonManagedReference
   private List<Education> educations;
 
