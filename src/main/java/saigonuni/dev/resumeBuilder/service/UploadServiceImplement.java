@@ -19,8 +19,7 @@ public class UploadServiceImplement implements UploadService {
 
   public String handleSaveUpLoadFile(MultipartFile file, String targetFoler) {
     System.err.println("Test 1");
-    String rootPath =
-      "/home/dothetung/Projects/Spring-Boot/resumeBuilder/resumeBuilder/src/main/resources/images";
+    String rootPath = "/home/dothetung/Projects/Spring-Boot/resumeBuilder/resumeBuilder/src/main/resources/images";
     System.out.println("Root path: " + rootPath); // Log the root path
     String finalName = "";
     try {
@@ -38,11 +37,9 @@ public class UploadServiceImplement implements UploadService {
         dir.getAbsolutePath() + File.separator + finalName
       );
 
-      try (
-        BufferedOutputStream stream = new BufferedOutputStream(
-          new FileOutputStream(serverFile)
-        )
-      ) {
+      try (BufferedOutputStream stream = new BufferedOutputStream(
+        new FileOutputStream(serverFile)
+      )) {
         stream.write(bytes);
       }
     } catch (IOException e) {
