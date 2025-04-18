@@ -328,8 +328,6 @@ public class ResumeServiceImplement implements ResumeService {
   @Override
   public void findIdResumeToUpdatePhotoUrl(Long idResume, String photoUrl) {
     try {
-      System.err.println("idResume" + idResume + "photoUrl" + photoUrl);
-
       resumeRepository.updatePhotoUrlByResumeId(idResume, photoUrl);
     } catch (Exception e) {
       System.err.println("Messege Error -" + e.getMessage());

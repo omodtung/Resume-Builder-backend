@@ -25,7 +25,10 @@ public class UploadFileController {
   private final ResumeService resumeService;
 
   @Autowired
-  UploadFileController(UploadService uploadService, ResumeService resumeService) {
+  UploadFileController(
+    UploadService uploadService,
+    ResumeService resumeService
+  ) {
     this.uploadService = uploadService;
     this.resumeService = resumeService;
   }
@@ -49,11 +52,8 @@ public class UploadFileController {
     @RequestPart("File") MultipartFile file,
     @RequestHeader("idResume") Long idResume
   ) {
-    // this.uploadService.handleSaveUpLoadFile(file, "avatar");
     String photoUrl = this.uploadService.handleSaveUpLoadFile(file, "avatar");
-
-     this.resumeService.findIdResumeToUpdatePhotoUrl(idResume, photoUrl);
-   
+    this.resumeService.findIdResumeToUpdatePhotoUrl(idResume, photoUrl);
     return "Success";
   }
 }
