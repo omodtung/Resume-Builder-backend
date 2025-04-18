@@ -14,9 +14,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -35,7 +37,8 @@ public class SecurityConfig {
         "/v3/api-docs/**", // Allow API docs
         "/swagger-resources/**",
         "/api-docs/**",
-        "/webjars/**"
+        "/webjars/**",
+        "/images/**"
       )
       .permitAll()
       .anyRequest()
@@ -73,5 +76,12 @@ public class SecurityConfig {
     AuthenticationConfiguration config
   ) throws Exception {
     return config.getAuthenticationManager();
+  }
+
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry
+      .addResourceHandler("/images/**")
+      .addResourceLocations("classpath:/images/");
   }
 }
