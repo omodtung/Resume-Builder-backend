@@ -3,8 +3,14 @@ package saigonuni.dev.resumeBuilder.controller.admin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
@@ -36,10 +43,15 @@ import saigonuni.dev.resumeBuilder.service.UserService;
 public class UserAdminController {
 
   private final UserService userService;
+  private final UserRepository userRepository;
 
   @Autowired
-  public UserAdminController(UserService userService) {
+  public UserAdminController(
+    UserService userService,
+    UserRepository userRepository
+  ) {
     this.userService = userService;
+    this.userRepository = userRepository;
   }
 
   @PostMapping("users")
@@ -72,6 +84,47 @@ public class UserAdminController {
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(ListUserResponse.builder().user(users).build());
+  }
+
+  @GetMapping("users-pagi")
+  @Operation(summary = "List all users", description = "Fetches all users")
+  public ResponseEntity<Map<String, Object>> listUsersPagi(
+    @RequestParam(required = false) String sort,
+    @RequestParam(required = false) String order,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "3") int limit
+  ) {
+    try {
+      List<User> users = new ArrayList<User>();
+      Pageable paging = PageRequest.of(page, limit);
+
+      Page<User> pageTuts;
+      if (sort == null) pageTuts =
+        userRepository.findAll(paging); else pageTuts =
+        userRepository.findByUsernameContaining(sort, paging);
+      users = pageTuts.getContent();
+
+      List<Map<String, Object>> usersCut = new ArrayList<>();
+      for (User user : pageTuts.getContent()) {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("id", user.getId());
+        userMap.put("username", user.getUsername());
+        userMap.put("email", user.getEmail());
+        userMap.put("role", user.getRole());
+        userMap.put("createdAt", user.getCreatedAt());
+
+        usersCut.add(userMap);
+      }
+      Map<String, Object> response = new HashMap<>();
+      response.put("users", usersCut);
+      response.put("currentPage", pageTuts.getNumber());
+      response.put("totalItems", pageTuts.getTotalElements());
+      response.put("totalPages", pageTuts.getTotalPages());
+
+      return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @PutMapping("users/{id}")

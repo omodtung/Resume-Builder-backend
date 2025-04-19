@@ -22,4 +22,5 @@ public interface UserService {
   List<Resume> findResumesByUserId(Long userId);
   Object[] fetchUserMakeCV();
   List<Object> findResumesWithUserFullyRegister();
+ 
 }

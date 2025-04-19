@@ -24,4 +24,6 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
     nativeQuery = true
   )
   Plan findSpecificPlanByIdNative(@Param("id") Long id);
+
+  Optional<Plan> findByStripePriceId(String stripePriceId);
 }

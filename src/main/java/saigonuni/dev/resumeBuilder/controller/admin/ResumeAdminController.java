@@ -129,7 +129,7 @@ public class ResumeAdminController extends BaseController {
     @RequestHeader("Authorization") String authorizationHeader
     // Removed MultipartFile parameter
   ) {
-    User user = userDC.findUserNameByToken(
+    User user = userDC.findUserNameByToken( 
       decode.AuthenticationDecode(authorizationHeader)
     );
     System.err.println("Test 1");
