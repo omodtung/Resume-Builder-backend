@@ -31,11 +31,14 @@ public class SecurityConfig implements WebMvcConfigurer {
       .authorizeHttpRequests()
       .requestMatchers(
         "/**",
+        "/upload-file-cv",
+        "/upload-file",
         "/admin/resumes",
         "/swagger-ui/**", // Allow Swagger UI
         "/swagger-ui/index.html", // Allow Swagger UI
         "/v3/api-docs/**", // Allow API docs
         "/swagger-resources/**",
+        "/v3/api-docs/**", // Allow API docs
         "/api-docs/**",
         "/webjars/**",
         "/images/**"
@@ -60,7 +63,9 @@ public class SecurityConfig implements WebMvcConfigurer {
       List.of("http://localhost:8080", "http://localhost:3000")
     );
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    configuration.setAllowedHeaders(
+      List.of("Authorization", "Content-Type", "idResume", "isResume")
+    );
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);

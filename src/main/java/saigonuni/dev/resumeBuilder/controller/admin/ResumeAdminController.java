@@ -72,7 +72,7 @@ public class ResumeAdminController extends BaseController {
   )
   @SecurityRequirement(name = "bearerAuth")
   public ResponseEntity<CreateResumeAdminResponse> addResume(
-    @Valid @RequestBody CreateResumeAdminRequest request,
+    @Valid @RequestBody(required = false) CreateResumeAdminRequest request,
     @RequestHeader("Authorization") String authorizationHeader
   ) {
     try {
@@ -129,7 +129,7 @@ public class ResumeAdminController extends BaseController {
     @RequestHeader("Authorization") String authorizationHeader
     // Removed MultipartFile parameter
   ) {
-    User user = userDC.findUserNameByToken( 
+    User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
     System.err.println("Test 1");

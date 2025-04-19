@@ -31,8 +31,8 @@ public class CreateResumeAdminRequest {
   @NotEmpty
   private String description;
 
-  @NotEmpty(message = "Photo URL cannot be empty")
-  private String photoUrl;
+  // @NotEmpty(message = "Photo URL cannot be empty")
+  private String photoUrl = null;
 
   @NotEmpty(message = "color Hex cannot empty")
   private String colorHex = "#000000"; // Default value is set to black
@@ -66,9 +66,9 @@ public class CreateResumeAdminRequest {
   private List<EducationDTO> educations = new ArrayList<>();
   private List<String> skills = new ArrayList<>();
 
-
   public static CreateResumeAdminRequest emptyResume() {
-    return CreateResumeAdminRequest.builder()
+    return CreateResumeAdminRequest
+      .builder()
       .firstName("")
       .lastName("")
       .title("Untitled Resume")
