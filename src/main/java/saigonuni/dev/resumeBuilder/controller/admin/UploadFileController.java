@@ -62,4 +62,14 @@ public class UploadFileController {
     this.resumeService.findIdResumeToUpdatePhotoUrl(idResume, photoUrl);
     return "Success";
   }
+
+  @PostMapping(value = "delete-upload-file-cv")
+  @LogExecutionTime
+  public String HandleUploadFileCV(
+    // @RequestPart("File") MultipartFile file,
+    @RequestHeader("idResume") Long idResume
+  ) {
+    this.resumeService.findIdResumeToUpdatePhotoUrlToNull(idResume);
+    return "Success";
+  }
 }

@@ -333,4 +333,18 @@ public class ResumeServiceImplement implements ResumeService {
       System.err.println("Messege Error -" + e.getMessage());
     }
   }
+
+  @Transactional
+  @Override
+  public void findIdResumeToUpdatePhotoUrlToNull(
+    Long idResume
+  
+  ) {
+    try {
+      resumeRepository.updatePhotoUrlByResumeIdToNull(idResume);
+    } catch (Exception e) {
+      // TODO: handle exception
+      System.err.println("Messege Error -" + e.getMessage());
+    }
+  }
 }

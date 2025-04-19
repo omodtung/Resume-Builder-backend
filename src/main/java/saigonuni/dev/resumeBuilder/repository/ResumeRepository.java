@@ -1,8 +1,8 @@
 package saigonuni.dev.resumeBuilder.repository;
 
 import java.util.List;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,7 +23,11 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
   @Modifying
   @Query("UPDATE Resume r SET r.photoUrl = :photoUrl WHERE r.id = :idResume")
   void updatePhotoUrlByResumeId(
-    @Param("idResume") Long idResume ,
+    @Param("idResume") Long idResume,
     @Param("photoUrl") String photoUrl
-  );  
+  );
+
+  @Modifying
+  @Query("UPDATE Resume r SET r.photoUrl = null WHERE r.id = :idResume")
+  void updatePhotoUrlByResumeIdToNull(@Param("idResume") Long idResume);
 }
