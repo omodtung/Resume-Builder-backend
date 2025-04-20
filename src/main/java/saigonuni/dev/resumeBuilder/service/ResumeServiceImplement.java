@@ -19,7 +19,11 @@ import saigonuni.dev.resumeBuilder.domain.UserValue;
 import saigonuni.dev.resumeBuilder.domain.WorkExperience;
 import saigonuni.dev.resumeBuilder.domain.dto.EducationDTO;
 import saigonuni.dev.resumeBuilder.domain.dto.WorkExperienceDTO;
+import saigonuni.dev.resumeBuilder.dto.Education.EducationResumeEdit;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.resume.EditResumeAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
+import saigonuni.dev.resumeBuilder.dto.workExperience.workExperienceResumeEditRequestDTO;
 import saigonuni.dev.resumeBuilder.exception.ResumeNotFoundException;
 import saigonuni.dev.resumeBuilder.repository.EducationRepository;
 import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
@@ -220,9 +224,8 @@ public class ResumeServiceImplement implements ResumeService {
   @Override
   public Resume updateResume(
     String resumeId,
-    CreateResumeAdminRequest request,
-    User user,
-    MultipartFile file
+    UpdateResumeAdminRequest request,
+    User user
   ) {
     log.info("Attempting to update resume with id: {}", resumeId);
 
@@ -238,14 +241,7 @@ public class ResumeServiceImplement implements ResumeService {
       //   this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
 
       String avatar = "";
-      if (file != null && !file.isEmpty()) {
-        try {
-          avatar =
-            this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
-        } catch (Exception e) {
-          System.err.println(e.getMessage());
-        }
-      }
+
       System.err.println("Hello 1");
       Resume existingResume = resumeRepository
         .findById(resumeId)
@@ -336,15 +332,109 @@ public class ResumeServiceImplement implements ResumeService {
 
   @Transactional
   @Override
-  public void findIdResumeToUpdatePhotoUrlToNull(
-    Long idResume
-  
-  ) {
+  public void findIdResumeToUpdatePhotoUrlToNull(Long idResume) {
     try {
       resumeRepository.updatePhotoUrlByResumeIdToNull(idResume);
     } catch (Exception e) {
       // TODO: handle exception
       System.err.println("Messege Error -" + e.getMessage());
+    }
+  }
+
+  @Override
+  public Resume EditResume(
+    String resumeId,
+    EditResumeAdminRequest request,
+    User user
+  ) {
+    try {
+      Long id;
+      try {
+        id = Long.parseLong(resumeId);
+      } catch (NumberFormatException e) {
+        log.error("Invalid resume ID format: {}", resumeId);
+        throw new IllegalArgumentException("Invalid resume ID format");
+      }
+      // String avatar =
+      //   this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
+
+      String avatar = "";
+
+      System.err.println("Hello 1");
+      Resume existingResume = resumeRepository
+        .findById(resumeId)
+        .orElseThrow(() ->
+          new ResumeNotFoundException("Resume not found with id: " + resumeId)
+        );
+
+      existingResume.setTitle(request.getTitle());
+      existingResume.setColorHex(request.getColorHex());
+      existingResume.setBorderStyle(request.getBorderStyle());
+      existingResume.setDescription(request.getDescription());
+      existingResume.setPhotoUrl(avatar);
+      existingResume.setSummary(request.getSummary());
+      existingResume.setFirstName(request.getFirstName());
+      existingResume.setLastName(request.getLastName());
+      existingResume.setJobTitle(request.getJobTitle());
+      existingResume.setCity(request.getCity());
+      existingResume.setCountry(request.getCountry());
+      existingResume.setPhone(request.getPhone());
+      existingResume.setEmail(request.getEmail());
+
+      if (request.getSkills() != null) {
+        existingResume.setSkills(new ArrayList<>(request.getSkills()));
+      } else {
+        existingResume.getSkills().clear();
+      }
+      existingResume.setUpdatedAt(LocalDateTime.now());
+
+      existingResume.getWorkExperiences().clear();
+
+      if (request.getWorkExperiences() != null) {
+        List<WorkExperience> newWorkExperiences = new ArrayList<>();
+        for (workExperienceResumeEditRequestDTO dto : request.getWorkExperiences()) {
+          WorkExperience workExperience = WorkExperience
+            .builder()
+            .position(dto.getPosition())
+            .company(dto.getCompany())
+            .startDate(dto.getStartDate())
+            .endDate(dto.getEndDate())
+            .description(dto.getDescription())
+            .resume(existingResume)
+            .build();
+          newWorkExperiences.add(workExperience);
+        }
+        existingResume.getWorkExperiences().addAll(newWorkExperiences);
+      }
+
+      existingResume.getEducations().clear();
+
+      if (request.getEducations() != null) {
+        List<Education> newEducations = new ArrayList<>();
+        for (EducationResumeEdit dto : request.getEducations()) {
+          Education education = Education
+            .builder()
+            .degree(dto.getDegree())
+            .school(dto.getSchool())
+            .startDate(dto.getStartDate())
+            .endDate(dto.getEndDate())
+            .resume(existingResume)
+            .build();
+          newEducations.add(education);
+        }
+        existingResume.getEducations().addAll(newEducations);
+      }
+
+      Resume updatedResume = resumeRepository.save(existingResume);
+
+      log.info(
+        "Successfully updated resume with id: {}",
+        updatedResume.getId()
+      );
+      return updatedResume;
+    } catch (Exception e) {
+      System.err.println("Error" + e.getMessage());
+      return null; // Added return statement
     }
   }
 }

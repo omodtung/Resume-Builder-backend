@@ -11,16 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
@@ -32,7 +22,9 @@ import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
+import saigonuni.dev.resumeBuilder.dto.resume.EditResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.service.JwtService;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
@@ -121,21 +113,48 @@ public class ResumeAdminController extends BaseController {
   }
 
   @PatchMapping("resumes/{id}")
-  @Operation(summary = "API Update Resume ", description = "Update API Resume")
+  @Operation(
+    summary = "API Update Resume Support For Auto Save ",
+    description = "Update API Resume For Auto Save"
+  )
   @LogExecutionTime
   public ResponseEntity<UpdateResumeAdminResponse> updateResume(
     @PathVariable String id,
-    @Valid @RequestBody CreateResumeAdminRequest request,
+    @Valid @RequestBody UpdateResumeAdminRequest request,
     @RequestHeader("Authorization") String authorizationHeader
     // Removed MultipartFile parameter
   ) {
     User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
-    System.err.println("Test 1");
-    // Pass null for the file parameter in the service call
-    Resume resume = resumeService.updateResume(id, request, user, null);
-    System.err.println("Test 2");
+    if (request == null) {
+      request = UpdateResumeAdminRequest.emptyResume();
+    }
+    Resume resume = resumeService.updateResume(id, request, user);
+
+    return ResponseEntity
+      .status(HttpStatus.OK)
+      .body(UpdateResumeAdminResponse.builder().resume(resume).build());
+  }
+
+  @PatchMapping("resumes-edit/{id}")
+  @Operation(
+    summary = "API Update Resume  ",
+    description = "Update API Resume "
+  )
+  @LogExecutionTime
+  public ResponseEntity<UpdateResumeAdminResponse> EditResume(
+    @PathVariable String id,
+    @Valid @RequestBody EditResumeAdminRequest request,
+    @RequestHeader("Authorization") String authorizationHeader
+    // Removed MultipartFile parameter
+  ) {
+    User user = userDC.findUserNameByToken(
+      decode.AuthenticationDecode(authorizationHeader)
+    );
+  
+    Resume resume = resumeService.EditResume(id, request, user);
+
     return ResponseEntity
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
