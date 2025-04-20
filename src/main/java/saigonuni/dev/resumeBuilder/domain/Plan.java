@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class Plan {
   private String price;
 
   @OneToMany(mappedBy = "plan", orphanRemoval = true)
+  @JsonManagedReference
   private List<UserSubscription> userSubscriptions;
 
   @Id

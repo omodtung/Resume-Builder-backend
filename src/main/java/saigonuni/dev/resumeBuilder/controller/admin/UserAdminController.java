@@ -152,6 +152,10 @@ public class UserAdminController {
   // }
 
   @GetMapping("users/resumes/{userId}")
+  @Operation(
+    summary = "List Resume Created By user Id",
+    description = "use UserId to list all Resume user Created"
+  )
   public ResponseEntity<List<Resume>> getResumesByUserId(
     @PathVariable Long userId
   ) {
@@ -164,7 +168,7 @@ public class UserAdminController {
     return userService.fetchUserMakeCV();
   }
 
-  @GetMapping("resumes-usersRegisted")
+  @GetMapping("resumes-users-Registed")
   public List<Object> getResumesByUser() {
     try {
       return userService.findResumesWithUserFullyRegister();

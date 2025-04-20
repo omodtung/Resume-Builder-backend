@@ -1,5 +1,7 @@
 package saigonuni.dev.resumeBuilder.webhook;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.Stripe; // *** THÊM IMPORT NÀY ***
 import com.stripe.Stripe; // *** THÊM IMPORT NÀY ***
 import com.stripe.exception.SignatureVerificationException;
@@ -50,353 +52,35 @@ import saigonuni.dev.resumeBuilder.repository.UserSubscriptionRepository;
 @RequiredArgsConstructor
 public class stripeRoute {
 
-  //   // -------------------------------------------------------------------------------------------------------------
-  // //   @Value("${stripe.webhook.secret}") // Inject from properties
-  //   private String endpointSecret = "whsec_fVqd42xr6WDkutkorecqZMsHwJtBcZXU";
-
-  //   // Use final for required dependencies with @RequiredArgsConstructor
-  //   @Autowired
-  //   private final UserSubscriptionRepository userSubscriptionRepository;
-
-  //   @Autowired
-  //   private final UserRepository userRepository;
-
-  //   @Autowired
-  //   private final PlanRepository planRepository;
-
-  //   // No explicit constructor or @Autowired needed
-
-  //   @PostMapping // Removed consumes = "application/json" as we read raw body
-  //   public ResponseEntity<String> handleStripeWebhook(
-  //     HttpServletRequest request
-  //   ) {
-  //     String payload;
-  //     try {
-  //       payload =
-  //         StreamUtils.copyToString(
-  //           request.getInputStream(),
-  //           StandardCharsets.UTF_8
-  //         );
-  //     } catch (IOException e) {
-  //       log.error("Failed to read webhook request body", e);
-  //       return ResponseEntity
-  //         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //         .body("Failed to read request body");
-  //     }
-
-  //     String sigHeader = request.getHeader("Stripe-Signature");
-  //     Event event; // Declare outside try
-
-  //     // Verify secret is loaded
-  //     if (
-  //       endpointSecret == null ||
-  //       endpointSecret.isBlank() ||
-  //       !endpointSecret.startsWith("whsec_")
-  //     ) {
-  //       log.error("Stripe webhook secret is not configured correctly!");
-  //       // Don't reveal secret details in the response
-  //       return ResponseEntity
-  //         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //         .body("Webhook processor configuration error.");
-  //     }
-
-  //     try {
-  //       event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
-  //     } catch (SignatureVerificationException e) {
-  //       log.warn("Webhook signature verification failed.", e);
-  //       return ResponseEntity
-  //         .status(HttpStatus.BAD_REQUEST)
-  //         .body("Invalid signature");
-  //     } catch (Exception e) { // Catch broader exceptions during construction if needed
-  //       log.error("Error constructing Stripe event.", e);
-  //       return ResponseEntity
-  //         .status(HttpStatus.BAD_REQUEST)
-  //         .body("Webhook error"); // Or 500?
-  //     }
-
-  //     log.info(
-  //       "Received Stripe event: Id={}, Type={}",
-  //       event.getId(),
-  //       event.getType()
-  //     );
-
-  //     // --- Deserialization ---
-  //     EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
-  //     StripeObject stripeObject = null;
-
-  //     if (
-  //       dataObjectDeserializer != null &&
-  //       dataObjectDeserializer.getObject().isPresent()
-  //     ) {
-  //       stripeObject = dataObjectDeserializer.getObject().get();
-  //     } else {
-  //       log.error(
-  //         "Failed to deserialize Stripe object for event id={}. Raw data: {}",
-  //         event.getId(),
-  //         event.getData() != null ? event.getData().toJson() : "null"
-  //       );
-  //       // Acknowledge receipt but indicate processing error
-  //       return ResponseEntity
-  //         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //         .body("Internal error during event processing");
-  //     }
-
-  //     // --- Event Handling ---
-  //     try {
-  //       switch (event.getType()) {
-  //         case "checkout.session.completed":
-  //           if (stripeObject instanceof Session) {
-  //             handleSessionCompleted((Session) stripeObject);
-  //           } else {
-  //             log.warn(
-  //               "Expected Session object for checkout.session.completed, but got: {}",
-  //               stripeObject.getClass().getName()
-  //             );
-  //           }
-  //           break;
-  //         case "customer.subscription.created":
-  //         case "customer.subscription.updated":
-  //           if (stripeObject instanceof Subscription) {
-  //             handleSubscriptionCreatedOrUpdated((Subscription) stripeObject);
-  //           } else {
-  //             log.warn(
-  //               "Expected Subscription object for customer.subscription.created/updated, but got: {}",
-  //               stripeObject.getClass().getName()
-  //             );
-  //           }
-  //           break;
-  //         case "customer.subscription.deleted":
-  //           if (stripeObject instanceof Subscription) {
-  //             // handleSubscriptionDeleted((Subscription) stripeObject);
-  //           } else {
-  //             log.warn(
-  //               "Expected Subscription object for customer.subscription.deleted, but got: {}",
-  //               stripeObject.getClass().getName()
-  //             );
-  //           }
-  //           break;
-  //         default:
-  //           log.info("Unhandled event type: {}", event.getType());
-  //           break;
-  //       }
-  //       return ResponseEntity.ok("Event received");
-  //     } catch (StripeException e) {
-  //       log.error(
-  //         "Stripe API error processing event id={}: {}",
-  //         event.getId(),
-  //         e.getMessage(),
-  //         e
-  //       );
-  //       return ResponseEntity
-  //         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //         .body("Stripe API error");
-  //     } catch (Exception e) { // Catch application-specific errors during processing
-  //       log.error(
-  //         "Application error processing event id={}: {}",
-  //         event.getId(),
-  //         e.getMessage(),
-  //         e
-  //       );
-  //       return ResponseEntity
-  //         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //         .body("Internal server error");
-  //     }
-  //   }
-
-  //   @Transactional
-  //   void handleSessionCompleted(Session session) {
-  //     Map<String, String> metadata = session.getMetadata();
-  //     String userIdStr = metadata != null ? metadata.get("userId") : null;
-  //     String customerId = session.getCustomer();
-
-  //     if (userIdStr == null || customerId == null) {
-  //       log.error(
-  //         "User ID or Customer ID is missing in session metadata for session id={}",
-  //         session.getId()
-  //       );
-  //       return; // Or throw exception if this is critical
-  //     }
-
-  //     log.info(
-  //       "Processing checkout.session.completed for customerId={}, potential userId={}",
-  //       customerId,
-  //       userIdStr
-  //     );
-  //     // If you need to update User entity:
-  //     /*
-  //         try {
-  //             Long userId = Long.parseLong(userIdStr);
-  //             Optional<User> userOptional = userRepository.findById(userId);
-
-  //             if (userOptional.isPresent()) {
-  //                 User user = userOptional.get();
-  //                 // Assuming User entity has a field 'stripeCustomerId'
-  //                 // user.setStripeCustomerId(customerId);
-  //                 // userRepository.save(user);
-  //                 log.info("Updated user id={} with stripeCustomerId={}", userId, customerId);
-  //             } else {
-  //                 log.warn("User not found for id={} during session completion handling.", userId);
-  //             }
-  //         } catch (NumberFormatException e) {
-  //             log.error("Invalid userId format '{}' in session metadata for session id={}", userIdStr, session.getId());
-  //         } catch (Exception e) {
-  //             log.error("Error processing session completed for session id={}: {}", session.getId(), e.getMessage(), e);
-  //             // Potentially re-throw or handle differently
-  //         }
-  //         */
-  //   }
-
-  //   @Transactional
-  //   void handleSubscriptionCreatedOrUpdated(Subscription subscription)
-  //     throws StripeException {
-  //     String customerId = subscription.getCustomer();
-  //     Map<String, String> metadata = subscription.getMetadata();
-  //     String userIdStr = metadata != null ? metadata.get("userId") : null;
-  //     String subscriptionId = subscription.getId(); // Get subscription ID
-
-  //     if (userIdStr == null) {
-  //       log.error(
-  //         "User ID is missing in subscription metadata for subscription id={}",
-  //         subscriptionId
-  //       );
-  //       return;
-  //     }
-
-  //     Long userId;
-  //     try {
-  //       userId = Long.parseLong(userIdStr);
-  //     } catch (NumberFormatException e) {
-  //       log.error(
-  //         "Invalid userId format '{}' in subscription metadata for subscription id={}",
-  //         userIdStr,
-  //         subscriptionId
-  //       );
-  //       return;
-  //     }
-
-  //     Optional<User> userOptional = userRepository.findById(userId);
-  //     if (userOptional.isEmpty()) {
-  //       log.error(
-  //         "User not found for userId={} from subscription metadata for subscription id={}",
-  //         userId,
-  //         subscriptionId
-  //       );
-  //       return;
-  //     }
-  //     User user = userOptional.get();
-
-  //     String stripePriceId = null;
-  //     if (!subscription.getItems().getData().isEmpty()) {
-  //       stripePriceId =
-  //         subscription.getItems().getData().get(0).getPrice().getId();
-  //     } else {
-  //       log.warn(
-  //         "Subscription {} has no items, cannot determine stripePriceId.",
-  //         subscriptionId
-  //       );
-  //       return;
-  //     }
-
-  //     Optional<Plan> planOptional = planRepository.findByStripePriceId(
-  //       stripePriceId
-  //     );
-  //     if (planOptional.isEmpty()) {
-  //       log.error(
-  //         "Plan not found for stripePriceId={} from subscription id={}",
-  //         stripePriceId,
-  //         subscriptionId
-  //       );
-  //       return;
-  //     }
-  //     Plan plan = planOptional.get();
-
-  //     String status = subscription.getStatus();
-  //     boolean isActive =
-  //       "active".equals(status) ||
-  //       "trialing".equals(status) ||
-  //       "past_due".equals(status);
-
-  //     if (isActive) {
-  //       Optional<UserSubscription> existingSubscriptionOpt = userSubscriptionRepository.findByStripeSubscriptionId(
-  //         subscriptionId
-  //       );
-  //       // Optional: If not found by sub id, you *could* check by userId, but might lead to overwriting if multiple subs were possible
-  //       // if (existingSubscriptionOpt.isEmpty()) {
-  //       //    existingSubscriptionOpt = userSubscriptionRepository.findByUserId(userId);
-  //       // }
-
-  //       UserSubscription userSubscription = existingSubscriptionOpt.orElse(
-  //         new UserSubscription()
-  //       );
-
-  //       userSubscription.setUser(user);
-  //       userSubscription.setPlan(plan);
-  //       userSubscription.setStripeSubscriptionId(subscriptionId);
-  //       userSubscription.setStripeCustomerId(customerId);
-  //       userSubscription.setStripeCurrentPeriodEnd(
-  //         LocalDateTime.ofInstant(
-  //           Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()),
-  //           ZoneId.systemDefault()
-  //         )
-  //       );
-  //       userSubscription.setStripeCancelAtPeriodEnd(
-  //         subscription.getCancelAtPeriodEnd() != null &&
-  //         subscription.getCancelAtPeriodEnd()
-  //       ); // Handle null boolean
-
-  //       userSubscriptionRepository.save(userSubscription);
-  //       log.info(
-  //         "Upserted UserSubscription for userId={}, subscriptionId={}",
-  //         userId,
-  //         subscriptionId
-  //       );
-  //     } else {
-  //       // Safer: Delete by subscription ID for inactive status
-  //       // int deletedCount = userSubscriptionRepository.deleteByStripeSubscriptionId(subscriptionId);
-  //       // log.info("Deleted {} UserSubscription(s) for subscriptionId={} due to inactive status ({})", deletedCount, subscriptionId, status);
-  //     }
-  //   }
-  //   // @Transactional
-  //   // void handleSubscriptionDeleted(Subscription subscription) {
-  //   //     String subscriptionId = subscription.getId();
-  //   //     // Safer: Delete by subscription ID
-  //   //     int deletedCount = userSubscriptionRepository.deleteByStripeSubscriptionId(subscriptionId);
-  //   //     log.info("Deleted {} UserSubscription(s) for subscriptionId={} due to subscription deletion event", deletedCount, subscriptionId);
-  //   // }
-
-  // ----------------------------------------------------------------------------------------------------------------
-
   // @Value("${stripe.api.key}")
   private String stripeApiKey =
     "sk_test_51QuBaRK6dhIc7YOm3TJxxTw409Wxuzkk6Mis7LVPEuitjglkIn3zChdiE6jweMVW7Mn4Na8WCTLJPymFvbL7mh4v00azltuaWj";
 
   // @Value("${stripe.webhook.secret}")
-  private String endpointSecret = "whsec_fVqd42xr6WDkutkorecqZMsHwJtBcZXU"; // Giữ lại tên này hoặc đổi thành webhookSecret
+  // !!! Quan trọng: Đảm bảo secret này khớp với endpoint đang gửi phiên bản .acacia
+  private String endpointSecret = "whsec_fVqd42xr6WDkutkorecqZMsHwJtBcZXU";
 
-  // Sử dụng final và để @RequiredArgsConstructor inject
   private final UserSubscriptionRepository userSubscriptionRepository;
   private final UserRepository userRepository;
   private final PlanRepository planRepository;
+  private final ObjectMapper objectMapper = new ObjectMapper(); // Tạo instance ObjectMapper
 
-  // Khởi tạo Stripe API Key khi ứng dụng khởi động
   @PostConstruct
   public void initStripe() {
     if (stripeApiKey == null || stripeApiKey.isBlank()) {
       log.error("Stripe API key is not configured!");
-      // Có thể throw exception ở đây để ngăn ứng dụng khởi động nếu cần
     } else {
       Stripe.apiKey = stripeApiKey;
-      log.info("Stripe API Key initialized.");
+      // Có thể set API version ở đây, nhưng nó không giúp deserialize phiên bản .acacia
+      // Stripe.apiVersion = "2024-04-10"; // Ví dụ
+      log.info("Stripe API Key initialized."); // Stripe API Version is: {}", Stripe.apiVersion);
     }
-
-    // Kiểm tra webhook secret luôn ở đây
     if (
       endpointSecret == null ||
       endpointSecret.isBlank() ||
       !endpointSecret.startsWith("whsec_")
     ) {
       log.error("Stripe webhook secret is not configured correctly!");
-      // Có thể throw exception
     } else {
       log.info("Stripe Webhook Secret loaded.");
     }
@@ -423,7 +107,6 @@ public class stripeRoute {
     String sigHeader = request.getHeader("Stripe-Signature");
     Event event;
 
-    // Kiểm tra lại secret (mặc dù đã kiểm tra ở @PostConstruct)
     if (endpointSecret == null || endpointSecret.isBlank()) {
       log.error("Stripe webhook secret is missing during request processing!");
       return ResponseEntity
@@ -432,7 +115,7 @@ public class stripeRoute {
     }
 
     try {
-      // Xác thực chữ ký webhook
+      // Vẫn xác thực chữ ký và tạo đối tượng Event cơ bản
       event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
     } catch (SignatureVerificationException e) {
       log.warn("Webhook signature verification failed.", e);
@@ -451,88 +134,106 @@ public class stripeRoute {
       event.getId(),
       event.getType(),
       event.getApiVersion()
-    ); // Log thêm API version
+    );
 
-    // --- Deserialization ---
-    EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
-    StripeObject stripeObject = null;
+    // --- Bỏ qua deserialization tự động, xử lý JSON thủ công ---
+    String rawJsonData = null;
+    JsonNode objectNode = null; // Node chứa object chính (Session, Subscription,...)
 
-    if (dataObjectDeserializer.getObject().isPresent()) {
-      stripeObject = dataObjectDeserializer.getObject().get();
+    if (event.getData() != null && event.getData().getObject() != null) {
+      rawJsonData = event.getData().getObject().toJson(); // Lấy JSON của object bên trong data
       log.debug(
-        "Successfully deserialized Stripe object: {}",
-        stripeObject.toJson()
-      ); // Log object nếu thành công (cẩn thận với dữ liệu nhạy cảm)
-    } else {
-      // Lỗi deserialization xảy ra ở đây!
-      log.error(
-        "Failed to deserialize Stripe object for event id={}. Type={}. Raw data: {}",
+        "Raw JSON data object for event {}: {}",
         event.getId(),
-        event.getType(),
-        event.getData() != null ? event.getData().toJson() : "null"
+        rawJsonData
       );
-      // Nguyên nhân có thể là do API Key chưa set hoặc version không khớp
+      try {
+        // Phân tích JSON thủ công bằng Jackson
+        objectNode = objectMapper.readTree(rawJsonData);
+      } catch (IOException e) {
+        log.error(
+          "Failed to manually parse JSON data for event id={}, type={}. Raw data: {}",
+          event.getId(),
+          event.getType(),
+          rawJsonData,
+          e
+        );
+        return ResponseEntity
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("JSON parsing error");
+      }
+    } else {
+      log.error(
+        "Event data or data object is null for event id={}, type={}",
+        event.getId(),
+        event.getType()
+      );
       return ResponseEntity
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body("Internal error during event deserialization");
+        .status(HttpStatus.BAD_REQUEST)
+        .body("Invalid event data");
     }
 
-    // --- Event Handling ---
+    // --- Event Handling với JSON đã phân tích ---
     try {
+      // Kiểm tra null trước khi sử dụng objectNode
+      if (objectNode == null) {
+        log.error(
+          "Parsed JSON object node is null for event id={}",
+          event.getId()
+        );
+        return ResponseEntity
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("JSON parsing resulted in null object");
+      }
+
       switch (event.getType()) {
         case "checkout.session.completed":
-          // Kiểm tra kiểu tường minh hơn
-          if (stripeObject instanceof Session) {
-            handleSessionCompleted((Session) stripeObject);
+          // Kiểm tra xem objectNode có phải là checkout.session không
+          if ("checkout.session".equals(objectNode.path("object").asText())) {
+            handleSessionCompletedManually(objectNode); // Gọi hàm xử lý thủ công
           } else {
             log.warn(
-              "Expected Session object for checkout.session.completed (Event ID: {}), but got: {}. Raw object: {}",
+              "Expected 'checkout.session' object type in JSON for event {}, but got '{}'",
               event.getId(),
-              stripeObject.getClass().getName(),
-              stripeObject.toJson() // Log raw object để debug
+              objectNode.path("object").asText()
             );
           }
           break;
         case "customer.subscription.created":
         case "customer.subscription.updated":
-          if (stripeObject instanceof Subscription) {
-            handleSubscriptionCreatedOrUpdated((Subscription) stripeObject);
+          if ("subscription".equals(objectNode.path("object").asText())) {
+            handleSubscriptionCreatedOrUpdatedManually(objectNode); // Gọi hàm xử lý thủ công
           } else {
             log.warn(
-              "Expected Subscription object for customer.subscription.created/updated (Event ID: {}), but got: {}. Raw object: {}",
+              "Expected 'subscription' object type in JSON for event {}, but got '{}'",
               event.getId(),
-              stripeObject.getClass().getName(),
-              stripeObject.toJson()
+              objectNode.path("object").asText()
             );
           }
           break;
         case "customer.subscription.deleted":
-          if (stripeObject instanceof Subscription) {
-            // handleSubscriptionDeleted((Subscription) stripeObject); // Bỏ comment nếu cần xử lý
-            log.info(
-              "Handling customer.subscription.deleted for sub_id: {}",
-              ((Subscription) stripeObject).getId()
-            );
+          if ("subscription".equals(objectNode.path("object").asText())) {
+            handleSubscriptionDeletedManually(objectNode); // Gọi hàm xử lý thủ công
           } else {
             log.warn(
-              "Expected Subscription object for customer.subscription.deleted (Event ID: {}), but got: {}. Raw object: {}",
+              "Expected 'subscription' object type in JSON for event {}, but got '{}'",
               event.getId(),
-              stripeObject.getClass().getName(),
-              stripeObject.toJson()
+              objectNode.path("object").asText()
             );
           }
           break;
-        // Thêm các case khác nếu cần
-        // case "invoice.paid":
-        // case "invoice.payment_failed":
+        // Thêm các case khác nếu cần và xử lý JSON thủ công tương tự
 
         default:
-          log.info("Unhandled event type: {}", event.getType());
+          log.info(
+            "Unhandled event type (manual handling not implemented): {}",
+            event.getType()
+          );
           break;
       }
-      // Trả về 200 OK cho Stripe để xác nhận đã nhận event
+      // Trả về 200 OK cho Stripe
       return ResponseEntity.ok("Event received");
-    } catch (StripeException e) {
+    } catch (StripeException e) { // Vẫn có thể xảy ra nếu gọi API Stripe trong hàm xử lý
       log.error(
         "Stripe API error processing event id={}: Status={}, Code={}, Message={}",
         event.getId(),
@@ -546,7 +247,7 @@ public class stripeRoute {
         .body("Stripe API error during processing");
     } catch (Exception e) { // Bắt lỗi ứng dụng trong quá trình xử lý logic
       log.error(
-        "Application error processing event id={}: {}",
+        "Application error processing event id={} manually: {}",
         event.getId(),
         e.getMessage(),
         e
@@ -557,128 +258,143 @@ public class stripeRoute {
     }
   }
 
+  // --- Các hàm xử lý được sửa đổi để nhận JsonNode hoặc dữ liệu trích xuất ---
+
   @Transactional
-  void handleSessionCompleted(Session session) {
-    Map<String, String> metadata = session.getMetadata();
-    // Kiểm tra metadata null hoặc thiếu userId CẨN THẬN
+  void handleSessionCompletedManually(JsonNode sessionNode) {
+    String sessionId = sessionNode.path("id").asText(null);
+    String customerId = sessionNode.path("customer").asText(null);
+    String subscriptionId = sessionNode.path("subscription").asText(null); // Lấy subscription ID nếu có
+
+    // Trích xuất userId từ metadata một cách an toàn
+    String userIdStr = null;
     if (
-      metadata == null ||
-      metadata.get("userId") == null ||
-      metadata.get("userId").isBlank()
+      sessionNode.has("metadata") && sessionNode.path("metadata").isObject()
     ) {
-      log.error(
-        "User ID is missing or empty in session metadata for session id={}. Metadata: {}",
-        session.getId(),
-        metadata // Log metadata để xem có gì
-      );
-      // Quan trọng: Đây là lỗi logic từ phía tạo Checkout Session
-      // Bạn cần đảm bảo userId được đặt vào metadata khi tạo Session
-      return; // Không xử lý tiếp nếu thiếu thông tin quan trọng
+      userIdStr = sessionNode.path("metadata").path("userId").asText(null);
     }
 
-    String userIdStr = metadata.get("userId");
-    String customerId = session.getCustomer(); // session.getCustomer() có thể trả về String customer ID
+    if (sessionId == null) {
+      log.error(
+        "Session ID is missing in manually parsed checkout.session object. Node: {}",
+        sessionNode.toString()
+      );
+      return;
+    }
 
+    // Kiểm tra userId và customerId
+    if (userIdStr == null || userIdStr.isBlank()) {
+      log.error(
+        "User ID is missing or empty in session metadata for session id={}. Metadata Node: {}",
+        sessionId,
+        sessionNode.path("metadata").toString()
+      );
+      // QUAN TRỌNG: Đảm bảo bạn luôn gửi userId trong metadata khi tạo Checkout Session
+      return;
+    }
     if (customerId == null) {
       log.error(
         "Customer ID is missing in session object for session id={}",
-        session.getId()
+        sessionId
       );
       return;
     }
 
     log.info(
-      "Processing checkout.session.completed for customerId={}, userId={}",
+      "Processing checkout.session.completed (manually parsed) for session_id={}, customerId={}, userId={}",
+      sessionId,
       customerId,
       userIdStr
     );
 
-    // Logic cập nhật User với customerId (nếu cần) - đã comment trong code gốc
-    // Bạn nên đảm bảo logic này đúng và xử lý NumberFormatException
+    // --- Logic cập nhật User (nếu cần) ---
     try {
       Long userId = Long.parseLong(userIdStr);
       Optional<User> userOptional = userRepository.findById(userId);
 
       if (userOptional.isPresent()) {
         User user = userOptional.get();
-        // Ví dụ: Cập nhật stripeCustomerId cho User nếu chưa có
-        // if (user.getStripeCustomerId() == null) {
-        //     user.setStripeCustomerId(customerId);
-        //     userRepository.save(user);
-        //     log.info("Associated user id={} with stripeCustomerId={}", userId, customerId);
-        // } else if (!user.getStripeCustomerId().equals(customerId)) {
-        //     log.warn("User id={} already has a different stripeCustomerId ({}). Received customerId={} from session {}",
-        //              userId, user.getStripeCustomerId(), customerId, session.getId());
-        // }
+        // Cập nhật stripeCustomerId nếu cần (logic tương tự như trước)
+        // ...
       } else {
         log.warn(
-          "User not found for id={} during session completion handling (session id={}).",
+          "User not found for id={} during manual session completion handling (session id={}).",
           userId,
-          session.getId()
+          sessionId
         );
       }
     } catch (NumberFormatException e) {
       log.error(
         "Invalid userId format '{}' in session metadata for session id={}",
         userIdStr,
-        session.getId()
+        sessionId
       );
     } catch (Exception e) {
       log.error(
-        "Error processing session completed logic for session id={}: {}",
-        session.getId(),
+        "Error processing manual session completed logic for session id={}: {}",
+        sessionId,
         e.getMessage(),
         e
       );
-      // Xem xét có nên throw để rollback transaction không
     }
 
-    // Quan trọng: Sự kiện checkout.session.completed thường chỉ báo thanh toán thành công.
-    // Việc tạo/cập nhật UserSubscription thường được xử lý bởi sự kiện
-    // customer.subscription.created hoặc customer.subscription.updated (nếu mode là 'subscription')
-    // hoặc invoice.paid (cho one-time payment hoặc subscription).
-    // Nếu mode=subscription, session này sẽ dẫn đến việc tạo Subscription, và webhook subscription sẽ được gửi ngay sau đó.
     log.info(
-      "Checkout session {} completed. Waiting for subscription/invoice events if applicable.",
-      session.getId()
+      "Manual checkout session {} completed. Subscription ID (if any): {}. Waiting for subsequent events.",
+      sessionId,
+      subscriptionId
     );
+    // Lưu ý: Thông tin chi tiết khác của Session (như line items, amount, status)
+    // cũng có thể được trích xuất từ sessionNode nếu cần.
+    // Ví dụ: String status = sessionNode.path("status").asText();
   }
 
   @Transactional
-  void handleSubscriptionCreatedOrUpdated(Subscription subscription)
+  void handleSubscriptionCreatedOrUpdatedManually(JsonNode subscriptionNode)
     throws StripeException {
-    String customerId = subscription.getCustomer();
-    Map<String, String> metadata = subscription.getMetadata(); // Metadata của Subscription
-    String subscriptionId = subscription.getId();
+    String subscriptionId = subscriptionNode.path("id").asText(null);
+    String customerId = subscriptionNode.path("customer").asText(null);
+    String status = subscriptionNode.path("status").asText(null); // active, trialing, etc.
+    long currentPeriodEndEpoch = subscriptionNode
+      .path("current_period_end")
+      .asLong(0);
+    boolean cancelAtPeriodEnd = subscriptionNode
+      .path("cancel_at_period_end")
+      .asBoolean(false);
 
-    // Lấy userId từ metadata của Subscription (quan trọng)
-    // Bạn cần đảm bảo userId được thêm vào metadata KHI TẠO Subscription
-    // Nếu bạn tạo Subscription thông qua Checkout Session, bạn cần cấu hình để metadata được truyền từ Session sang Subscription
-    // Tham khảo: subscription_data.metadata trong lúc tạo Checkout Session
-    if (
-      metadata == null ||
-      metadata.get("userId") == null ||
-      metadata.get("userId").isBlank()
-    ) {
+    if (subscriptionId == null) {
       log.error(
-        "User ID is missing or empty in subscription metadata for subscription id={}. Metadata: {}",
-        subscriptionId,
-        metadata
+        "Subscription ID is missing in manually parsed subscription object. Node: {}",
+        subscriptionNode.toString()
       );
-      // Cân nhắc lấy userId từ User bằng customerId nếu metadata bị thiếu
-      // Optional<User> userOpt = userRepository.findByStripeCustomerId(customerId);
-      // if (userOpt.isEmpty()) {
-      //    log.error("Cannot find User by customerId {} either.", customerId);
-      //    return; // Không thể xác định user
-      // }
-      // User user = userOpt.get();
-      // userId = user.getId(); // Lấy được userId
-      // log.warn("Retrieved userId {} from customerId {} as subscription metadata was missing.", userId, customerId);
-
-      // Tạm thời return nếu không có cách lấy userId dự phòng
       return;
     }
-    String userIdStr = metadata.get("userId");
+
+    // Trích xuất userId từ metadata của Subscription
+    String userIdStr = null;
+    if (
+      subscriptionNode.has("metadata") &&
+      subscriptionNode.path("metadata").isObject()
+    ) {
+      userIdStr = subscriptionNode.path("metadata").path("userId").asText(null);
+    }
+
+    if (userIdStr == null || userIdStr.isBlank()) {
+      log.error(
+        "User ID is missing or empty in subscription metadata for subscription id={}. Metadata Node: {}",
+        subscriptionId,
+        subscriptionNode.path("metadata").toString()
+      );
+      // QUAN TRỌNG: Đảm bảo bạn gửi userId trong subscription_data.metadata khi tạo Checkout Session
+      return;
+    }
+
+    if (customerId == null || status == null || currentPeriodEndEpoch == 0) {
+      log.error(
+        "Required fields (customerId, status, current_period_end) missing for subscription id={}",
+        subscriptionId
+      );
+      return;
+    }
 
     Long userId;
     try {
@@ -703,15 +419,27 @@ public class stripeRoute {
     }
     User user = userOptional.get();
 
+    // Trích xuất Price ID từ items
     String stripePriceId = null;
-    if (!subscription.getItems().getData().isEmpty()) {
-      // Lấy Price ID từ item đầu tiên (giả định chỉ có 1 item trong subscription)
-      stripePriceId =
-        subscription.getItems().getData().get(0).getPrice().getId();
-    } else {
+    if (
+      subscriptionNode.has("items") &&
+      subscriptionNode.path("items").has("data") &&
+      subscriptionNode.path("items").path("data").isArray()
+    ) {
+      JsonNode itemsData = subscriptionNode.path("items").path("data");
+      if (itemsData.size() > 0) {
+        JsonNode firstItem = itemsData.get(0);
+        if (firstItem.has("price") && firstItem.path("price").has("id")) {
+          stripePriceId = firstItem.path("price").path("id").asText(null);
+        }
+      }
+    }
+
+    if (stripePriceId == null) {
       log.warn(
-        "Subscription {} has no items, cannot determine stripePriceId.",
-        subscriptionId
+        "Could not determine stripePriceId from subscription items for sub_id={}. Items node: {}",
+        subscriptionId,
+        subscriptionNode.path("items").toString()
       );
       return; // Không có plan để liên kết
     }
@@ -725,47 +453,41 @@ public class stripeRoute {
         stripePriceId,
         subscriptionId
       );
-      // Có thể bạn cần tạo Plan này trong DB hoặc kiểm tra lại Price ID
       return;
     }
     Plan plan = planOptional.get();
 
-    String status = subscription.getStatus(); // active, trialing, past_due, canceled, incomplete, incomplete_expired, unpaid
     boolean isActiveOrValid =
       "active".equals(status) ||
       "trialing".equals(status) ||
       "past_due".equals(status);
-    // "past_due" vẫn coi là active vì người dùng vẫn có thể truy cập trong grace period
 
-    // Tìm UserSubscription hiện có bằng stripeSubscriptionId (ưu tiên)
     Optional<UserSubscription> existingSubscriptionOpt = userSubscriptionRepository.findByStripeSubscriptionId(
       subscriptionId
     );
 
     if (isActiveOrValid) {
-      // Nếu subscription đang active/trialing/past_due -> Tạo mới hoặc Cập nhật
       UserSubscription userSubscription = existingSubscriptionOpt.orElseGet(() -> {
           log.info(
-            "Creating new UserSubscription for userId={}, subscriptionId={}",
+            "Creating new UserSubscription (manually) for userId={}, subscriptionId={}",
             userId,
             subscriptionId
           );
           UserSubscription newSub = new UserSubscription();
-          newSub.setUser(user); // Chỉ set user khi tạo mới
-          newSub.setPlan(plan); // Chỉ set plan khi tạo mới hoặc khi plan thay đổi (cần logic phức tạp hơn)
+          newSub.setUser(user);
+          newSub.setPlan(plan);
           newSub.setStripeSubscriptionId(subscriptionId);
           newSub.setStripeCustomerId(customerId);
           return newSub;
         }
       );
 
-      // Luôn cập nhật các thông tin có thể thay đổi
-      // Quan trọng: Nếu plan thay đổi (upgrade/downgrade), bạn cần cập nhật userSubscription.setPlan(plan);
+      // Cập nhật Plan nếu thay đổi
       if (
         !userSubscription.getPlan().getStripePriceId().equals(stripePriceId)
       ) {
         log.info(
-          "Plan changed for subscription {}. Old plan priceId: {}, New plan priceId: {}",
+          "Plan changed (manually) for subscription {}. Old: {}, New: {}",
           subscriptionId,
           userSubscription.getPlan().getStripePriceId(),
           stripePriceId
@@ -775,44 +497,31 @@ public class stripeRoute {
 
       userSubscription.setStripeCurrentPeriodEnd(
         LocalDateTime.ofInstant(
-          Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()),
+          Instant.ofEpochSecond(currentPeriodEndEpoch),
           ZoneId.systemDefault()
         )
       );
-      // Xử lý giá trị boolean có thể là null
-      userSubscription.setStripeCancelAtPeriodEnd(
-        Boolean.TRUE.equals(subscription.getCancelAtPeriodEnd())
-      );
-      // Cập nhật trạng thái (nếu bạn có trường status trong UserSubscription)
-      // userSubscription.setStatus(status);
+      userSubscription.setStripeCancelAtPeriodEnd(cancelAtPeriodEnd);
+      // userSubscription.setStatus(status); // Nếu có trường status
 
       userSubscriptionRepository.save(userSubscription);
       log.info(
-        "Upserted UserSubscription for userId={}, subscriptionId={}, status={}",
+        "Upserted UserSubscription (manually) for userId={}, subscriptionId={}, status={}",
         userId,
         subscriptionId,
         status
       );
-    } else {
-      // Nếu subscription không còn active (canceled, unpaid, incomplete, etc.)
+    } else { // Subscription không còn active
       if (existingSubscriptionOpt.isPresent()) {
-        // Có thể bạn muốn cập nhật trạng thái thay vì xóa ngay
-        // UserSubscription subToDelete = existingSubscriptionOpt.get();
-        // subToDelete.setStatus(status); // Cập nhật trạng thái thành 'canceled', 'unpaid' etc.
-        // subToDelete.setStripeCancelAtPeriodEnd(true); // Đánh dấu hủy
-        // userSubscriptionRepository.save(subToDelete);
-        // log.info("Marked UserSubscription {} as inactive (status: {})", subscriptionId, status);
-
-        // Hoặc xóa hẳn bản ghi nếu logic nghiệp vụ yêu cầu
         userSubscriptionRepository.delete(existingSubscriptionOpt.get());
         log.info(
-          "Deleted UserSubscription for subscriptionId={} due to inactive status ({})",
+          "Deleted UserSubscription (manually) for subscriptionId={} due to inactive status ({})",
           subscriptionId,
           status
         );
       } else {
         log.info(
-          "Received inactive status ({}) for subscription {}, but no corresponding UserSubscription found.",
+          "Received inactive status ({}) (manually) for subscription {}, but no corresponding UserSubscription found.",
           status,
           subscriptionId
         );
@@ -820,22 +529,33 @@ public class stripeRoute {
     }
   }
 
-  // Xử lý khi subscription bị xóa hoàn toàn trên Stripe (không phải hủy vào cuối kỳ)
   @Transactional
-  void handleSubscriptionDeleted(Subscription subscription) {
-    String subscriptionId = subscription.getId();
-    Optional<UserSubscription> existingSubscriptionOpt = userSubscriptionRepository.findByStripeSubscriptionId(
+  void handleSubscriptionDeletedManually(JsonNode subscriptionNode) {
+    String subscriptionId = subscriptionNode.path("id").asText(null);
+    if (subscriptionId == null) {
+      log.error(
+        "Subscription ID is missing in manually parsed subscription object for deletion. Node: {}",
+        subscriptionNode.toString()
+      );
+      return;
+    }
+
+    log.info(
+      "Handling customer.subscription.deleted (manually parsed) for subscription_id={}",
       subscriptionId
     );
-    if (existingSubscriptionOpt.isPresent()) {
-      userSubscriptionRepository.delete(existingSubscriptionOpt.get());
+    long deletedCount = userSubscriptionRepository.deleteByStripeSubscriptionId(
+      subscriptionId
+    );
+    if (deletedCount > 0) {
       log.info(
-        "Deleted UserSubscription for subscriptionId={} due to customer.subscription.deleted event",
+        "Deleted {} UserSubscription(s) (manually) for subscriptionId={} due to deletion event",
+        deletedCount,
         subscriptionId
       );
     } else {
       log.warn(
-        "Received customer.subscription.deleted event for subscriptionId={}, but no corresponding UserSubscription found.",
+        "Received deletion event (manually) for subscriptionId={}, but no corresponding UserSubscription found.",
         subscriptionId
       );
     }

@@ -97,18 +97,18 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- <dependency>
+        <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
             <version>24.10.0</version>
-        </dependency> -->
-         
+        </dependency>
+<!--          
 <dependency>
     <groupId>com.stripe</groupId>
     <artifactId>stripe-java</artifactId>
     
     <version>26.3.0</version>
-</dependency>
+</dependency> -->
 
     
     </dependencies>

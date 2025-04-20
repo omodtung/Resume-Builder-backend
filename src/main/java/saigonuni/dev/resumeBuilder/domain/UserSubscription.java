@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,7 +49,7 @@ public class UserSubscription {
   // cho phep User cam khoa chinh cua UserSubscription = mappedBy
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
-  // @JsonBackReference
+  @JsonBackReference
   private User user;
 
   @ManyToOne
@@ -59,84 +60,85 @@ public class UserSubscription {
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private LocalDateTime updatedAt;
 
   @PreUpdate
   public void setLastUpdate() {
     this.updatedAt = LocalDateTime.now();
   }
+
   // Getters and setters
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getStripeCustomerId() {
-        return stripeCustomerId;
-    }
+  public String getStripeCustomerId() {
+    return stripeCustomerId;
+  }
 
-    public void setStripeCustomerId(String stripeCustomerId) {
-        this.stripeCustomerId = stripeCustomerId;
-    }
+  public void setStripeCustomerId(String stripeCustomerId) {
+    this.stripeCustomerId = stripeCustomerId;
+  }
 
-    public String getStripeSubscriptionId() {
-        return stripeSubscriptionId;
-    }
+  public String getStripeSubscriptionId() {
+    return stripeSubscriptionId;
+  }
 
-    public void setStripeSubscriptionId(String stripeSubscriptionId) {
-        this.stripeSubscriptionId = stripeSubscriptionId;
-    }
+  public void setStripeSubscriptionId(String stripeSubscriptionId) {
+    this.stripeSubscriptionId = stripeSubscriptionId;
+  }
 
-    public LocalDateTime getStripeCurrentPeriodEnd() {
-        return stripeCurrentPeriodEnd;
-    }
+  public LocalDateTime getStripeCurrentPeriodEnd() {
+    return stripeCurrentPeriodEnd;
+  }
 
-    public void setStripeCurrentPeriodEnd(LocalDateTime stripeCurrentPeriodEnd) {
-        this.stripeCurrentPeriodEnd = stripeCurrentPeriodEnd;
-    }
+  public void setStripeCurrentPeriodEnd(LocalDateTime stripeCurrentPeriodEnd) {
+    this.stripeCurrentPeriodEnd = stripeCurrentPeriodEnd;
+  }
 
-    public Boolean getStripeCancelAtPeriodEnd() {
-        return stripeCancelAtPeriodEnd;
-    }
+  public Boolean getStripeCancelAtPeriodEnd() {
+    return stripeCancelAtPeriodEnd;
+  }
 
-    public void setStripeCancelAtPeriodEnd(Boolean stripeCancelAtPeriodEnd) {
-        this.stripeCancelAtPeriodEnd = stripeCancelAtPeriodEnd;
-    }
+  public void setStripeCancelAtPeriodEnd(Boolean stripeCancelAtPeriodEnd) {
+    this.stripeCancelAtPeriodEnd = stripeCancelAtPeriodEnd;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-    public Plan getPlan() {
-        return plan;
-    }
+  public Plan getPlan() {
+    return plan;
+  }
 
-    public void setPlan(Plan plan) {
-        this.plan = plan;
-    }
+  public void setPlan(Plan plan) {
+    this.plan = plan;
+  }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+  public void setUpdatedAt(LocalDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
 }

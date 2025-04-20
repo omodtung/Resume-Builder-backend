@@ -62,7 +62,7 @@ public class UserValue {
 
   // mappedBy = "user" chỉ ra rằng Resume.user là cột chứa khóa ngoại (user_id) trong bảng resumes.
   // Hibernate không tạo bảng trung gian vì Resume đã có cột user_id để liên kết với User.
-  // Khi một User bị xóa, toàn bộ Resume của người đó cũng bị xóa (CascadeType.ALL + orphanRemoval = true).
+  // Khi một User bị xóa, toàn bộ Resume của người đó cũng bị   xóa (CascadeType.ALL + orphanRemoval = true).
   @OneToMany(
     mappedBy = "userValue",
     // mappedBy Cho phep Resume cam khoa chinh cua UserValue
