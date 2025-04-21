@@ -1,14 +1,21 @@
 package saigonuni.dev.resumeBuilder.controller.client;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
@@ -20,6 +27,7 @@ import saigonuni.dev.resumeBuilder.dto.User.ListUserResponse;
 import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
+import saigonuni.dev.resumeBuilder.repository.UserSubscriptionRepository;
 import saigonuni.dev.resumeBuilder.service.JwtService;
 import saigonuni.dev.resumeBuilder.service.UserSubcriptionService;
 
@@ -33,6 +41,9 @@ public class UserSubscriptionController extends BaseController {
 
   @Autowired
   private UserSubcriptionService userSubcriptionService;
+
+  @Autowired
+  private UserSubscriptionRepository userSubcriptionRepository;
 
   private JwtService jwtService;
 
@@ -71,7 +82,8 @@ public class UserSubscriptionController extends BaseController {
 
   @GetMapping(
     value = "user-subscription-fetch",
-    produces = { "application/json" }
+    produces = { "application/json" },
+    params = "!page" // Only map if 'page' parameter is NOT present
   )
   public ResponseEntity<List<UserSubscription>> fetchDataUserSubciption( // Changed return type
     @RequestHeader("Authorization") String authorizationHeader
@@ -82,5 +94,51 @@ public class UserSubscriptionController extends BaseController {
     List<UserSubscription> userSubscriptionList = userSubcriptionService.FetchDataUserSub();
     // Return the list directly
     return ResponseEntity.ok(userSubscriptionList);
+  }
+
+  @GetMapping(
+    value = "user-subscription-fetch"
+
+  )
+  public ResponseEntity<Map<String, Object>> fetchDataUserSubciption( // Changed return type
+    @RequestParam(required = false) String sort,
+    @RequestParam(required = false) String order,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "3") int limit
+  ) {
+    try {
+      List<UserSubscription> usersSub = new ArrayList<UserSubscription>();
+      Pageable paging = PageRequest.of(page, limit);
+
+      Page<UserSubscription> pageTuts = null;
+      if (sort == null) pageTuts = userSubcriptionRepository.findAll(paging);
+
+      usersSub = pageTuts.getContent();
+
+      List<Map<String, Object>> usersSub1 = new ArrayList<>();
+      for (UserSubscription user : pageTuts.getContent()) {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("id", user.getId());
+        userMap.put("stripeCustomerId", user.getStripeCustomerId());
+        userMap.put("stripeSubscriptionId", user.getStripeSubscriptionId());
+        userMap.put("stripeCurrentPeriodEnd", user.getStripeCurrentPeriodEnd());
+        userMap.put(
+          "stripeCancelAtPeriodEnd",
+          user.getStripeCancelAtPeriodEnd()
+        );
+        userMap.put("user", user.getUser());
+        userMap.put("plan", user.getPlan());
+        usersSub1.add(userMap);
+      }
+      Map<String, Object> response = new HashMap<>();
+      response.put("usersSub", usersSub);
+      response.put("currentPage", pageTuts.getNumber());
+      response.put("totalItems", pageTuts.getTotalElements());
+      response.put("totalPages", pageTuts.getTotalPages());
+
+      return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
