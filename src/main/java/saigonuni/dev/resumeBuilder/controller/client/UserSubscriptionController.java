@@ -97,7 +97,7 @@ public class UserSubscriptionController extends BaseController {
   }
 
   @GetMapping(
-    value = "user-subscription-fetch"
+    value = "user-subscription"
 
   )
   public ResponseEntity<Map<String, Object>> fetchDataUserSubciption( // Changed return type

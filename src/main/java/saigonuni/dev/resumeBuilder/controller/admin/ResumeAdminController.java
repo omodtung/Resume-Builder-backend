@@ -4,8 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +26,7 @@ import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.domain.UserSubscription;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
@@ -26,6 +34,7 @@ import saigonuni.dev.resumeBuilder.dto.resume.EditResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
+import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
 import saigonuni.dev.resumeBuilder.service.JwtService;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
 
@@ -107,9 +116,68 @@ public class ResumeAdminController extends BaseController {
   // }
 
   @GetMapping("resumes")
-  public ResponseEntity<List<Resume>> getResumes() {
-    List<Resume> resumes = resumeService.listResumes();
-    return ResponseEntity.ok(resumes);
+  public ResponseEntity<Map<String, Object>> getResumes(
+    @RequestParam(required = false) String sort,
+    @RequestParam(required = false) String order,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "3") int limit
+  ) {
+    // List<Resume> resumes = resumeService.listResumes();
+    // return ResponseEntity.ok(resumes);
+    try {
+      List<Resume> resume; // Initialize later
+      Sort.Direction direction = "asc".equalsIgnoreCase(order)
+        ? Sort.Direction.ASC
+        : Sort.Direction.DESC;
+      Pageable paging;
+
+      if (sort != null && !sort.isEmpty()) {
+        paging = PageRequest.of(page, limit, Sort.by(direction, sort));
+      } else {
+        paging = PageRequest.of(page, limit); // Default paging without sort
+      }
+     
+      Page<Resume> pageTuts = resumeService.findAll(paging);
+      if (sort == null) pageTuts =
+      resumeService.findAll(paging); 
+      else
+       pageTuts =resumeService.findByTitleContaining(sort, paging);
+      resume = pageTuts.getContent();
+
+      List<Map<String, Object>> resumes = new ArrayList<>();
+      for (Resume resumex : pageTuts.getContent()) {
+        Map<String, Object> resumeMap = new HashMap<>();
+        resumeMap.put("id", resumex.getId());
+        resumeMap.put("title", resumex.getTitle());
+        resumeMap.put("description", resumex.getDescription());
+        resumeMap.put("photoUrl", resumex.getPhotoUrl());
+        resumeMap.put("colorHex", resumex.getColorHex());
+        resumeMap.put("borderStyle", resumex.getBorderStyle());
+        resumeMap.put("summary", resumex.getSummary());
+        resumeMap.put("firstName", resumex.getFirstName());
+        resumeMap.put("lastName", resumex.getLastName());
+        resumeMap.put("jobTitle", resumex.getJobTitle());
+        resumeMap.put("city", resumex.getCity());
+        resumeMap.put("country", resumex.getCountry());
+        resumeMap.put("phone", resumex.getPhone());
+        resumeMap.put("email", resumex.getEmail());
+        resumeMap.put("userValue", resumex.getUserValue().getId());
+        resumeMap.put("workExperiences", resumex.getWorkExperiences());
+        resumeMap.put("educations", resumex.getEducations());
+        resumeMap.put("skills", resumex.getSkills());
+        resumes.add(resumeMap);
+      }
+
+      Map<String, Object> response = new HashMap<>();
+      response.put("data", resumes);
+      response.put("currentPage", pageTuts.getNumber());
+      response.put("totalItems", pageTuts.getTotalElements());
+      response.put("totalPages", pageTuts.getTotalPages());
+
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @PatchMapping("resumes/{id}")
@@ -152,7 +220,7 @@ public class ResumeAdminController extends BaseController {
     User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
-  
+
     Resume resume = resumeService.EditResume(id, request, user);
 
     return ResponseEntity

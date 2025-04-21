@@ -94,8 +94,8 @@ public class PlanController extends BaseController {
 
   @GetMapping("plans")
   public ResponseEntity<List<Plan>> getPlans() {
-    List<Plan> plans = planService.listPlans();
-    return ResponseEntity.ok(plans);
+    // List<Plan> plans = planService.listPlans();
+    // return ResponseEntity.ok(plans);
   }
 
   @PostMapping("plans/{id}")

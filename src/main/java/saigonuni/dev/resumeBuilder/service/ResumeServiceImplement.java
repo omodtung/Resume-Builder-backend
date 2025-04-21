@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import saigonuni.dev.resumeBuilder.domain.Education;
@@ -436,5 +438,15 @@ public class ResumeServiceImplement implements ResumeService {
       System.err.println("Error" + e.getMessage());
       return null; // Added return statement
     }
+  }
+
+  @Override
+  public Page<Resume> findAll(Pageable pageable) {
+    return resumeRepository.findAll(pageable);
+  }
+
+  @Override
+  public Page<Resume> findByTitleContaining(String sort,Pageable pageable) {
+    return resumeRepository.findByTitleContaining(sort, pageable);
   }
 }

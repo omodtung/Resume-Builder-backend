@@ -1,12 +1,15 @@
 package saigonuni.dev.resumeBuilder.repository;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import saigonuni.dev.resumeBuilder.domain.Resume;
+import saigonuni.dev.resumeBuilder.domain.User;
 
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, String> {
@@ -31,6 +34,5 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
   @Query("UPDATE Resume r SET r.photoUrl = null WHERE r.id = :idResume")
   void updatePhotoUrlByResumeIdToNull(@Param("idResume") Long idResume);
 
-
-  
+  Page<Resume> findByTitleContaining(String title, Pageable pageable);
 }
