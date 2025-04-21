@@ -2,6 +2,8 @@ package saigonuni.dev.resumeBuilder.repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +28,18 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
   Plan findSpecificPlanByIdNative(@Param("id") Long id);
 
   Optional<Plan> findByStripePriceId(String stripePriceId);
+
+  
+
+  @Query(
+    "SELECT p FROM Plan p WHERE " +
+    "LOWER(p.plansName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+    "LOWER(p.Description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+    "LOWER(p.price) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+    "LOWER(p.stripePriceId) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
+  )
+  Page<Plan> searchByTermAcrossFields(
+    @Param("searchTerm") String searchTerm,
+    Pageable pageable
+  );
 }
