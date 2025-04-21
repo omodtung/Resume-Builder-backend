@@ -30,4 +30,7 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
   @Modifying
   @Query("UPDATE Resume r SET r.photoUrl = null WHERE r.id = :idResume")
   void updatePhotoUrlByResumeIdToNull(@Param("idResume") Long idResume);
+
+
+  
 }
