@@ -16,11 +16,10 @@ public interface UserService {
   List<User> listUsers();
 
   void deleteUser(String id);
-
+  User deleteUserById(String id);
   User updateUser(String resumeId, UpdateUserAdminRequest request);
   List<User> fetchCvByUserCreate();
   List<Resume> findResumesByUserId(Long userId);
   Object[] fetchUserMakeCV();
   List<Object> findResumesWithUserFullyRegister();
- 
 }

@@ -2,11 +2,13 @@ package saigonuni.dev.resumeBuilder.dto.User;
 
 import lombok.Builder;
 import lombok.Data;
-import saigonuni.dev.resumeBuilder.domain.User;
 
 @Data
 @Builder
-public class DeleteUserResponse {
+public class UserSubDTO {
 
-  private User user;
+  private Long id;
+  private String username;
+  private String email;
+ 
 }

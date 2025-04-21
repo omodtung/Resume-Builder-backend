@@ -156,4 +156,18 @@ public class UserServiceImplement implements UserService {
   public List<Object> findResumesWithUserFullyRegister() {
     return userRepository.findResumesWithUserFullyRegister();
   }
+
+  @Override
+  public User deleteUserById(String id) {
+    try {
+      User user = userRepository
+        .findById(Long.valueOf(id))
+        .orElseThrow(() -> new UserNotFoundException());
+
+      userRepository.delete(user);
+      return user;
+    } catch (Exception e) {
+      throw e;
+    }
+  }
 }
