@@ -28,6 +28,7 @@ import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.User.DeleteUserResponse;
 import saigonuni.dev.resumeBuilder.dto.User.GetUserAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.User.ListUserResponse;
 import saigonuni.dev.resumeBuilder.dto.User.UpdateUserAdminRequest;
@@ -142,9 +143,10 @@ public class UserAdminController {
 
   @DeleteMapping("users/{id}")
   @Operation(summary = "Delete user", description = "Deletes a user by ID")
-  public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-    userService.deleteUser(id);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<User> deleteUser(@PathVariable String id) {
+    User user = userService.deleteUserById(id);
+    // return ResponseEntity.noContent().build();
+    return ResponseEntity.status(HttpStatus.OK).body(user);
   }
 
   // @GetMapping("users/cv")
