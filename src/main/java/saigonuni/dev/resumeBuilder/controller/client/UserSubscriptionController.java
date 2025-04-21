@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort; // Add this import
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,8 +83,7 @@ public class UserSubscriptionController extends BaseController {
 
   @GetMapping(
     value = "user-subscription-fetch",
-    produces = { "application/json" },
-    params = "!page" // Only map if 'page' parameter is NOT present
+    produces = { "application/json" }
   )
   public ResponseEntity<List<UserSubscription>> fetchDataUserSubciption( // Changed return type
     @RequestHeader("Authorization") String authorizationHeader
@@ -107,11 +107,17 @@ public class UserSubscriptionController extends BaseController {
     @RequestParam(defaultValue = "3") int limit
   ) {
     try {
-      List<UserSubscription> usersSub = new ArrayList<UserSubscription>();
-      Pageable paging = PageRequest.of(page, limit);
+      List<UserSubscription> usersSub; // Initialize later
+      Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+      Pageable paging;
 
-      Page<UserSubscription> pageTuts = null;
-      if (sort == null) pageTuts = userSubcriptionRepository.findAll(paging);
+      if (sort != null && !sort.isEmpty()) {
+        paging = PageRequest.of(page, limit, Sort.by(direction, sort));
+      } else {
+        paging = PageRequest.of(page, limit); // Default paging without sort
+      }
+
+      Page<UserSubscription> pageTuts = userSubcriptionRepository.findAll(paging);
 
       usersSub = pageTuts.getContent();
 
