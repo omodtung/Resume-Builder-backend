@@ -118,7 +118,7 @@ public class UserAdminController {
         usersCut.add(userMap);
       }
       Map<String, Object> response = new HashMap<>();
-      response.put("users", usersCut);
+      response.put("data", usersCut);
       response.put("currentPage", pageTuts.getNumber());
       response.put("totalItems", pageTuts.getTotalElements());
       response.put("totalPages", pageTuts.getTotalPages());
@@ -179,6 +179,4 @@ public class UserAdminController {
       throw new RuntimeException("Error fetching resumes: " + e.getMessage());
     }
   }
-
-
 }
