@@ -42,18 +42,4 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
     @Param("searchTerm") String searchTerm,
     Pageable pageable
   );
-
-
-
-  @Query(
-    "SELECT p FROM Plan p WHERE " +
-    "LOWER(p.plansName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-    "LOWER(p.Description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-    "LOWER(p.price) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-    "LOWER(p.stripePriceId) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
-  )
-  Page<Plan> searchByTermAcrossFieldsWithColumn(
-    @Param("searchTerm") String searchTerm,   @Param("column") String column
-    Pageable pageable
-  );
 }

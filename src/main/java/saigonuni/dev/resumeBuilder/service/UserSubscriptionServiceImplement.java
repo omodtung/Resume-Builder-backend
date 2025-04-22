@@ -28,9 +28,9 @@ public class UserSubscriptionServiceImplement
   ) {
     try {
       // Fetch entities from the repository
-      List<UserSubscription> subscriptions = userSubscriptionRepository.fetchDataUserSubWithPlanWithUser(
+      List<UserSubscription> subscriptions = userSubscriptionRepository.FetchDataUserSubWithPlanWithUser(
         userId
-      ); // Fixed method name
+      );
 
       // Check if the result is null or empty
       if (subscriptions == null || subscriptions.isEmpty()) {
@@ -41,7 +41,43 @@ public class UserSubscriptionServiceImplement
       // Map the entities to DTOs
       return subscriptions
         .stream()
-        .map(this::mapToDTO)
+        .map(subscription -> {
+          UserSupcriptionDTO.UserSupcriptionDTOBuilder builder = UserSupcriptionDTO.builder();
+
+          // Map User fields
+          if (subscription.getUser() != null) {
+            builder.user(
+              new UserSubDTO(
+                subscription.getUser().getId(),
+                subscription.getUser().getUsername(),
+                subscription.getUser().getEmail()
+              )
+            );
+          }
+
+          // Map Plan fields
+          if (subscription.getPlan() != null) {
+            PlanSubscription planSubDTO = new PlanSubscription();
+            planSubDTO.setId(subscription.getPlan().getId());
+            planSubDTO.setPlansName(subscription.getPlan().getPlansName());
+            planSubDTO.setDescription(subscription.getPlan().getDescription());
+            planSubDTO.setPrice(subscription.getPlan().getPrice());
+            builder.plan(planSubDTO);
+          }
+
+          // Map other fields
+          builder.id(subscription.getId());
+          builder.stripeCustomerId(subscription.getStripeCustomerId());
+          builder.stripeSubscriptionId(subscription.getStripeSubscriptionId());
+          builder.stripeCurrentPeriodEnd(
+            subscription.getStripeCurrentPeriodEnd()
+          );
+          builder.stripeCancelAtPeriodEnd(
+            subscription.getStripeCancelAtPeriodEnd()
+          );
+
+          return builder.build();
+        })
         .collect(Collectors.toList());
     } catch (Exception e) {
       // Log the exception properly in a real application

@@ -73,13 +73,6 @@ public class PlanServiceImplement implements PlanService {
   public List<Plan> listPlans() {
     return planRepository.findAll();
   }
-
-  @Override
-  public List<Plan> listPlansFilterSort() {
-    return planRepository.searchByTermAcrossFieldsWithColumn();
-  }
-
-
   @Override
   public Plan updatePlan(Long id, UpdatePlanAdminRequest request, User user) {
     try {

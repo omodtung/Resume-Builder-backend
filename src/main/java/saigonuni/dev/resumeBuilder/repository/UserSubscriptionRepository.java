@@ -43,6 +43,8 @@ public interface UserSubscriptionRepository
   //   @Param("userId") Long userId
   // );
 
+
+
   @Query(
     "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p WHERE u.id = :userId"
   )
