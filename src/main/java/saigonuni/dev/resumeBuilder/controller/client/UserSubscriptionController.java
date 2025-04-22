@@ -152,7 +152,7 @@ public class UserSubscriptionController extends BaseController {
         usersSub1.add(userMap);
       }
       Map<String, Object> response = new HashMap<>();
-      response.put("usersSub", usersSub);
+      response.put("data", usersSub);
       response.put("currentPage", pageTuts.getNumber());
       response.put("totalItems", pageTuts.getTotalElements());
       response.put("totalPages", pageTuts.getTotalPages());

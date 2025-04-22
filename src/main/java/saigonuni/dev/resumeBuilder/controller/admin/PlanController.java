@@ -144,6 +144,51 @@ public class PlanController extends BaseController {
     }
   }
 
+  @GetMapping("plans-filter")
+  public ResponseEntity<Map<String, Object>> getPlansFilter(
+    @RequestParam(required = false) String sort,
+    @RequestParam(required = false) String filter,
+    @RequestParam(defaultValue = "desc") String order,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "3") int limit
+  ) {
+    try {
+      Sort.Direction direction = "asc".equalsIgnoreCase(order)
+        ? Sort.Direction.ASC
+        : Sort.Direction.DESC;
+      Pageable paging = PageRequest.of(page, limit, Sort.by(direction, "id"));
+      Page<Plan> pagePlans;
+
+      if (filter != null && !filter.trim().isEmpty()) {
+        pagePlans =
+          planRepository.searchByTermAcrossFieldsWithColumm(
+            filter.trim(),
+            sort,
+            paging
+          );
+      } else {
+        pagePlans = planRepository.findAll(paging);
+      }
+
+      List<Plan> plans = pagePlans.getContent();
+
+      Map<String, Object> response = new HashMap<>();
+      response.put("data", plans);
+      response.put("currentPage", pagePlans.getNumber());
+      response.put("totalItems", pagePlans.getTotalElements());
+      response.put("totalPages", pagePlans.getTotalPages());
+
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception e) {
+      Map<String, Object> errorResponse = new HashMap<>();
+      errorResponse.put("message", "Error retrieving plans: " + e.getMessage());
+      return new ResponseEntity<>(
+        errorResponse,
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
   @PostMapping("plans/{id}")
   @Operation(summary = "API Update Plan ", description = "Update API Plan")
   @LogExecutionTime

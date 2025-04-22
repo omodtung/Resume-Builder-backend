@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import saigonuni.dev.resumeBuilder.domain.Plan;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 
@@ -35,4 +36,16 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
   void updatePhotoUrlByResumeIdToNull(@Param("idResume") Long idResume);
 
   Page<Resume> findByTitleContaining(String title, Pageable pageable);
+
+  @Query(
+    "SELECT r FROM Resume r WHERE " +
+    "(:column = 'title' AND LOWER(r.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
+    "(:column = 'description' AND LOWER(r.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
+    "(:column = 'userValue' AND LOWER(r.userValue.user.username) LIKE LOWER(CONCAT('%', :searchTerm, '%')))"
+  )
+  Page<Resume> searchByTermAcrossFieldsWithColumn(
+    @Param("searchTerm") String searchTerm,
+    @Param("column") String column,
+    Pageable pageable
+  );
 }
