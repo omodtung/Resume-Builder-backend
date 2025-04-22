@@ -1,9 +1,9 @@
 package saigonuni.dev.resumeBuilder.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import saigonuni.dev.resumeBuilder.domain.Plan; // Added import
 import saigonuni.dev.resumeBuilder.domain.UserSubscription;
 import saigonuni.dev.resumeBuilder.dto.Plan.PlanSubscription;
 import saigonuni.dev.resumeBuilder.dto.User.UserSubDTO;
@@ -14,7 +14,7 @@ import saigonuni.dev.resumeBuilder.repository.UserSubscriptionRepository;
 public class UserSubscriptionServiceImplement
   implements UserSubcriptionService {
 
-  private UserSubscriptionRepository userSubscriptionRepository;
+  private final UserSubscriptionRepository userSubscriptionRepository;
 
   public UserSubscriptionServiceImplement(
     UserSubscriptionRepository userSubscriptionRepository
@@ -22,90 +22,100 @@ public class UserSubscriptionServiceImplement
     this.userSubscriptionRepository = userSubscriptionRepository;
   }
 
-  // @Override
-  // public List<UserSupcriptionDTO> fetchUserWithSpecialPlan(Long userId) {
-  //   // Fetch data from the repository
-  //   List<UserSubscription> subscriptions = userSubscriptionRepository.FetchDataUserSubWithPlan(
-  //     userId
-  //   );
-
-  //   // Check if the result is null or empty
-  //   if (subscriptions == null || subscriptions.isEmpty()) {
-  //     System.err.println("No subscriptions found for user ID: " + userId);
-  //     return List.of(); // Return an empty list
-  //   }
-
-  //   // Map the entities to DTOs
-  //   return subscriptions
-  //     .stream()
-  //     .map(this::mapToDTO)
-  //     .collect(Collectors.toList());
-  // }
-
-  // private UserSupcriptionDTO mapToDTO(UserSubscription entity) {
-  //   UserSupcriptionDTO dto = new UserSupcriptionDTO();
-
-  //   // Map User fields if User is not null
-  //   if (entity.getUser() != null) {
-  //     Long userId = entity.getUser().getId();
-  //     String username = entity.getUser().getUsername();
-
-  //     if (userId != null && username != null) {
-  //       dto.setUser(new UserSubDTO(userId, username));
-  //     } else {
-  //       // Log or handle cases where user fields are null
-  //       System.err.println(
-  //         "User fields are null for UserSubscription ID: " + entity.getId()
-  //       );
-  //     }
-  //   } else {
-  //     System.err.println(
-  //       "User is null for UserSubscription ID: " + entity.getId()
-  //     );
-  //   }
-
-  //   // Map Plan fields if Plan is not null
-  //   if (entity.getPlan() != null) {
-  //     String stripePriceId = entity.getPlan().getStripePriceId();
-  //     String planName = entity.getPlan().getName();
-
-  //     if (stripePriceId != null && planName != null) {
-  //       dto.setPlan(new PlanSubscription(stripePriceId, planName));
-  //     } else {
-  //       // Log or handle cases where plan fields are null
-  //       System.err.println(
-  //         "Plan fields are null for UserSubscription ID: " + entity.getId()
-  //       );
-  //     }
-  //   } else {
-  //     System.err.println(
-  //       "Plan is null for UserSubscription ID: " + entity.getId()
-  //     );
-  //   }
-
-  //   // Map other fields of UserSubscription
-  //   dto.setId(entity.getId());
-  //   dto.setStripeCustomerId(entity.getStripeCustomerId());
-  //   dto.setStripeSubscriptionId(entity.getStripeSubscriptionId());
-  //   dto.setStripeCurrentPeriodEnd(entity.getStripeCurrentPeriodEnd());
-  //   dto.setStripeCancelAtPeriodEnd(entity.getStripeCancelAtPeriodEnd());
-
-  //   return dto;
-  // }
-
   @Override
   public List<UserSupcriptionDTO> FetchDataUserSubWithPlanWithUser(
     Long userId
   ) {
-    List<UserSupcriptionDTO> subscriptions = userSubscriptionRepository.FetchDataUserSubWithPlanWithUser( Long userId );
-    return subscriptions;
+    try {
+      // Fetch entities from the repository
+      List<UserSubscription> subscriptions = userSubscriptionRepository.fetchDataUserSubWithPlanWithUser(
+        userId
+      ); // Fixed method name
+
+      // Check if the result is null or empty
+      if (subscriptions == null || subscriptions.isEmpty()) {
+        System.err.println("No subscriptions found for user ID: " + userId);
+        return List.of(); // Return an empty list
+      }
+
+      // Map the entities to DTOs
+      return subscriptions
+        .stream()
+        .map(this::mapToDTO)
+        .collect(Collectors.toList());
+    } catch (Exception e) {
+      // Log the exception properly in a real application
+      System.err.println(
+        "Error fetching subscriptions with plan and user: " + e.getMessage()
+      );
+      e.printStackTrace(); // Added stack trace for debugging
+      return List.of(); // Return empty list on error for now
+    }
   }
 
   @Override
   public List<UserSubscription> FetchDataUserSub() {
-    // Fetch data from the repository
-    List<UserSubscription> subscriptions = userSubscriptionRepository.FetchDataUserSub();
+    try {
+      // Fetch data from the repository
+      List<UserSubscription> subscriptions = userSubscriptionRepository.fetchDataUserSub(); // Fixed method name
+      return subscriptions;
+    } catch (Exception e) {
+      System.err.println(
+        "Error fetching user subscriptions: " + e.getMessage()
+      );
+      e.printStackTrace(); // Added stack trace for debugging
+      return List.of(); // Return empty list on error
+    }
+  }
 
-    return subscriptions;
+  private UserSupcriptionDTO mapToDTO(UserSubscription entity) {
+    // Use the builder pattern generated by Lombok
+    UserSupcriptionDTO.UserSupcriptionDTOBuilder builder = UserSupcriptionDTO.builder();
+
+    // Map User fields if User is not null
+    if (entity.getUser() != null) {
+      Long userId = entity.getUser().getId(); // Assumes getId() exists
+      String username = entity.getUser().getUsername(); // Assumes getUsername() exists
+      String email = entity.getUser().getEmail(); // Assumes getEmail() exists
+
+      // Use the correct constructor for UserSubDTO
+      if (userId != null && username != null && email != null) {
+        builder.user(new UserSubDTO(userId, username, email));
+      } else {
+        System.err.println(
+          "User fields (id, username, or email) are null for UserSubscription ID: " +
+          entity.getId()
+        );
+      }
+    } else {
+      System.err.println(
+        "User is null for UserSubscription ID: " + entity.getId()
+      );
+    }
+
+    // Map Plan fields if Plan is not null
+    if (entity.getPlan() != null) {
+      Plan planEntity = entity.getPlan();
+      PlanSubscription planSubDTO = new PlanSubscription();
+      planSubDTO.setId(planEntity.getId()); // Assumes getId() exists
+      planSubDTO.setPlansName(planEntity.getPlansName()); // Use correct getter
+      planSubDTO.setDescription(planEntity.getDescription()); // Assumes getDescription() exists
+      planSubDTO.setPrice(planEntity.getPrice()); // Assumes getPrice() exists
+
+      builder.plan(planSubDTO);
+    } else {
+      System.err.println(
+        "Plan is null for UserSubscription ID: " + entity.getId()
+      );
+    }
+
+    // Map other fields of UserSubscription
+    builder.id(entity.getId());
+    builder.stripeCustomerId(entity.getStripeCustomerId());
+    builder.stripeSubscriptionId(entity.getStripeSubscriptionId());
+    builder.stripeCurrentPeriodEnd(entity.getStripeCurrentPeriodEnd());
+    builder.stripeCancelAtPeriodEnd(entity.getStripeCancelAtPeriodEnd());
+
+    return builder.build();
   }
 }

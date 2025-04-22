@@ -3,7 +3,6 @@ package saigonuni.dev.resumeBuilder.repository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,6 +36,13 @@ public interface UserSubscriptionRepository
   // fetch User + Plan Support Checking The Plan Special
   // @Query("SELECT us FROM UserSubscription us JOIN us.plan ")
   // Removed @Modifying as this is a SELECT query
+  // @Query(
+  //   "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p WHERE u.id = :userId"
+  // )
+  // List<UserSupcriptionDTO> FetchDataUserSubWithPlanWithUser( // Changed return type to List<UserSubscription>
+  //   @Param("userId") Long userId
+  // );
+
   @Query(
     "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p WHERE u.id = :userId"
   )
