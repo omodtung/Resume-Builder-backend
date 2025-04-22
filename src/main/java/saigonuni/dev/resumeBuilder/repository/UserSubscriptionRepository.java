@@ -36,11 +36,11 @@ public interface UserSubscriptionRepository
 
   // fetch User + Plan Support Checking The Plan Special
   // @Query("SELECT us FROM UserSubscription us JOIN us.plan ")
-  @Modifying
+  // Removed @Modifying as this is a SELECT query
   @Query(
     "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p WHERE u.id = :userId"
   )
-  List<UserSupcriptionDTO> FetchDataUserSubWithPlan(
+  List<UserSubscription> FetchDataUserSubWithPlanWithUser( // Changed return type to List<UserSubscription>
     @Param("userId") Long userId
   );
 

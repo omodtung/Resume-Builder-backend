@@ -9,4 +9,5 @@ import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 public interface UserSubcriptionService {
   // List<UserSubscription> FetchDataUserSubWithPlan(Long userId);
   List<UserSubscription> FetchDataUserSub();
+  List<UserSupcriptionDTO> FetchDataUserSubWithPlanWithUser(Long userId);
 }

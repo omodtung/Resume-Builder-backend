@@ -81,6 +81,20 @@ public class UserSubscriptionController extends BaseController {
   //   return ResponseEntity.ok(userSubscriptionList);
   // }
 
+  @GetMapping(value = "user-subscription-test")
+  public ResponseEntity<List<UserSupcriptionDTO>> fetchDataUserSubciptionTest( // Changed return type
+    @RequestHeader("Authorization") String authorizationHeader
+  ) {
+    User user = userDC.findUserNameByToken(
+      decode.AuthenticationDecode(authorizationHeader)
+    );
+    List<UserSupcriptionDTO> userSubscriptionList = userSubcriptionService.FetchDataUserSubWithPlanWithUser(
+      user.getId()
+    );
+    // Return the list directly
+    return ResponseEntity.ok(userSubscriptionList);
+  }
+
   @GetMapping(
     value = "user-subscription-fetch",
     produces = { "application/json" }
@@ -96,10 +110,7 @@ public class UserSubscriptionController extends BaseController {
     return ResponseEntity.ok(userSubscriptionList);
   }
 
-  @GetMapping(
-    value = "user-subscription"
-
-  )
+  @GetMapping(value = "user-subscription")
   public ResponseEntity<Map<String, Object>> fetchDataUserSubciption( // Changed return type
     @RequestParam(required = false) String sort,
     @RequestParam(required = false) String order,
@@ -108,7 +119,9 @@ public class UserSubscriptionController extends BaseController {
   ) {
     try {
       List<UserSubscription> usersSub; // Initialize later
-      Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+      Sort.Direction direction = "asc".equalsIgnoreCase(order)
+        ? Sort.Direction.ASC
+        : Sort.Direction.DESC;
       Pageable paging;
 
       if (sort != null && !sort.isEmpty()) {
@@ -117,7 +130,9 @@ public class UserSubscriptionController extends BaseController {
         paging = PageRequest.of(page, limit); // Default paging without sort
       }
 
-      Page<UserSubscription> pageTuts = userSubcriptionRepository.findAll(paging);
+      Page<UserSubscription> pageTuts = userSubcriptionRepository.findAll(
+        paging
+      );
 
       usersSub = pageTuts.getContent();
 

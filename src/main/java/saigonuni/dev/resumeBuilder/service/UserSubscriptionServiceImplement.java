@@ -94,6 +94,14 @@ public class UserSubscriptionServiceImplement
   // }
 
   @Override
+  public List<UserSupcriptionDTO> FetchDataUserSubWithPlanWithUser(
+    Long userId
+  ) {
+    List<UserSupcriptionDTO> subscriptions = userSubscriptionRepository.FetchDataUserSubWithPlanWithUser( Long userId );
+    return subscriptions;
+  }
+
+  @Override
   public List<UserSubscription> FetchDataUserSub() {
     // Fetch data from the repository
     List<UserSubscription> subscriptions = userSubscriptionRepository.FetchDataUserSub();
