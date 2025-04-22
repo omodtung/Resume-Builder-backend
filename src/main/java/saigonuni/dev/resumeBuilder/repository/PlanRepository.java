@@ -29,8 +29,6 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
   Optional<Plan> findByStripePriceId(String stripePriceId);
 
-  
-
   @Query(
     "SELECT p FROM Plan p WHERE " +
     "LOWER(p.plansName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
@@ -40,6 +38,21 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
   )
   Page<Plan> searchByTermAcrossFields(
     @Param("searchTerm") String searchTerm,
+    Pageable pageable
+  );
+
+  @Query(
+    "SELECT p FROM Plan p WHERE " +
+    "CASE " +
+    "WHEN :column = 'plansName' THEN LOWER(p.plansName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+    "WHEN :column = 'Description' THEN LOWER(p.Description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+    "WHEN :column = 'price' THEN LOWER(p.price) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+    "WHEN :column = 'stripePriceId' THEN LOWER(p.stripePriceId) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+    "ELSE FALSE END"
+  )
+  Page<Plan> searchByTermAcrossFieldsWithColumm(
+    @Param("searchTerm") String searchTerm,
+    @Param("column") String column,
     Pageable pageable
   );
 }

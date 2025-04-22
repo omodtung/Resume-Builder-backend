@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import saigonuni.dev.resumeBuilder.domain.Plan;
 import saigonuni.dev.resumeBuilder.domain.User;
@@ -72,6 +74,19 @@ public class PlanServiceImplement implements PlanService {
   @Override
   public List<Plan> listPlans() {
     return planRepository.findAll();
+  }
+
+  @Override
+  public Page<Plan> listPlanswithfilter(
+    String searchTerm,
+    String column,
+    Pageable pageable
+  ) {
+    return planRepository.searchByTermAcrossFieldsWithColumm(
+      searchTerm,
+      column,
+      pageable
+    );
   }
 
   @Override
