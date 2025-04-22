@@ -1,10 +1,13 @@
 package saigonuni.dev.resumeBuilder.controller.client;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import jdk.jfr.Description;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
@@ -64,24 +69,11 @@ public class UserSubscriptionController extends BaseController {
     this.userDC = userDC;
   }
 
-  // @GetMapping(
-  //   value = "user-subscription-plan-registration",
-  //   produces = { "application/json" }
-  // )
-  // public ResponseEntity<List<UserSupcriptionDTO>> fetchUserWithSpecialPlan( // Changed return type
-  //   @RequestHeader("Authorization") String authorizationHeader
-  // ) {
-  //   User user = userDC.findUserNameByToken(
-  //     decode.AuthenticationDecode(authorizationHeader)
-  //   );
-  //   List<UserSupcriptionDTO> userSubscriptionList = userSubcriptionService.fetchUserWithSpecialPlan(
-  //     user.getId()
-  //   );
-  //   // Return the list directly
-  //   return ResponseEntity.ok(userSubscriptionList);
-  // }
-
-  @GetMapping(value = "user-subscription-test")
+  @GetMapping(value = "user-subscription-follow-userId")
+  @Operation(
+    summary = "API find Plans depend on subcription user have to check",
+    description = "check user if user have this plan to do a cv creation or feature creation"
+  )
   public ResponseEntity<List<UserSupcriptionDTO>> fetchDataUserSubciptionTest( // Changed return type
     @RequestHeader("Authorization") String authorizationHeader
   ) {
@@ -91,7 +83,6 @@ public class UserSubscriptionController extends BaseController {
     List<UserSupcriptionDTO> userSubscriptionList = userSubcriptionService.FetchDataUserSubWithPlanWithUser(
       user.getId()
     );
-    // Return the list directly
     return ResponseEntity.ok(userSubscriptionList);
   }
 
@@ -99,19 +90,18 @@ public class UserSubscriptionController extends BaseController {
     value = "user-subscription-fetch",
     produces = { "application/json" }
   )
-  public ResponseEntity<List<UserSubscription>> fetchDataUserSubciption( // Changed return type
+  public ResponseEntity<List<UserSubscription>> fetchDataUserSubciption( 
     @RequestHeader("Authorization") String authorizationHeader
   ) {
     User user = userDC.findUserNameByToken(
       decode.AuthenticationDecode(authorizationHeader)
     );
     List<UserSubscription> userSubscriptionList = userSubcriptionService.FetchDataUserSub();
-    // Return the list directly
     return ResponseEntity.ok(userSubscriptionList);
   }
 
   @GetMapping(value = "user-subscription")
-  public ResponseEntity<Map<String, Object>> fetchDataUserSubciption( // Changed return type
+  public ResponseEntity<Map<String, Object>> fetchDataUserSubciption(
     @RequestParam(required = false) String sort,
     @RequestParam(required = false) String order,
     @RequestParam(defaultValue = "0") int page,
