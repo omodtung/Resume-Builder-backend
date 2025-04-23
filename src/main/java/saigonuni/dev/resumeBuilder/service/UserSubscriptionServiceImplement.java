@@ -93,7 +93,7 @@ public class UserSubscriptionServiceImplement
   public List<UserSubscription> FetchDataUserSub() {
     try {
       // Fetch data from the repository
-      List<UserSubscription> subscriptions = userSubscriptionRepository.fetchDataUserSub(); // Fixed method name
+      List<UserSubscription> subscriptions = userSubscriptionRepository.FetchDataUserSub(); // Fixed method name
       return subscriptions;
     } catch (Exception e) {
       System.err.println(
