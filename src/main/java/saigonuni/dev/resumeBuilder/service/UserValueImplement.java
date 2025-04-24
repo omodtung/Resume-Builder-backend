@@ -35,4 +35,8 @@ public class UserValueImplement implements UserValueService {
       throw new DuplicateKeyException(CommonMessage.DUPLICATE_KEY.getMessage());
     }
   }
+
+  public int CountCvCreatedByUserId(Long userId) {
+    return useValueRepository.CountCvCreatedByUserId(userId);
+  }
 }

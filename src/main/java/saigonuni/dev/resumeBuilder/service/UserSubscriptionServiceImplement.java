@@ -2,15 +2,18 @@ package saigonuni.dev.resumeBuilder.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import saigonuni.dev.resumeBuilder.domain.Plan; // Added import
 import saigonuni.dev.resumeBuilder.domain.UserSubscription;
 import saigonuni.dev.resumeBuilder.dto.Plan.PlanSubscription;
 import saigonuni.dev.resumeBuilder.dto.User.UserSubDTO;
 import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
+import saigonuni.dev.resumeBuilder.message.UserSubcription;
 import saigonuni.dev.resumeBuilder.repository.UserSubscriptionRepository;
 
 @Service
+@Slf4j
 public class UserSubscriptionServiceImplement
   implements UserSubcriptionService {
 
@@ -96,15 +99,16 @@ public class UserSubscriptionServiceImplement
   ) {
     try {
       // Fetch entity from the repository
-      UserSubscription subscription =
-        userSubscriptionRepository.findUserActivateSubscription(
-          userId,
-          isActive
-        );
+      UserSubscription subscription = userSubscriptionRepository.findUserActivateSubscription(
+        userId,
+        isActive
+      );
 
       // Check if the result is null
       if (subscription == null) {
-        System.err.println("No active subscription found for user ID: " + userId);
+        System.err.println(
+          "No active subscription found for user ID: " + userId
+        );
         return null; // Return null if no subscription is found
       }
 
@@ -137,7 +141,9 @@ public class UserSubscriptionServiceImplement
       builder.stripeCustomerId(subscription.getStripeCustomerId());
       builder.stripeSubscriptionId(subscription.getStripeSubscriptionId());
       builder.stripeCurrentPeriodEnd(subscription.getStripeCurrentPeriodEnd());
-      builder.stripeCancelAtPeriodEnd(subscription.getStripeCancelAtPeriodEnd());
+      builder.stripeCancelAtPeriodEnd(
+        subscription.getStripeCancelAtPeriodEnd()
+      );
 
       return builder.build();
     } catch (Exception e) {

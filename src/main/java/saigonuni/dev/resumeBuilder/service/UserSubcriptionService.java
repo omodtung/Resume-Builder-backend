@@ -14,7 +14,7 @@ public interface UserSubcriptionService {
   List<UserSubscription> FetchDataUserSub();
   // fetch data user subcribe follow a special user id 
   List<UserSupcriptionDTO> FetchDataUserSubWithPlanWithUser(Long userId);
-  UserSubcription FetchSpecialUserSubActive(Long userId);
+
   UserSupcriptionDTO findUserActivateSubscription(
     Long userId,
     Boolean isActive

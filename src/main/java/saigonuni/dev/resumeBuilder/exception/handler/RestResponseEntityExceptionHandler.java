@@ -1,18 +1,17 @@
 package saigonuni.dev.resumeBuilder.exception.handler;
 
 import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import saigonuni.dev.resumeBuilder.exception.BadRequestException;
 import saigonuni.dev.resumeBuilder.exception.DuplicateKeyException;
 import saigonuni.dev.resumeBuilder.exception.ResumeNotFoundException;
 import saigonuni.dev.resumeBuilder.exception.UserNotFoundException;
 import saigonuni.dev.resumeBuilder.message.UserMessage;
+import saigonuni.dev.resumeBuilder.message.UserSubcription;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler
@@ -78,19 +77,19 @@ public class RestResponseEntityExceptionHandler
   public ResponseEntity<ApiExceptionResponse> handleBadRequestExceptionKeyException(
     BadRequestException exception
   ) {
-    HttpStatus httpStatus = EXCEPTION_TO_HTTP_STATUS_CODE.getOrDefault(
-      exception.getClass(),
-      HttpStatus.NOT_FOUND
-    );
-    String errorCode = EXCEPTION_TO_ERROR_CODE.getOrDefault(
-      exception.getClass(),
-      UserMessage.USER_NOT_FOUND_KEY
-    );
+    // HttpStatus httpStatus = EXCEPTION_TO_HTTP_STATUS_CODE.getOrDefault(
+    //   exception.getClass(),
+    //   HttpStatus.NOT_FOUND
+    // );
+    // String errorCode = EXCEPTION_TO_ERROR_CODE.getOrDefault(
+    //   exception.getClass(),
+    //   UserMessage.USER_NOT_FOUND_KEY
+    // );
 
     ApiExceptionResponse response = ApiExceptionResponse
       .builder()
-      .status(httpStatus)
-      .errorCode(errorCode)
+      .status(HttpStatus.BAD_REQUEST)
+      .errorCode(exception.getKey())
       .message(exception.getMessage())
       .build();
 

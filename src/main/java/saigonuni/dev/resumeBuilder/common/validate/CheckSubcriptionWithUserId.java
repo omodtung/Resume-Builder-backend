@@ -8,16 +8,20 @@ import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 import saigonuni.dev.resumeBuilder.exception.BadRequestException;
 import saigonuni.dev.resumeBuilder.message.UserSubcription;
 import saigonuni.dev.resumeBuilder.service.UserSubcriptionService;
+import saigonuni.dev.resumeBuilder.service.UserValueImplement;
 
 @Service
 public class CheckSubcriptionWithUserId {
 
   private UserSubcriptionService userSubcriptionService;
+  private UserValueImplement userValueImplement;
 
   public CheckSubcriptionWithUserId(
-    UserSubcriptionService userSubcriptionService
+    UserSubcriptionService userSubcriptionService,
+    UserValueImplement userValueImplement
   ) {
     this.userSubcriptionService = userSubcriptionService;
+    this.userValueImplement = userValueImplement;
   }
 
   public Boolean checkServiceUsage(User userId, Long planId) {
@@ -55,6 +59,7 @@ public class CheckSubcriptionWithUserId {
       true
     );
     // Corrected: Check only for null, as userSubGet is an object, not a collection
+    // todo fix this error not thrown exacly name of error
     if (userSubGet == null) {
       throw new BadRequestException(
         UserSubcription.USER_SUBSCRIPTION_NOT_FOUND,
@@ -64,13 +69,25 @@ public class CheckSubcriptionWithUserId {
 
     // Corrected: Use .equals() for String comparison and compare with enum's name()
     if (Plan.BASIC.name().equals(userSubGet.getPlan().getPlansName())) {
-      System.out.println("User has a basic plan");
+      int countUser = userValueImplement.CountCvCreatedByUserId(userId);
+      if (countUser > 4) {
+        throw new BadRequestException(
+          UserSubcription.LIMIT_BASIC_REACT,
+          UserSubcription.LIMIT_BASIC_REACT_MESSAGE
+        );
+      }
     }
-    if (Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())) {
-      System.out.println("User has a premium plan");
-    }
+
+    if (Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())) {}
+
     if (Plan.FREE.name().equals(userSubGet.getPlan().getPlansName())) {
-      System.out.println("User has a free plan");
+      int countUser = userValueImplement.CountCvCreatedByUserId(userId);
+      if (countUser > 3) {
+        throw new BadRequestException(
+          UserSubcription.LIMIT_FREE_REACT_KEY,
+          UserSubcription.LIMIT_FREE_REACT_MESSAGE
+        );
+      }
     }
   }
 }
