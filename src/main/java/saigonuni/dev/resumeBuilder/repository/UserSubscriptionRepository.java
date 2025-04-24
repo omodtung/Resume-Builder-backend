@@ -43,8 +43,6 @@ public interface UserSubscriptionRepository
   //   @Param("userId") Long userId
   // );
 
-
-
   @Query(
     "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p WHERE u.id = :userId"
   )
@@ -57,4 +55,40 @@ public interface UserSubscriptionRepository
     "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p"
   )
   List<UserSubscription> FetchDataUserSub();
+
+  // @Modifying
+  // @Transactional
+  // @Query(
+  //   "UPDATE UserSubscription r SET r.isActive = :isActive WHERE r.user.id = :idUserSub"
+  // )
+  // void updateActiveByUserId(
+  //   @Param("idUserSub") Long idUserSub,
+  //   @Param("isActive") Boolean isActive,
+  //   @Param("planId") Long plan
+  // );
+
+  // to do fix in new plan back up to old plan :>>>
+  // after change to new plan but regret and gonna check to ole plan
+  @Modifying
+  @Transactional
+  @Query(
+    "UPDATE UserSubscription r SET r.isActive = :isActive " +
+    "WHERE r.user.id = :idUserSub " +
+    "AND r.plan.id != :planId " +
+    "AND (r.stripeCancelAtPeriodEnd IS NULL OR r.stripeCancelAtPeriodEnd = TRUE)"
+  )
+  void updateActiveByUserId(
+    @Param("idUserSub") Long idUserSub,
+    @Param("isActive") Boolean isActive,
+    @Param("planId") Long planId
+  );
+
+  @Query(
+    "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p " +
+    "WHERE u.id = :idUserSub AND us.isActive = :isActive"
+  )
+UserSubscription findUserActivateSubscription(
+    @Param("idUserSub") Long idUserSub,
+    @Param("isActive") Boolean isActive
+  );
 }

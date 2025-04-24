@@ -32,8 +32,8 @@ public class StripeService {
           .build()
       )
       .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-      .setSuccessUrl("http://localhost:8080/billing/success") // Replace with your success URL
-      .setCancelUrl("http://localhost:8080/billing") // Replace with your cancel URL
+      .setSuccessUrl("http://localhost:3000/billing/success") // Replace with your success URL
+      .setCancelUrl("http://localhost:3000/billing") // Replace with your cancel URL
       .setCustomerEmail(user.getEmail())
       .setSubscriptionData(
         SessionCreateParams.SubscriptionData

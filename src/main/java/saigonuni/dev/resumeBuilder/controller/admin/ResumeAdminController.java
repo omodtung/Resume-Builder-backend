@@ -16,17 +16,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartFile;
+import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
+import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
+import saigonuni.dev.resumeBuilder.common.validate.CheckSubcriptionWithUserId;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.domain.UserSubscription;
+import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
@@ -37,6 +39,7 @@ import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
 import saigonuni.dev.resumeBuilder.service.JwtService;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
+import saigonuni.dev.resumeBuilder.service.UserSubcriptionService;
 
 @Tag(
   name = "Resume Admin Controller",
@@ -51,6 +54,8 @@ public class ResumeAdminController extends BaseController {
   private final UserDC userDC;
   private final Decode decode;
   private final ResumeRepository resumeRepository;
+  private final UserSubcriptionService userSubcriptionService;
+  private final CheckSubcriptionWithUserId checkSubcriptionWithUserId;
 
   @Autowired
   public ResumeAdminController(
@@ -58,13 +63,17 @@ public class ResumeAdminController extends BaseController {
     JwtService jwtService,
     Decode decode,
     UserDC userDC,
-    ResumeRepository resumeRepository
+    ResumeRepository resumeRepository,
+    UserSubcriptionService userSubcriptionService,
+    CheckSubcriptionWithUserId checkSubcriptionWithUserId
   ) {
     this.resumeService = resumeService;
     this.jwtService = jwtService;
     this.decode = decode;
     this.userDC = userDC;
     this.resumeRepository = resumeRepository;
+    this.userSubcriptionService = userSubcriptionService;
+    this.checkSubcriptionWithUserId = checkSubcriptionWithUserId;
   }
 
   // @PostMapping("resumes")
@@ -88,6 +97,7 @@ public class ResumeAdminController extends BaseController {
         request = CreateResumeAdminRequest.emptyResume();
       }
 
+      checkSubcriptionWithUserId.permissionForEachPlan(user.getId());
       Resume resume = resumeService.addResume(request, user, null);
       return ResponseEntity.ok(
         CreateResumeAdminResponse.builder().resume(resume).build()

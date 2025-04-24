@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils; // Add this import
 import org.springframework.util.StreamUtils; // Add this import
 import org.springframework.web.bind.annotation.*;
+// import saigonuni.dev.resumeBuilder.common.enums.UserSubcription;
 import saigonuni.dev.resumeBuilder.domain.Plan; // Import Plan
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.domain.UserSubscription;
@@ -316,6 +317,9 @@ public class stripeRoute {
         User user = userOptional.get();
         // Cập nhật stripeCustomerId nếu cần (logic tương tự như trước)
         // ...
+
+        // update Status IsActive of UserSubcription before using a new Plan
+        // userSubscriptionRepository.updateActiveByUserId(user.getId(), false);
       } else {
         log.warn(
           "User not found for id={} during manual session completion handling (session id={}).",
@@ -419,6 +423,9 @@ public class stripeRoute {
     }
     User user = userOptional.get();
 
+    // update before plan become false
+    // userSubscriptionRepository.updateActiveByUserId(user.getId(), false);
+
     // Trích xuất Price ID từ items
     String stripePriceId = null;
     if (
@@ -456,6 +463,8 @@ public class stripeRoute {
       return;
     }
     Plan plan = planOptional.get();
+
+    userSubscriptionRepository.updateActiveByUserId(user.getId(), false, plan.getId());
 
     boolean isActiveOrValid =
       "active".equals(status) ||

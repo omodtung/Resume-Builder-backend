@@ -63,6 +63,9 @@ public class UserSubscription {
   @Column(nullable = true)
   private LocalDateTime updatedAt;
 
+  @Column(nullable = true)
+  private Boolean isActive = true;
+
   @PreUpdate
   public void setLastUpdate() {
     this.updatedAt = LocalDateTime.now();
