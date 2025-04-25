@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,8 +25,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+// Import related domain entities
+import saigonuni.dev.resumeBuilder.domain.Education;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.domain.UserValue;
+import saigonuni.dev.resumeBuilder.domain.WorkExperience;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.User.DeleteUserResponse;
@@ -88,6 +93,7 @@ public class UserAdminController {
       .body(ListUserResponse.builder().user(users).build());
   }
 
+  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
   @GetMapping("users-pagi")
   @Operation(summary = "List all users", description = "Fetches all users")
   public ResponseEntity<Map<String, Object>> listUsersPagi(
@@ -114,6 +120,32 @@ public class UserAdminController {
         userMap.put("email", user.getEmail());
         userMap.put("role", user.getRole());
         userMap.put("createdAt", user.getCreatedAt());
+
+        // --- Corrected data fetching based on relationships ---
+        UserValue userValue = null;
+        List<Resume> resumes = null;
+        List<WorkExperience> workExperiences = null;
+        List<Education> educations = null;
+
+        // Assuming User has a getUserValues() method returning List<UserValue>
+        List<UserValue> userValues = user.getUserValues();
+        if (userValues != null && !userValues.isEmpty()) {
+          userValue = userValues.get(0); // Get the first UserValue
+          resumes = userValue.getResume(); // Get resumes from the first UserValue
+          if (resumes != null && !resumes.isEmpty()) {
+            Resume firstResume = resumes.get(0); // Get the first Resume
+            workExperiences = firstResume.getWorkExperiences();
+            educations = firstResume.getEducations();
+          }
+        }
+
+        userMap.put("userValue", userValue); // Or specific fields from userValue if needed
+        userMap.put("resume", resumes); // Put the list of resumes (or maybe just the firstResume?)
+        userMap.put("workExperience", workExperiences);
+        userMap.put("education", educations);
+        // Assuming User has getUserSubscriptions()
+        userMap.put("userSubscription", user.getUserSubscriptions());
+        // --- End of corrected data fetching ---
 
         usersCut.add(userMap);
       }

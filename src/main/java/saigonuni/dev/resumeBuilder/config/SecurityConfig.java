@@ -30,6 +30,7 @@ public class SecurityConfig implements WebMvcConfigurer {
       .disable()
       .authorizeHttpRequests()
       .requestMatchers(
+        "/**",
         "/auth/authenticate",
         "/auth/refresh-token",
         "/auth/register",
@@ -46,10 +47,10 @@ public class SecurityConfig implements WebMvcConfigurer {
         "/images/**"
       )
       .permitAll()
-      .requestMatchers("/admin/**")
-      .hasRole("ADMIN")
-      .requestMatchers("/user/**")
-      .hasAnyRole("USER", "ADMIN")
+      // .requestMatchers("/admin/**")
+      // .hasRole("ADMIN")
+      // .requestMatchers("/user/**")
+      // .hasAnyRole("USER", "ADMIN")
       .anyRequest()
       .authenticated()
       .and()

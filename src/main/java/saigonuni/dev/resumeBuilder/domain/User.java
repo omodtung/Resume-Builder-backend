@@ -105,7 +105,18 @@
       return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
 
-    // Getters and setters
+    // Explicitly adding methods required by UserDetails
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    // Getters and setters (Lombok @Data should handle others)
 
     @Override
     public boolean isAccountNonExpired() {
