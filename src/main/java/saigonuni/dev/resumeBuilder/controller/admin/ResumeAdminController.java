@@ -177,6 +177,7 @@ public class ResumeAdminController extends BaseController {
         resumeMap.put("workExperiences", resumex.getWorkExperiences());
         resumeMap.put("educations", resumex.getEducations());
         resumeMap.put("skills", resumex.getSkills());
+        resumeMap.put("type", resumex.getType());
         resumes.add(resumeMap);
       }
 
@@ -248,6 +249,7 @@ public class ResumeAdminController extends BaseController {
         resumeMap.put("workExperiences", resumex.getWorkExperiences());
         resumeMap.put("educations", resumex.getEducations());
         resumeMap.put("skills", resumex.getSkills());
+        resumeMap.put("type", resumex.getType());
         resumes.add(resumeMap);
       }
 
