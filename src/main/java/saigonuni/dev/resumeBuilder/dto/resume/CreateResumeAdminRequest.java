@@ -62,6 +62,8 @@ public class CreateResumeAdminRequest {
   @NotEmpty(message = "Email cannot be empty")
   private String email;
 
+  private String type;
+
   private List<WorkExperienceDTO> workExperiences = new ArrayList<>();
   private List<EducationDTO> educations = new ArrayList<>();
   private List<String> skills = new ArrayList<>();

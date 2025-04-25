@@ -48,7 +48,7 @@ public class CheckOutController {
     this.userDC = userDC;
   }
 
-  @PostMapping("/checkout-payment")
+  @PostMapping("user/checkout-payment")
   public ResponseEntity<StripeResponse> checkoutProducts(
     @RequestParam("PlanId") Long PlanId,
     @RequestHeader("Authorization") String authorizationHeader

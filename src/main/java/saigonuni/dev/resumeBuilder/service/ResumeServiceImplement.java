@@ -126,6 +126,7 @@ public class ResumeServiceImplement implements ResumeService {
       .email(request.getEmail())
       .skills(request.getSkills())
       .userValue(userValue)
+      .type(request.getType())
       .build();
 
     Resume savedResume = resumeRepository.save(resume);
@@ -446,7 +447,7 @@ public class ResumeServiceImplement implements ResumeService {
   }
 
   @Override
-  public Page<Resume> findByTitleContaining(String sort,Pageable pageable) {
+  public Page<Resume> findByTitleContaining(String sort, Pageable pageable) {
     return resumeRepository.findByTitleContaining(sort, pageable);
   }
 }

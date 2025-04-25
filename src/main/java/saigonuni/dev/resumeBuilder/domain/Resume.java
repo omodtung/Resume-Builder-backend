@@ -42,6 +42,7 @@ public class Resume implements Serializable {
   private String country;
   private String phone;
   private String email;
+  private String type ;
 
   @ManyToOne
   @JoinColumn(name = "user_value_id", nullable = true)
@@ -270,4 +271,20 @@ public class Resume implements Serializable {
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public UserValue getUserValue() {
+        return userValue;
+    }
+
+    public void setUserValue(UserValue userValue) {
+        this.userValue = userValue;
+    }
 }
