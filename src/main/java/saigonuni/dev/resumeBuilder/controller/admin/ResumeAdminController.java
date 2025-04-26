@@ -28,7 +28,6 @@ import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.domain.UserSubscription;
-import saigonuni.dev.resumeBuilder.dto.OpenAi.GenerateSummary.GenerateSummaryInput;
 import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;

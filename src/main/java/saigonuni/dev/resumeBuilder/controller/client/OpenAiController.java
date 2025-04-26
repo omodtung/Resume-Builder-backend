@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 // import saigonuni.dev.resumeBuilder.dto.OpenAi.GenerateSummary.GenerateSummaryInput;
-import saigonuni.dev.resumeBuilder.dto.OpenAi.GenerateSummary.GenerateWorkExperienceInput;
-import saigonuni.dev.resumeBuilder.dto.OpenAi.GenerateSummary.WorkExperience;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.SummaryCall;
 import saigonuni.dev.resumeBuilder.service.OpenAiResumeService;
-
+import saigonuni.dev.resumeBuilder.dto.OpenAi.WorkExperience;
+import saigonuni.dev.resumeBuilder.dto.OpenAi.DescriptionDTO;
 @Tag(
   name = "OpenAi Call Controller",
   description = "Operations pertaining to Open Ai   management of Users"
@@ -47,17 +46,17 @@ public class OpenAiController extends BaseController {
     }
   }
 
-  // @PostMapping("/api/openai/work-experience")
-  // public ResponseEntity<WorkExperience> generateWorkExperience(
-  //   @Valid @RequestBody GenerateWorkExperienceInput input
-  // ) {
-  //   try {
-  //     WorkExperience workExperience = OpenService.generateWorkExperience(input);
-  //     return ResponseEntity.ok(workExperience);
-  //   } catch (RuntimeException e) {
-  //     // Basic error handling
-  //     // You might want to return a specific error structure instead of WorkExperience
-  //     return ResponseEntity.internalServerError().body(null); // Or a specific error object
-  //   }
-  // }
+  @PostMapping("/api/openai/work-experience")
+  public ResponseEntity<WorkExperience> generateWorkExperience(
+    @Valid @RequestBody DescriptionDTO input
+  ) {
+    try {
+      WorkExperience workExperience = OpenService.generateWorkExperience(input);
+      return ResponseEntity.ok(workExperience);
+    } catch (RuntimeException e) {
+      // Basic error handling
+      // You might want to return a specific error structure instead of WorkExperience
+      return ResponseEntity.internalServerError().body(null); // Or a specific error object
+    }
+  }
 }

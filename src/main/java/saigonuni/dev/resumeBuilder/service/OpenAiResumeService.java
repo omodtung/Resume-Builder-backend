@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.dto.OpenAi.DescriptionDTO;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.GenerateSummary;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.GenerateSummary.*;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.SummaryCall;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.SummaryCall;
+import saigonuni.dev.resumeBuilder.dto.OpenAi.WorkExperience;
 
 @Service
 public class OpenAiResumeService {
@@ -54,11 +56,10 @@ public class OpenAiResumeService {
         new OpenAiMessage("system", systemMessage),
         new OpenAiMessage("user", userMessageBuilder.toString())
       );
-      OpenAiChatCompletionRequest request =
-        new GenerateSummary.OpenAiChatCompletionRequest(
-            "gpt-4o-mini",
-            messages
-          );
+      OpenAiChatCompletionRequest request = new GenerateSummary.OpenAiChatCompletionRequest(
+        "gpt-4o-mini",
+        messages
+      );
 
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
@@ -92,87 +93,92 @@ public class OpenAiResumeService {
     }
   }
 
-  // public WorkExperience generateWorkExperience(
-  //   @Valid GenerateWorkExperienceInput input
-  // ) {
-  //   // TODO: Block for non-premium users
+  public WorkExperience generateWorkExperience(@Valid DescriptionDTO input) {
+    // TODO: Block for non-premium users
 
-  //   String systemMessage =
-  //     """
-  //           You are a job resume generator AI. Your task is to generate a single work experience entry based on the user input.
-  //           Your response must adhere to the following structure. You can omit fields if they can't be infered from the provided data, but don't add any new ones.
+    String systemMessage =
+      """
+            You are a job resume generator AI. Your task is to generate a single work experience entry based on the user input.
+            Your response must adhere to the following structure. You can omit fields if they can't be infered from the provided data, but don't add any new ones.
 
-  //           Job title: <job title>
-  //           Company: <company name>
-  //           Start date: <format: YYYY-MM-DD> (only if provided)
-  //           End date: <format: YYYY-MM-DD> (only if provided)
-  //           Description: <an optimized description in bullet format, might be infered from the job title>
-  //           """;
+            Job title: <job title>
+            Company: <company name>
+            Start date: <format: YYYY-MM-DD> (only if provided)
+            End date: <format: YYYY-MM-DD> (only if provided)
+            Description: <an optimized description in bullet format, might be infered from the job title>
+            """;
 
-  //   String userMessage =
-  //     "Please provide a work experience entry from this description:\n" +
-  //     input.getDescription();
+    String userMessage =
+      "Please provide a work experience entry from this description:\n" +
+      input.getDescription();
 
-  //   List<OpenAiMessage> messages = List.of(
-  //     new GenerateSummary().new OpenAiMessage("system", systemMessage),
-  //     new GenerateSummary().new OpenAiMessage("user", userMessage)
-  //   );
+    List<OpenAiMessage> messages = List.of(
+      new OpenAiMessage("system", systemMessage),
+      new OpenAiMessage("user", userMessage)
+    );
 
-  //   GenerateSummary generateSummaryInstance = new GenerateSummary();
-  //   OpenAiChatCompletionRequest request =
-  //     generateSummaryInstance.new OpenAiChatCompletionRequest(
-  //         "gpt-4o-mini",
-  //         messages
-  //       );
+    GenerateSummary generateSummaryInstance = new GenerateSummary();
 
-  //   HttpHeaders headers = new HttpHeaders();
-  //   headers.setContentType(MediaType.APPLICATION_JSON);
-  //   headers.setBearerAuth(openaiApiKey);
+    OpenAiChatCompletionRequest request = new GenerateSummary.OpenAiChatCompletionRequest(
+      "gpt-4o-mini",
+      messages
+    );
 
-  //   HttpEntity<OpenAiChatCompletionRequest> entity = new HttpEntity<>(
-  //     request,
-  //     headers
-  //   );
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setBearerAuth(openaiApiKey);
 
-  //   OpenAiChatCompletionResponse response = restTemplate.postForObject(
-  //     openaiApiUrl,
-  //     entity,
-  //     OpenAiChatCompletionResponse.class
-  //   );
+    HttpEntity<OpenAiChatCompletionRequest> entity = new HttpEntity<>(
+      request,
+      headers
+    );
 
-  //   if (
-  //     response == null ||
-  //     response.getChoices() == null ||
-  //     response.getChoices().isEmpty()
-  //   ) {
-  //     throw new RuntimeException("Failed to generate AI response");
-  //   }
+    OpenAiChatCompletionResponse response = restTemplate.postForObject(
+      openaiApiUrl,
+      entity,
+      OpenAiChatCompletionResponse.class
+    );
 
-  //   String aiResponse = response.getChoices().get(0).getMessage().getContent();
+    if (
+      response == null ||
+      response.getChoices() == null ||
+      response.getChoices().isEmpty()
+    ) {
+      throw new RuntimeException("Failed to generate AI response");
+    }
 
-  //   WorkExperience workExperience =
-  //     generateSummaryInstance.new WorkExperience();
-  //   // Basic parsing of the AI response - more robust parsing might be needed
-  //   for (String line : aiResponse.split("\n")) {
-  //     if (line.startsWith("Job title:")) {
-  //       workExperience.setPosition(
-  //         line.substring("Job title:".length()).trim()
-  //       );
-  //     } else if (line.startsWith("Company:")) {
-  //       workExperience.setCompany(line.substring("Company:".length()).trim());
-  //     } else if (line.startsWith("Start date:")) {
-  //       workExperience.setStartDate(
-  //         line.substring("Start date:".length()).trim()
-  //       );
-  //     } else if (line.startsWith("End date:")) {
-  //       workExperience.setEndDate(line.substring("End date:".length()).trim());
-  //     } else if (line.startsWith("Description:")) {
-  //       workExperience.setDescription(
-  //         line.substring("Description:".length()).trim()
-  //       );
-  //     }
-  //   }
+    String aiResponse = response.getChoices().get(0).getMessage().getContent();
 
-  //   return workExperience;
-  // }
+    WorkExperience workExperience = new WorkExperience();
+    StringBuilder descriptionBuilder = new StringBuilder();
+    boolean isDescription = false;
+
+    for (String line : aiResponse.split("\n")) {
+      if (line.startsWith("Job title:")) {
+        workExperience.setPosition(
+          line.substring("Job title:".length()).trim()
+        );
+        isDescription = false;
+      } else if (line.startsWith("Company:")) {
+        workExperience.setCompany(line.substring("Company:".length()).trim());
+        isDescription = false;
+      } else if (line.startsWith("Start date:")) {
+        workExperience.setStartDate(
+          line.substring("Start date:".length()).trim()
+        );
+        isDescription = false;
+      } else if (line.startsWith("End date:")) {
+        workExperience.setEndDate(line.substring("End date:".length()).trim());
+        isDescription = false;
+      } else if (line.startsWith("Description:")) {
+        descriptionBuilder.append(line.substring("Description:".length()).trim());
+        isDescription = true;
+      } else if (isDescription) {
+        descriptionBuilder.append("\n").append(line.trim());
+      }
+    }
+    workExperience.setDescription(descriptionBuilder.toString());
+
+    return workExperience;
+  }
 }
