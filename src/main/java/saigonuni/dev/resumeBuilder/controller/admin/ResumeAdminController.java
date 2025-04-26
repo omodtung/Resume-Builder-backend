@@ -28,6 +28,7 @@ import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.domain.UserSubscription;
+import saigonuni.dev.resumeBuilder.dto.OpenAi.GenerateSummary.GenerateSummaryInput;
 import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
@@ -38,6 +39,7 @@ import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
 import saigonuni.dev.resumeBuilder.service.JwtService;
+import saigonuni.dev.resumeBuilder.service.OpenAiResumeService;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
 import saigonuni.dev.resumeBuilder.service.UserSubcriptionService;
 
@@ -56,6 +58,7 @@ public class ResumeAdminController extends BaseController {
   private final ResumeRepository resumeRepository;
   private final UserSubcriptionService userSubcriptionService;
   private final CheckSubcriptionWithUserId checkSubcriptionWithUserId;
+  private final OpenAiResumeService OpenService;
 
   @Autowired
   public ResumeAdminController(
@@ -65,7 +68,8 @@ public class ResumeAdminController extends BaseController {
     UserDC userDC,
     ResumeRepository resumeRepository,
     UserSubcriptionService userSubcriptionService,
-    CheckSubcriptionWithUserId checkSubcriptionWithUserId
+    CheckSubcriptionWithUserId checkSubcriptionWithUserId,
+    OpenAiResumeService OpenService
   ) {
     this.resumeService = resumeService;
     this.jwtService = jwtService;
@@ -74,6 +78,7 @@ public class ResumeAdminController extends BaseController {
     this.resumeRepository = resumeRepository;
     this.userSubcriptionService = userSubcriptionService;
     this.checkSubcriptionWithUserId = checkSubcriptionWithUserId;
+    this.OpenService = OpenService;
   }
 
   // @PostMapping("resumes")
@@ -319,5 +324,17 @@ public class ResumeAdminController extends BaseController {
   ) {
     resumeService.deleteResume(id);
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("api/openai/summary")
+  public String generateSummary() {
+    try {
+      System.out.println("Input Testing : ");
+      return "Say";
+    } catch (RuntimeException e) {
+      // Basic error handling
+      e.printStackTrace(); // Log the full stack trace
+    }
+    return null;
   }
 }

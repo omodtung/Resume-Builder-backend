@@ -30,6 +30,7 @@ public class SecurityConfig implements WebMvcConfigurer {
       .disable()
       .authorizeHttpRequests()
       .requestMatchers(
+        "/api/openai/summary",
         "/**",
         "/auth/authenticate",
         "/auth/refresh-token",
