@@ -1,20 +1,19 @@
 package saigonuni.dev.resumeBuilder.service;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import saigonuni.dev.resumeBuilder.domain.User;
 
 @Service
 public class JwtService {
@@ -32,17 +31,27 @@ public class JwtService {
     return extractClaim(token, Claims::getSubject);
   }
 
-
   // Trích xuất tất cả các claims từ token
-
-
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = extractAllClaims(token);
     return claimsResolver.apply(claims);
   }
 
-  public String generateToken(UserDetails userDetails) {
-    return generateToken(new HashMap<>(), userDetails);
+  // public String generateToken(UserDetails userDetails) {
+  //   String email = userDetails.getUsername(); // Replace with userDetails.getEmail() if available
+  //   Map<String, Object> extraClaims = new HashMap<>();
+  //   extraClaims.put("email", email); // Add email a
+  //   return generateToken(new HashMap<>(), userDetails);
+  // }
+
+  
+  public String generateToken(User user) {
+    // String email = userDetails.getUsername();
+    String email = user.getEmail(); // Replace with userDetails.getEmail() if available
+
+    Map<String, Object> extraClaims = new HashMap<>();
+    extraClaims.put("email", email); // Add email a
+    return generateToken(extraClaims, user);
   }
 
   public String generateToken(
@@ -87,13 +96,14 @@ public class JwtService {
   private Date extractExpiration(String token) {
     return extractClaim(token, Claims::getExpiration);
   }
+
   private Claims extractAllClaims(String token) {
     return Jwts
-        .parserBuilder()
-        .setSigningKey(getSignInKey())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
+      .parserBuilder()
+      .setSigningKey(getSignInKey())
+      .build()
+      .parseClaimsJws(token)
+      .getBody();
   }
 
   private Key getSignInKey() {

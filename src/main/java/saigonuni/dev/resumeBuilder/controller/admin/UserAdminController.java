@@ -84,6 +84,7 @@ public class UserAdminController {
       .body(GetUserAdminResponse.builder().user(user).build());
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("users")
   @Operation(summary = "List all users", description = "Fetches all users")
   public ResponseEntity<ListUserResponse> listUsers() {
@@ -93,7 +94,7 @@ public class UserAdminController {
       .body(ListUserResponse.builder().user(users).build());
   }
 
-  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
   @GetMapping("users-pagi")
   @Operation(summary = "List all users", description = "Fetches all users")
   public ResponseEntity<Map<String, Object>> listUsersPagi(

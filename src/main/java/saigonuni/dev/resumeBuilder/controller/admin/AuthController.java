@@ -29,10 +29,10 @@ import saigonuni.dev.resumeBuilder.service.CustomUserDetailsService;
 import saigonuni.dev.resumeBuilder.utils.JwtUtil;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("auth")
 public class AuthController {
 
-  @Autowired
+  @Autowired 
   private AuthenticationService authenticationService;
 
   @Autowired

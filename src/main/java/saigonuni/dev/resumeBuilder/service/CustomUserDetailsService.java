@@ -17,12 +17,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) {
-    saigonuni.dev.resumeBuilder.domain.User domainUser = userRepository
+    saigonuni.dev.resumeBuilder.domain.User domainUser = userRepository //
       .findByEmail(email)
-      .orElseThrow(() -> new UsernameNotFoundException(email));
+      .orElseThrow(() ->
+        new UsernameNotFoundException("User not found with email: " + email)
+      );
 
+    // log.info("User roles: {}", domainUser.getRole());
     return new org.springframework.security.core.userdetails.User(
-      domainUser.getEmail(), // Use email as the username
+      domainUser.getUsername(), // Use email as the username
       domainUser.getPassword(),
       domainUser.getAuthorities() // Return the user's authorities
     );

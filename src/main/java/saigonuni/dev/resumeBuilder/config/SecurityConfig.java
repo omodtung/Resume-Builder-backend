@@ -1,6 +1,7 @@
 package saigonuni.dev.resumeBuilder.config;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,19 +21,25 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
 
+  @Autowired
+  private JwtAuthenticationFilter jwtAuthenticationFilter;
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http)
     throws Exception {
     http
+      .addFilterBefore(
+        jwtAuthenticationFilter,
+        UsernamePasswordAuthenticationFilter.class
+      )
       .cors()
       .and()
       .csrf()
       .disable()
       .authorizeHttpRequests()
       .requestMatchers(
-        "/api/openai/summary",
         "/**",
-        "/auth/authenticate",
+        "/auth/authenticate/**",
         "/auth/refresh-token",
         "/auth/register",
         "/upload-file-cv",
@@ -48,10 +55,6 @@ public class SecurityConfig implements WebMvcConfigurer {
         "/images/**"
       )
       .permitAll()
-      // .requestMatchers("/admin/**")
-      // .hasRole("ADMIN")
-      // .requestMatchers("/user/**")
-      // .hasAnyRole("USER", "ADMIN")
       .anyRequest()
       .authenticated()
       .and()

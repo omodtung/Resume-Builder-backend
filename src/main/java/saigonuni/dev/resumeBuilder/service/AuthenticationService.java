@@ -31,8 +31,8 @@ public class AuthenticationService {
         request.getPassword()
       )
     );
-    System.out.println("User found email  Ser" + request.getEmail());
-    System.out.println("User found passowrd  Ser" + request.getPassword());
+    System.out.println("User found email  Ser " + request.getEmail());
+    System.out.println("User found passowrd  Ser " + request.getPassword());
     User user = UserRepository.findByEmail(request.getEmail()).orElseThrow();
     System.out.println("User found " + user);
 
