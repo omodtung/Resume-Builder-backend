@@ -60,7 +60,7 @@ public class UserAdminController {
     this.userService = userService;
     this.userRepository = userRepository;
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("users")
   @Operation(summary = "Add a new user", description = "Creates a new user")
   public ResponseEntity<CreateUserAdminResponse> addUser(
@@ -72,7 +72,7 @@ public class UserAdminController {
       CreateUserAdminResponse.builder().user(user).build()
     );
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("users/{id}")
   @Operation(summary = "Get user by ID", description = "Fetches a user by ID")
   public ResponseEntity<GetUserAdminResponse> getUserById(
@@ -84,7 +84,8 @@ public class UserAdminController {
       .body(GetUserAdminResponse.builder().user(user).build());
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("users")
   @Operation(summary = "List all users", description = "Fetches all users")
   public ResponseEntity<ListUserResponse> listUsers() {
@@ -94,7 +95,7 @@ public class UserAdminController {
       .body(ListUserResponse.builder().user(users).build());
   }
 
-  // @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ADMIN')")
   @GetMapping("users-pagi")
   @Operation(summary = "List all users", description = "Fetches all users")
   public ResponseEntity<Map<String, Object>> listUsersPagi(
@@ -161,7 +162,7 @@ public class UserAdminController {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PutMapping("users/{id}")
   @Operation(summary = "Update user", description = "Updates an existing user")
   public ResponseEntity<UpdateUserAdminResponse> updateUser(
@@ -173,7 +174,7 @@ public class UserAdminController {
       .status(HttpStatus.OK)
       .body(UpdateUserAdminResponse.builder().user(user).build());
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @DeleteMapping("users/{id}")
   @Operation(summary = "Delete user", description = "Deletes a user by ID")
   public ResponseEntity<User> deleteUser(@PathVariable String id) {
@@ -186,7 +187,7 @@ public class UserAdminController {
   // public List<User> fetchCvByUserCreate() {
   //   return userService.fetchCvByUserCreate();
   // }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("users/resumes/{userId}")
   @Operation(
     summary = "List Resume Created By user Id",

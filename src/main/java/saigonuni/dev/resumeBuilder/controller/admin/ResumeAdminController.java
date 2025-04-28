@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
@@ -81,7 +82,7 @@ public class ResumeAdminController extends BaseController {
   }
 
   // @PostMapping("resumes")
-
+ @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping(value = "resumes")
   @Operation(
     summary = "API Thêm Resume mới",
@@ -111,7 +112,7 @@ public class ResumeAdminController extends BaseController {
       throw new RuntimeException("Error processing request: " + e.getMessage());
     }
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("resumes/{id}")
   @LogExecutionTime
   public ResponseEntity<GetResumeAdminResponse> getResumeById(
@@ -131,7 +132,7 @@ public class ResumeAdminController extends BaseController {
   //     .status(HttpStatus.OK)
   //     .body(ListResumeResponse.builder().resume(resumes).build());
   // }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("resumes")
   public ResponseEntity<Map<String, Object>> getResumes(
     @RequestParam(required = false) String sort,
@@ -196,7 +197,7 @@ public class ResumeAdminController extends BaseController {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("resumes-filter")
   public ResponseEntity<Map<String, Object>> getResumesFilter(
     @RequestParam(required = false) String sort,
@@ -268,7 +269,7 @@ public class ResumeAdminController extends BaseController {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PatchMapping("resumes/{id}")
   @Operation(
     summary = "API Update Resume Support For Auto Save ",
@@ -293,7 +294,7 @@ public class ResumeAdminController extends BaseController {
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PatchMapping("resumes-edit/{id}")
   @Operation(
     summary = "API Update Resume  ",
@@ -316,7 +317,7 @@ public class ResumeAdminController extends BaseController {
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @DeleteMapping("resumes/{id}")
   public ResponseEntity<DeleteResumeResponse> deleteResume(
     @PathVariable String id
@@ -324,7 +325,7 @@ public class ResumeAdminController extends BaseController {
     resumeService.deleteResume(id);
     return ResponseEntity.ok().build();
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("api/openai/summary")
   public String generateSummary() {
     try {

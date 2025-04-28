@@ -7,6 +7,7 @@ import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +48,7 @@ public class CheckOutController {
     this.decode = decode;
     this.userDC = userDC;
   }
-
+ @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("user/checkout-payment")
   public ResponseEntity<StripeResponse> checkoutProducts(
     @RequestParam("PlanId") Long PlanId,

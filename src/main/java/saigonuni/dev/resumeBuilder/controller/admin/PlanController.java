@@ -69,7 +69,7 @@ public class PlanController extends BaseController {
     this.userDC = userDC;
     this.planRepository = planRepository;
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("plans")
   @Operation(
     summary = "API Thêm Plan mới",
@@ -93,7 +93,7 @@ public class PlanController extends BaseController {
       throw new RuntimeException("Error processing request: " + e.getMessage());
     }
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("plans/{id}")
   @LogExecutionTime
   public ResponseEntity<GetPlanAdminResponse> getPlanById(
@@ -105,7 +105,7 @@ public class PlanController extends BaseController {
       .body(GetPlanAdminResponse.builder().plan(plan).build());
   }
 
-  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("plans")
   public ResponseEntity<Map<String, Object>> getPlans(
     @RequestParam(required = false) String searchTerm,
@@ -145,7 +145,7 @@ public class PlanController extends BaseController {
       );
     }
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("plans-filter")
   public ResponseEntity<Map<String, Object>> getPlansFilter(
     @RequestParam(required = false) String sort,
@@ -190,7 +190,7 @@ public class PlanController extends BaseController {
       );
     }
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("plans/{id}")
   @Operation(summary = "API Update Plan ", description = "Update API Plan")
   @LogExecutionTime
