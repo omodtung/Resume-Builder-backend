@@ -41,14 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       return;
     }
     jwt = authHeader.substring(7);
-    userEmail = jwtService.extractUsername(jwt);
+    userEmail = jwtService.extractEmail(jwt);
     System.out.println("User email Testing: " + userEmail);
     if (
       userEmail != null &&
       SecurityContextHolder.getContext().getAuthentication() == null
     ) {
       UserDetails userDetails =
-        this.userDetailsService.loadUserByUsername(userEmail + "@gmail.com");
+        this.userDetailsService.loadUserByUsername(userEmail);
       if (jwtService.isTokenValid(jwt, userDetails)) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
           userDetails,
