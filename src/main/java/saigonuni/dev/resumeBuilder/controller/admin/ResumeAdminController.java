@@ -82,7 +82,7 @@ public class ResumeAdminController extends BaseController {
   }
 
   // @PostMapping("resumes")
- @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping(value = "resumes")
   @Operation(
     summary = "API Thêm Resume mới",
@@ -112,6 +112,7 @@ public class ResumeAdminController extends BaseController {
       throw new RuntimeException("Error processing request: " + e.getMessage());
     }
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("resumes/{id}")
   @LogExecutionTime
@@ -197,6 +198,7 @@ public class ResumeAdminController extends BaseController {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("resumes-filter")
   public ResponseEntity<Map<String, Object>> getResumesFilter(
@@ -221,9 +223,10 @@ public class ResumeAdminController extends BaseController {
         paging = PageRequest.of(page, limit); // Default paging without sort
       }
 
-      Page<Resume> pageTuts = resumeService.findAll(paging);
-      if (sort == null) pageTuts =
-        resumeService.findAll(paging); else pageTuts =
+      Page<Resume> pageTuts ;
+      if (
+        (filter == null || filter.isEmpty()) && (sort == null || sort.isEmpty())
+      ) pageTuts = resumeService.findAll(paging); else pageTuts =
         resumeRepository.searchByTermAcrossFieldsWithColumn(
           filter,
           sort,
@@ -269,6 +272,7 @@ public class ResumeAdminController extends BaseController {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PatchMapping("resumes/{id}")
   @Operation(
@@ -294,6 +298,7 @@ public class ResumeAdminController extends BaseController {
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PatchMapping("resumes-edit/{id}")
   @Operation(
@@ -317,6 +322,7 @@ public class ResumeAdminController extends BaseController {
       .status(HttpStatus.OK)
       .body(UpdateResumeAdminResponse.builder().resume(resume).build());
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @DeleteMapping("resumes/{id}")
   public ResponseEntity<DeleteResumeResponse> deleteResume(
@@ -325,6 +331,7 @@ public class ResumeAdminController extends BaseController {
     resumeService.deleteResume(id);
     return ResponseEntity.ok().build();
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("api/openai/summary")
   public String generateSummary() {

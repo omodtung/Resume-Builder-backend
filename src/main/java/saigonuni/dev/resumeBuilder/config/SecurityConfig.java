@@ -106,4 +106,7 @@ public class SecurityConfig implements WebMvcConfigurer {
       .addResourceHandler("/images/**")
       .addResourceLocations("classpath:/images/");
   }
+
+
+  
 }
