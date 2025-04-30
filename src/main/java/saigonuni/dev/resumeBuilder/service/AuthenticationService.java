@@ -4,7 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationRequest;
+import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationResponse;
 import saigonuni.dev.resumeBuilder.dto.Auth.AutheticationResponse;
+import saigonuni.dev.resumeBuilder.dto.User.CreateUserRegisterRequest;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
 
 @Service
@@ -23,6 +30,7 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final RabbitTemplate rabbitTemplate;
 
   public AutheticationResponse authenticate(AuthenticationRequest request) {
     authenticationManager.authenticate(
@@ -88,5 +96,40 @@ public class AuthenticationService {
         new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
       }
     }
+  }
+
+  public AuthenticationResponse registerUser(
+    CreateUserRegisterRequest request
+  ) {
+    User user = User
+      .builder()
+      .username(request.getUsername())
+      .password(passwordEncoder.encode(request.getPassword())) // Encrypt the password
+      .email(request.getEmail())
+      .role("ROLE_USER") // Default role
+      .refreshToken(
+        request.getRefreshToken() == null ? "" : request.getRefreshToken()
+      )
+      .createdAt(LocalDateTime.now())
+      .build();
+    return register(user);
+  }
+
+  @Transactional
+  public AuthenticationResponse register(User user) {
+    User savedUser = UserRepository.save(user);
+    // String jwtToken = jwtService.generateToken(user);
+    // String refreshToken = jwtService.generateRefreshToken(user);
+    // saveUserToken(savedUser, jwtToken);
+    rabbitTemplate.convertAndSend(
+      "email-exchange",
+      "email-routing-key",
+      savedUser.getId()
+    );
+    return AuthenticationResponse
+      .builder()
+      .accessToken("")
+      .refreshToken("")
+      .build();
   }
 }

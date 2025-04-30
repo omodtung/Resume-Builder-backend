@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationRequest;
+import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationResponse;
 import saigonuni.dev.resumeBuilder.dto.Auth.AutheticationResponse;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserAdminResponse;
@@ -32,7 +33,7 @@ import saigonuni.dev.resumeBuilder.utils.JwtUtil;
 @RequestMapping("auth")
 public class AuthController {
 
-  @Autowired 
+  @Autowired
   private AuthenticationService authenticationService;
 
   @Autowired
@@ -81,25 +82,29 @@ public class AuthController {
     }
 
     // Encode the password before saving
-    User user = User
-      .builder()
-      .username(request.getUsername())
-      .password(passwordEncoder.encode(request.getPassword())) // Encrypt the password
-      .email(request.getEmail())
-      .role("USER") // Default role
-      .refreshToken(
-        request.getRefreshToken() == null ? "" : request.getRefreshToken()
-      )
-      .createdAt(LocalDateTime.now())
-      .build();
+    // User user = User
+    //   .builder()
+    //   .username(request.getUsername())
+    //   .password(passwordEncoder.encode(request.getPassword())) // Encrypt the password
+    //   .email(request.getEmail())
+    //   .role("USER") // Default role
+    //   .refreshToken(
+    //     request.getRefreshToken() == null ? "" : request.getRefreshToken()
+    //   )
+    //   .createdAt(LocalDateTime.now())
+    //   .build();
 
-    User savedUser = userRepository.save(user);
+    // User savedUser = userRepository.save(user);
 
+    AuthenticationResponse authResponse = authenticationService.registerUser(
+      request
+    );
+    // User savedUser = authResponse.getUser(); // Assuming AuthenticationResponse has a getUser() method
     return ResponseEntity.ok(
       CreateUserAdminResponse
         .builder()
-        .user(savedUser)
-        .message("User registered successfully")
+        // .user(savedUser)
+        // .message("User registered successfully")
         .build()
     );
   }
