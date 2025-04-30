@@ -4,11 +4,17 @@ import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-  import lombok.Builder;
-  import lombok.Data;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateUserRegisterRequest {
 
   @NotEmpty(message = "Username cannot be empty")

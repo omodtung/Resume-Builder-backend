@@ -1,5 +1,4 @@
-package com.engineerpro.securityexample.queue.consumer;
-
+package saigonuni.dev.resumeBuilder.consumer;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -11,9 +10,10 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import com.engineerpro.securityexample.entity.User;
-import com.engineerpro.securityexample.repository.UserRepository;
-import com.engineerpro.securityexample.service.UserEmailService;
+import saigonuni.dev.resumeBuilder.domain.User;
+
+import saigonuni.dev.resumeBuilder.repository.UserRepository ;
+import saigonuni.dev.resumeBuilder.service.UserEmailService ;
 import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,23 +45,20 @@ public class EmailDLQListener {
     log.info("userIdStr " + userIdStr);
 
     try {
-      Optional<User> optionalUser = userRepository.findById(Integer.parseInt(userIdStr));
-      if (optionalUser.isEmpty()) {
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        return;
-      }
-      User user = optionalUser.get();
-      if (user.getIsSentActivationCode()) {
-        // handle deduplication
-        log.info("User " + userIdStr + " already activated");
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        return;
-      }
+      User user = userRepository.findById(Long.parseLong(userIdStr))
+      .orElseThrow(() -> new RuntimeException("Cannot find userId " + userIdStr));
+      // User user = optionalUser.get();
+      // if (user.getIsSentActivationCode()) {
+      //   // handle deduplication
+      //   log.info("User " + userIdStr + " already activated");
+      //   channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+      //   return;
+      // }
       userEmailService.sendUserActivationEmail(user);
-      user.setIsSentActivationCode(true);
-      userRepository.save(user);
+      // user.setIsSentActivationCode(true);
+      // userRepository.save(user);
       log.info("Saved isSentActivationCode");
-      channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+      // channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
       log.info("ack message to queue");
     } catch (Exception ex) {
       log.error("reject", ex);

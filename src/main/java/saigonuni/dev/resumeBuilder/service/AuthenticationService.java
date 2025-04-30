@@ -20,6 +20,7 @@ import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationRequest;
 import saigonuni.dev.resumeBuilder.dto.Auth.AuthenticationResponse;
 import saigonuni.dev.resumeBuilder.dto.Auth.AutheticationResponse;
 import saigonuni.dev.resumeBuilder.dto.User.CreateUserRegisterRequest;
+import saigonuni.dev.resumeBuilder.exception.BadRequestException;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
 
 @Service
@@ -101,6 +102,12 @@ public class AuthenticationService {
   public AuthenticationResponse registerUser(
     CreateUserRegisterRequest request
   ) {
+    if (
+      UserRepository.existsByUsername(request.getUsername()) ||
+      UserRepository.existsByEmail(request.getEmail())
+    ) {
+      throw new BadRequestException("Email or username Exist", "exist_user");
+    }
     User user = User
       .builder()
       .username(request.getUsername())
@@ -118,9 +125,6 @@ public class AuthenticationService {
   @Transactional
   public AuthenticationResponse register(User user) {
     User savedUser = UserRepository.save(user);
-    // String jwtToken = jwtService.generateToken(user);
-    // String refreshToken = jwtService.generateRefreshToken(user);
-    // saveUserToken(savedUser, jwtToken);
     rabbitTemplate.convertAndSend(
       "email-exchange",
       "email-routing-key",

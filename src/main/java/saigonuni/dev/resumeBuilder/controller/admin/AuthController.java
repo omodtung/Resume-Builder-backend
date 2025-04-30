@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,60 +54,14 @@ public class AuthController {
   private PasswordEncoder passwordEncoder;
 
   @PostMapping("/register")
-  public ResponseEntity<CreateUserAdminResponse> register(
+  public ResponseEntity<Object> register(
     @Valid @RequestBody CreateUserRegisterRequest request
   ) {
-    // Check if the username already exists
-    if (userRepository.existsByUsername(request.getUsername())) {
-      return ResponseEntity
-        .badRequest()
-        .body(
-          CreateUserAdminResponse
-            .builder()
-            .user(null)
-            .message("Username already exists")
-            .build()
-        );
-    }
-
-    // Check if the email already exists
-    if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-      return ResponseEntity
-        .badRequest()
-        .body(
-          CreateUserAdminResponse
-            .builder()
-            .user(null)
-            .message("Email already exists")
-            .build()
-        );
-    }
-
-    // Encode the password before saving
-    // User user = User
-    //   .builder()
-    //   .username(request.getUsername())
-    //   .password(passwordEncoder.encode(request.getPassword())) // Encrypt the password
-    //   .email(request.getEmail())
-    //   .role("USER") // Default role
-    //   .refreshToken(
-    //     request.getRefreshToken() == null ? "" : request.getRefreshToken()
-    //   )
-    //   .createdAt(LocalDateTime.now())
-    //   .build();
-
-    // User savedUser = userRepository.save(user);
-
     AuthenticationResponse authResponse = authenticationService.registerUser(
       request
     );
-    // User savedUser = authResponse.getUser(); // Assuming AuthenticationResponse has a getUser() method
     return ResponseEntity.ok(
-      CreateUserAdminResponse
-        .builder()
-        // .user(savedUser)
-        // .message("User registered successfully")
-        .build()
+      AuthenticationResponse.builder().accessToken("").refreshToken("").build()
     );
   }
 
