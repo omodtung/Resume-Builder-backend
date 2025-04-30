@@ -19,6 +19,7 @@ public class UserEmailService {
   }
 
   public void sendUserActivationEmail(User user) {
+    System.out.println("Send email to " + user.getEmail());
     SimpleMailMessage mail = new SimpleMailMessage();
     mail.setTo(user.getEmail());
     mail.setSubject("Account Activation");
@@ -33,7 +34,7 @@ public class UserEmailService {
     );
     log.info("Try send mail");
     // throw new MailSendException("try set fail");
-    // mailSender.send(mail);
+    mailSender.send(mail);
     log.info("Email sent successfully to: " + user.getEmail());
   }
 }
