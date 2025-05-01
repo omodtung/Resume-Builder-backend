@@ -86,9 +86,8 @@ public class OpenAiResumeService {
 
       return response.getChoices().get(0).getMessage().getContent();
     } catch (Exception e) {
-      System.out.println("Error generating summary: " + e.getMessage());
+      System.err.println("Error generating summary: " + e.getClass().getName() + " - " + e.getMessage());
       e.printStackTrace(); // Print the stack trace for detailed error information
-      // Handle the error as needed
       throw new RuntimeException("Error generating summary: " + e.getMessage());
     }
   }

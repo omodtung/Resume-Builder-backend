@@ -15,4 +15,6 @@ public class UserSubcription {
   public static final String LIMIT_FREE_REACT_KEY = "limit_free_react";
   public static final String LIMIT_FREE_REACT_MESSAGE = "free plan limit react";
 
+  public static final String BASIC_AND_FREE_NO_PERMISSION_USE_KEY = "BASIC_AND_FREE_NO_PERMISSION_USE_KEY";
+  public static final String BASIC_AND_FREE_NO_PERMISSION_USE_MESSAGE = "BASIC_AND_FREE_NO_PERMISSION_USE";
 }

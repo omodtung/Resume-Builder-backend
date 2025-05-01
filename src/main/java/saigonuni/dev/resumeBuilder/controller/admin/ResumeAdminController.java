@@ -223,7 +223,7 @@ public class ResumeAdminController extends BaseController {
         paging = PageRequest.of(page, limit); // Default paging without sort
       }
 
-      Page<Resume> pageTuts ;
+      Page<Resume> pageTuts;
       if (
         (filter == null || filter.isEmpty()) && (sort == null || sort.isEmpty())
       ) pageTuts = resumeService.findAll(paging); else pageTuts =

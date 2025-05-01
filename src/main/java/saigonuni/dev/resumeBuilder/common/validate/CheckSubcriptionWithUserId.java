@@ -7,6 +7,7 @@ import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 import saigonuni.dev.resumeBuilder.exception.BadRequestException;
 import saigonuni.dev.resumeBuilder.message.UserSubcription;
+import saigonuni.dev.resumeBuilder.repository.UserRepository;
 import saigonuni.dev.resumeBuilder.service.UserSubcriptionService;
 import saigonuni.dev.resumeBuilder.service.UserValueImplement;
 
@@ -15,13 +16,16 @@ public class CheckSubcriptionWithUserId {
 
   private UserSubcriptionService userSubcriptionService;
   private UserValueImplement userValueImplement;
+  private UserRepository UserRepository;
 
   public CheckSubcriptionWithUserId(
     UserSubcriptionService userSubcriptionService,
-    UserValueImplement userValueImplement
+    UserValueImplement userValueImplement,
+    UserRepository userRepository
   ) {
     this.userSubcriptionService = userSubcriptionService;
     this.userValueImplement = userValueImplement;
+    this.UserRepository = userRepository;
   }
 
   public Boolean checkServiceUsage(User userId, Long planId) {
@@ -89,5 +93,43 @@ public class CheckSubcriptionWithUserId {
         );
       }
     }
+  }
+
+  public  void checkPlanUsingAifeature(String user_name) {
+    User user = UserRepository.findByUsername(user_name);
+    if (user == null) {
+      throw new BadRequestException(
+        UserSubcription.USER_SUBSCRIPTION_NOT_FOUND,
+        UserSubcription.USER_SUBSCRIPTION_NOT_FOUND_MESSAGE
+      );
+    }
+    UserSupcriptionDTO userSubGet = userSubcriptionService.findUserActivateSubscription(
+      user.getId(), // Corrected: Pass userId directly
+      true
+    );
+
+    if (userSubGet == null) {
+      throw new BadRequestException(
+        UserSubcription.USER_SUBSCRIPTION_NOT_FOUND,
+        UserSubcription.USER_SUBSCRIPTION_NOT_FOUND_MESSAGE
+      );
+    }
+
+    if (Plan.BASIC.name().equals(userSubGet.getPlan().getPlansName())) {
+      throw new BadRequestException(
+        UserSubcription.BASIC_AND_FREE_NO_PERMISSION_USE_KEY,
+        UserSubcription.BASIC_AND_FREE_NO_PERMISSION_USE_MESSAGE
+      );
+    }
+
+    if (Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())) {}
+
+    if (Plan.FREE.name().equals(userSubGet.getPlan().getPlansName())) {
+      throw new BadRequestException(
+        UserSubcription.BASIC_AND_FREE_NO_PERMISSION_USE_KEY,
+        UserSubcription.BASIC_AND_FREE_NO_PERMISSION_USE_MESSAGE
+      );
+    }
+    
   }
 }
