@@ -60,7 +60,8 @@ public class UploadFileController {
   ) {
     String photoUrl = this.uploadService.handleSaveUpLoadFile(file, "avatar");
     this.resumeService.findIdResumeToUpdatePhotoUrl(idResume, photoUrl);
-    return "Success";
+    return photoUrl;
+    // return "Success";
   }
 
   @PostMapping(value = "delete-upload-file-cv")
