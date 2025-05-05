@@ -64,6 +64,8 @@ public class CheckSubcriptionWithUserId {
     );
     // Corrected: Check only for null, as userSubGet is an object, not a collection
     // todo fix this error not thrown exacly name of error
+
+    // to do fix the validate u
     if (userSubGet == null) {
       throw new BadRequestException(
         UserSubcription.USER_SUBSCRIPTION_NOT_FOUND,
@@ -74,7 +76,7 @@ public class CheckSubcriptionWithUserId {
     // Corrected: Use .equals() for String comparison and compare with enum's name()
     if (Plan.BASIC.name().equals(userSubGet.getPlan().getPlansName())) {
       int countUser = userValueImplement.CountCvCreatedByUserId(userId);
-      if (countUser > 4) {
+      if (countUser > 8) {
         throw new BadRequestException(
           UserSubcription.LIMIT_BASIC_REACT,
           UserSubcription.LIMIT_BASIC_REACT_MESSAGE
@@ -84,9 +86,12 @@ public class CheckSubcriptionWithUserId {
 
     if (Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())) {}
 
-    if (Plan.FREE.name().equals(userSubGet.getPlan().getPlansName())) {
+    if (
+      !Plan.BASIC.name().equals(userSubGet.getPlan().getPlansName()) ||
+      !Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())
+    ) {
       int countUser = userValueImplement.CountCvCreatedByUserId(userId);
-      if (countUser > 3) {
+      if (countUser > 2) {
         throw new BadRequestException(
           UserSubcription.LIMIT_FREE_REACT_KEY,
           UserSubcription.LIMIT_FREE_REACT_MESSAGE
@@ -95,7 +100,7 @@ public class CheckSubcriptionWithUserId {
     }
   }
 
-  public  void checkPlanUsingAifeature(String user_name) {
+  public void checkPlanUsingAifeature(String user_name) {
     User user = UserRepository.findByUsername(user_name);
     if (user == null) {
       throw new BadRequestException(
@@ -130,6 +135,5 @@ public class CheckSubcriptionWithUserId {
         UserSubcription.BASIC_AND_FREE_NO_PERMISSION_USE_MESSAGE
       );
     }
-    
   }
 }
