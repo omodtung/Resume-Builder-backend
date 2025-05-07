@@ -61,7 +61,7 @@ public class UserAdminController {
     this.userRepository = userRepository;
   }
 
-  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("users")
   @Operation(summary = "Add a new user", description = "Creates a new user")
   public ResponseEntity<CreateUserAdminResponse> addUser(
@@ -105,7 +105,7 @@ public class UserAdminController {
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "3") int limit
   ) {
-    try { 
+    try {
       List<User> users = new ArrayList<User>();
       Pageable paging = PageRequest.of(page, limit);
 
@@ -202,6 +202,7 @@ public class UserAdminController {
     List<Resume> resumes = userService.findResumesByUserId(userId);
     return ResponseEntity.ok(resumes);
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("user-created-cv")
   @Operation(

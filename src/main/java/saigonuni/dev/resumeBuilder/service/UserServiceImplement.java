@@ -37,7 +37,7 @@ public class UserServiceImplement implements UserService {
         .username(request.getUsername())
         .password(request.getPassword())
         .email(request.getEmail())
-        .role(request.getRole())
+        .role("ROLE_ADMIN")
         .refreshToken(
           request.getRefreshToken() == null ? "" : request.getRefreshToken()
         )
