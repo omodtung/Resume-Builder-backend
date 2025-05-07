@@ -91,4 +91,19 @@ UserSubscription findUserActivateSubscription(
     @Param("idUserSub") Long idUserSub,
     @Param("isActive") Boolean isActive
   );
+
+
+  @Query(
+    "SELECT u FROM UserSubscription u WHERE " +
+    "(:column = 'stripeCustomerId' AND LOWER(u.stripeCustomerId) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
+    "(:column = 'stripeSubscriptionId' AND LOWER(u.stripeSubscriptionId) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
+    "(:column = 'user' AND LOWER(u.user.username) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
+    "(:column = 'plan' AND LOWER(u.plan.plansName) LIKE LOWER(CONCAT('%', :searchTerm, '%')))"
+)
+Page<UserSubscription> findByTermAcrossFieldsWithColumn(
+    @Param("searchTerm") String searchTerm,
+    @Param("column") String column,
+    Pageable pageable
+);
+
 }

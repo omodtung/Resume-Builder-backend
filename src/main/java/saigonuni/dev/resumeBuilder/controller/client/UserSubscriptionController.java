@@ -1,13 +1,13 @@
 package saigonuni.dev.resumeBuilder.controller.client;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import jdk.jfr.Description;
 import saigonuni.dev.resumeBuilder.common.Decorations.Decode;
 import saigonuni.dev.resumeBuilder.common.Decorations.UserDC;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
@@ -91,7 +89,7 @@ public class UserSubscriptionController extends BaseController {
     value = "user-subscription-fetch",
     produces = { "application/json" }
   )
-  public ResponseEntity<List<UserSubscription>> fetchDataUserSubciption( 
+  public ResponseEntity<List<UserSubscription>> fetchDataUserSubciption(
     @RequestHeader("Authorization") String authorizationHeader
   ) {
     User user = userDC.findUserNameByToken(
@@ -100,9 +98,11 @@ public class UserSubscriptionController extends BaseController {
     List<UserSubscription> userSubscriptionList = userSubcriptionService.FetchDataUserSub();
     return ResponseEntity.ok(userSubscriptionList);
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping(value = "user-subscription")
   public ResponseEntity<Map<String, Object>> fetchDataUserSubciption(
+    @RequestParam(required = false) String filter,
     @RequestParam(required = false) String sort,
     @RequestParam(required = false) String order,
     @RequestParam(defaultValue = "0") int page,
@@ -111,7 +111,7 @@ public class UserSubscriptionController extends BaseController {
     try {
       List<UserSubscription> usersSub; // Initialize later
       Sort.Direction direction = "asc".equalsIgnoreCase(order)
-        ? Sort.Direction.ASC  
+        ? Sort.Direction.ASC
         : Sort.Direction.DESC;
       Pageable paging;
 
@@ -121,9 +121,18 @@ public class UserSubscriptionController extends BaseController {
         paging = PageRequest.of(page, limit); // Default paging without sort
       }
 
-      Page<UserSubscription> pageTuts = userSubcriptionRepository.findAll(
-        paging
-      );
+      // Page<UserSubscription> pageTuts = userSubcriptionRepository.findAll(
+      //   paging
+      // );
+      Page<UserSubscription> pageTuts;
+      if (
+        (filter == null || filter.isEmpty()) && (sort == null || sort.isEmpty())
+      ) pageTuts = userSubcriptionRepository.findAll(paging); else pageTuts =
+        userSubcriptionRepository.findByTermAcrossFieldsWithColumn(
+          filter,
+          sort,
+          paging
+        );
 
       usersSub = pageTuts.getContent();
 
