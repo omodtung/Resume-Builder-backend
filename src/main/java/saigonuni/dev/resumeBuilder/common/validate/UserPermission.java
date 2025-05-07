@@ -1,9 +1,8 @@
 package saigonuni.dev.resumeBuilder.common.validate;
 
 import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 import saigonuni.dev.resumeBuilder.exception.BadRequestException;
@@ -11,10 +10,14 @@ import saigonuni.dev.resumeBuilder.message.UserSubcription;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
 import saigonuni.dev.resumeBuilder.service.UserSubcriptionService;
 import saigonuni.dev.resumeBuilder.service.UserValueImplement;
+
 @Service
 public class UserPermission {
-    
-
+ 
+  private UserSubcriptionService userSubcriptionService;
+  private UserValueImplement userValueImplement;
+  private UserRepository UserRepository;
+  @Autowired
   public UserPermission(
     UserSubcriptionService userSubcriptionService,
     UserValueImplement userValueImplement,
@@ -53,5 +56,4 @@ public class UserPermission {
     }
     return null;
   }
-
 }

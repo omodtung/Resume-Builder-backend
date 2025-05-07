@@ -104,56 +104,52 @@ public class UserSubscriptionServiceImplement
         isActive
       );
 
-      // Check if the result is null
-      if (subscription == null) {
-        System.err.println(
-          "No active subscription found for user ID: " + userId
+      if (subscription != null) {
+        // Map the entity to DTO
+        UserSupcriptionDTO.UserSupcriptionDTOBuilder builder = UserSupcriptionDTO.builder();
+
+        // Map User fields
+        if (subscription.getUser() != null) {
+          builder.user(
+            new UserSubDTO(
+              subscription.getUser().getId(),
+              subscription.getUser().getUsername(),
+              subscription.getUser().getEmail()
+            )
+          );
+        }
+
+        // Map Plan fields
+        if (subscription.getPlan() != null) {
+          PlanSubscription planSubDTO = new PlanSubscription();
+          planSubDTO.setId(subscription.getPlan().getId());
+          planSubDTO.setPlansName(subscription.getPlan().getPlansName());
+          planSubDTO.setDescription(subscription.getPlan().getDescription());
+          planSubDTO.setPrice(subscription.getPlan().getPrice());
+          builder.plan(planSubDTO);
+        }
+
+        // Map other fields
+        builder.id(subscription.getId());
+        builder.stripeCustomerId(subscription.getStripeCustomerId());
+        builder.stripeSubscriptionId(subscription.getStripeSubscriptionId());
+        builder.stripeCurrentPeriodEnd(
+          subscription.getStripeCurrentPeriodEnd()
         );
-        return null; // Return null if no subscription is found
-      }
-
-      // Map the entity to DTO
-      UserSupcriptionDTO.UserSupcriptionDTOBuilder builder = UserSupcriptionDTO.builder();
-
-      // Map User fields
-      if (subscription.getUser() != null) {
-        builder.user(
-          new UserSubDTO(
-            subscription.getUser().getId(),
-            subscription.getUser().getUsername(),
-            subscription.getUser().getEmail()
-          )
+        builder.stripeCancelAtPeriodEnd(
+          subscription.getStripeCancelAtPeriodEnd()
         );
-      }
 
-      // Map Plan fields
-      if (subscription.getPlan() != null) {
-        PlanSubscription planSubDTO = new PlanSubscription();
-        planSubDTO.setId(subscription.getPlan().getId());
-        planSubDTO.setPlansName(subscription.getPlan().getPlansName());
-        planSubDTO.setDescription(subscription.getPlan().getDescription());
-        planSubDTO.setPrice(subscription.getPlan().getPrice());
-        builder.plan(planSubDTO);
-      }
-
-      // Map other fields
-      builder.id(subscription.getId());
-      builder.stripeCustomerId(subscription.getStripeCustomerId());
-      builder.stripeSubscriptionId(subscription.getStripeSubscriptionId());
-      builder.stripeCurrentPeriodEnd(subscription.getStripeCurrentPeriodEnd());
-      builder.stripeCancelAtPeriodEnd(
-        subscription.getStripeCancelAtPeriodEnd()
-      );
-
-      return builder.build();
+        return builder.build();
+      }   
     } catch (Exception e) {
       // Log the exception properly in a real application
       System.err.println(
         "Error fetching active subscription for user: " + e.getMessage()
       );
       e.printStackTrace(); // Added stack trace for debugging
-      return null; // Return null on error
     }
+    return null; // Ensure a return value in all code paths
   }
 
   @Override

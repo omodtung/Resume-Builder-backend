@@ -62,15 +62,17 @@ public class CheckSubcriptionWithUserId {
       userId, // Corrected: Pass userId directly
       true
     );
-    // Corrected: Check only for null, as userSubGet is an object, not a collection
-    // todo fix this error not thrown exacly name of error
 
-    // to do fix the validate u
     if (userSubGet == null) {
-      throw new BadRequestException(
-        UserSubcription.USER_SUBSCRIPTION_NOT_FOUND,
-        UserSubcription.USER_SUBSCRIPTION_NOT_FOUND_MESSAGE
-      );
+      // If user has no active subscription, check if they exceed the free plan limit
+      int countUser = userValueImplement.CountCvCreatedByUserId(userId);
+      if (countUser > 2) {
+        throw new BadRequestException(
+          UserSubcription.LIMIT_FREE_REACT_KEY,
+          UserSubcription.LIMIT_FREE_REACT_MESSAGE
+        );
+      }
+      return; // Exit the method if no active subscription and within free limit
     }
 
     // Corrected: Use .equals() for String comparison and compare with enum's name()
@@ -82,21 +84,16 @@ public class CheckSubcriptionWithUserId {
           UserSubcription.LIMIT_BASIC_REACT_MESSAGE
         );
       }
-    }
-
-    if (Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())) {}
-
-    if (
-      !Plan.BASIC.name().equals(userSubGet.getPlan().getPlansName()) ||
-      !Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())
-    ) {
-      int countUser = userValueImplement.CountCvCreatedByUserId(userId);
-      if (countUser > 2) {
-        throw new BadRequestException(
-          UserSubcription.LIMIT_FREE_REACT_KEY,
-          UserSubcription.LIMIT_FREE_REACT_MESSAGE
-        );
-      }
+    } else if (Plan.PREMIUM.name().equals(userSubGet.getPlan().getPlansName())) {
+      // Premium plan has no limits here
+    } else if (Plan.FREE.name().equals(userSubGet.getPlan().getPlansName())) {
+       int countUser = userValueImplement.CountCvCreatedByUserId(userId);
+        if (countUser > 2) {
+          throw new BadRequestException(
+            UserSubcription.LIMIT_FREE_REACT_KEY,
+            UserSubcription.LIMIT_FREE_REACT_MESSAGE
+          );
+        }
     }
   }
 
@@ -109,7 +106,7 @@ public class CheckSubcriptionWithUserId {
       );
     }
     UserSupcriptionDTO userSubGet = userSubcriptionService.findUserActivateSubscription(
-      user.getId(), // Corrected: Pass userId directly
+      user.getId(),
       true
     );
 

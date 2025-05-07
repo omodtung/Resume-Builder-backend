@@ -332,16 +332,4 @@ public class ResumeAdminController extends BaseController {
     return ResponseEntity.ok().build();
   }
 
-  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-  @PostMapping("api/openai/summary")
-  public String generateSummary() {
-    try {
-      System.out.println("Input Testing : ");
-      return "Say";
-    } catch (RuntimeException e) {
-      // Basic error handling
-      e.printStackTrace(); // Log the full stack trace
-    }
-    return null;
-  }
 }
