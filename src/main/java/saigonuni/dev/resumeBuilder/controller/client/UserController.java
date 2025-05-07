@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.controller.client;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,10 @@ public class UserController extends BaseController {
   }
 
   @GetMapping("resumes-individual")
+    @Operation(
+    summary = "resume is created by account user just list resume",
+    description = "all resume created by user + userSubscriptions +userValues "
+  )
   public ResponseEntity<List<Resume>> getResumesByUserId(
     @RequestHeader("Authorization") String authorizationHeader
   ) {

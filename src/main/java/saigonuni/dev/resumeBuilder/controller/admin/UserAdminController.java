@@ -199,13 +199,21 @@ public class UserAdminController {
     List<Resume> resumes = userService.findResumesByUserId(userId);
     return ResponseEntity.ok(resumes);
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("user-created-cv")
+  @Operation(
+    summary = "just list cv is created by user with and that resume have user value ",
+    description = "list data resume all resume created by user"
+  )
   public Object[] getResumesByUserId() {
     return userService.fetchUserMakeCV();
   }
 
   @GetMapping("resumes-users-Registed")
+  @Operation(
+    summary = "all resume created by user + userSubscriptions ",
+    description = "all resume created by user + userSubscriptions +userValues "
+  )
   public List<Object> getResumesByUser() {
     try {
       return userService.findResumesWithUserFullyRegister();

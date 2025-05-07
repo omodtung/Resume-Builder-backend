@@ -110,7 +110,7 @@ public class UserSubscriptionController extends BaseController {
     try {
       List<UserSubscription> usersSub; // Initialize later
       Sort.Direction direction = "asc".equalsIgnoreCase(order)
-        ? Sort.Direction.ASC
+        ? Sort.Direction.ASC  
         : Sort.Direction.DESC;
       Pageable paging;
 

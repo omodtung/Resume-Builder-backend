@@ -109,3 +109,926 @@ Create
 Template
 upload 
 </client>
+
+
+GET
+/admin/resumes-users-Registed
+[
+  {
+    "id": 1,
+    "username": "user",
+    "password": "$2a$10$vcBNLSfiRI41oR1Ni2qSWu8HL12KIf0kd4bCM5TupPKV90weKPRMG",
+    "email": "user@gmail.com",
+    "role": "ROLE_USER",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzQ1OTEyMzk0LCJleHAiOjE3NDY1MTcxOTR9.C5qqx_5pDgQn8CE4M1nOxhS0frV-8JLEu1YFq4DbwQ0",
+    "userValues": [
+      {
+        "id": 1,
+        "createdAt": "2025-04-20T21:03:33.91052",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 1,
+            "title": "Senior Software Engineer At Google Quancom",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "1745935415870-Screenshot from 2025-04-25 12-52-27.png",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice ,michela",
+            "lastName": "Smith",
+            "jobTitle": "Lead Developer",
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [],
+            "educations": [
+              {
+                "id": 52,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-29T15:50:13.404499",
+                "updatedAt": "2025-04-29T15:50:13.404515"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-20T21:03:33.92778",
+            "updatedAt": "2025-04-29T15:50:13.402367"
+          }
+        ]
+      }
+    ],
+    "userSubscriptions": [
+      {
+        "id": 3,
+        "stripeCustomerId": "cus_SBKjL1pQW1NQaB",
+        "stripeSubscriptionId": "sub_1RGy45K6dhIc7YOmmuTqLbYZ",
+        "stripeCurrentPeriodEnd": "2025-05-23T14:49:53",
+        "stripeCancelAtPeriodEnd": false,
+        "createdAt": "2025-04-23T14:49:58.037286",
+        "updatedAt": null,
+        "isActive": true
+      },
+      {
+        "id": 1,
+        "stripeCustomerId": "cus_SAFDHQjpdDvz8G",
+        "stripeSubscriptionId": "sub_1RFujEK6dhIc7YOm66uMgnyG",
+        "stripeCurrentPeriodEnd": "2025-05-20T17:04:00",
+        "stripeCancelAtPeriodEnd": false,
+        "createdAt": "2025-04-20T17:04:04.674045",
+        "updatedAt": null,
+        "isActive": true
+      }
+    ],
+    "createdAt": "2025-04-20T16:53:25.731712",
+    "updatedAt": "2025-04-29T14:39:54.490763",
+    "enabled": true,
+    "authorities": [
+      {
+        "authority": "ROLE_USER"
+      }
+    ],
+    "accountNonExpired": true,
+    "accountNonLocked": true,
+    "credentialsNonExpired": true
+  },
+  {
+    "id": 3,
+    "username": "test",
+    "password": "$2a$10$L61g.B8L2m7UtxcGKhP0auQLysGsgDHvs0xGI1vABggdpbOZ1YYpe",
+    "email": "test@gmail.com",
+    "role": "ROLE_USER",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNzQ1NDI0OTYzLCJleHAiOjE3NDYwMjk3NjN9.-zXdRLg0EYgPHdDleGyGBZe9tx_xt3pkQDDTMoKYyJM",
+    "userValues": [
+      {
+        "id": 2,
+        "createdAt": "2025-04-23T23:31:58.778164",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 2,
+            "title": "Senior Software Engineer At Google Quancom",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice ,michela",
+            "lastName": "Smith",
+            "jobTitle": "Lead Developer",
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 47,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-29T14:47:00.702407",
+                "updatedAt": "2025-04-29T14:47:00.702425"
+              },
+              {
+                "id": 48,
+                "position": "Software Engineer 123",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-29T14:47:00.703589",
+                "updatedAt": "2025-04-29T14:47:00.703604"
+              }
+            ],
+            "educations": [
+              {
+                "id": 47,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-29T14:47:00.697179",
+                "updatedAt": "2025-04-29T14:47:00.697195"
+              },
+              {
+                "id": 48,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-29T14:47:00.699022",
+                "updatedAt": "2025-04-29T14:47:00.69904"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-23T23:31:58.834801",
+            "updatedAt": "2025-04-29T14:47:00.6938"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "createdAt": "2025-04-24T01:11:16.169341",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 3,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 17,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-24T01:11:16.211093",
+                "updatedAt": "2025-04-24T01:11:16.211153"
+              },
+              {
+                "id": 18,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-24T01:11:16.214161",
+                "updatedAt": "2025-04-24T01:11:16.214195"
+              }
+            ],
+            "educations": [
+              {
+                "id": 17,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-24T01:11:16.218606",
+                "updatedAt": "2025-04-24T01:11:16.218634"
+              },
+              {
+                "id": 18,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-24T01:11:16.220267",
+                "updatedAt": "2025-04-24T01:11:16.220288"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T01:11:16.200185",
+            "updatedAt": null
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "createdAt": "2025-04-24T01:11:21.040878",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 4,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 19,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-24T01:11:21.049412",
+                "updatedAt": "2025-04-24T01:11:21.049451"
+              },
+              {
+                "id": 20,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-24T01:11:21.050814",
+                "updatedAt": "2025-04-24T01:11:21.050838"
+              }
+            ],
+            "educations": [
+              {
+                "id": 19,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-24T01:11:21.053168",
+                "updatedAt": "2025-04-24T01:11:21.053193"
+              },
+              {
+                "id": 20,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-24T01:11:21.054135",
+                "updatedAt": "2025-04-24T01:11:21.054151"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T01:11:21.043709",
+            "updatedAt": null
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "createdAt": "2025-04-24T01:11:24.39451",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 5,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 21,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-24T01:11:24.410425",
+                "updatedAt": "2025-04-24T01:11:24.410464"
+              },
+              {
+                "id": 22,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-24T01:11:24.412214",
+                "updatedAt": "2025-04-24T01:11:24.412239"
+              }
+            ],
+            "educations": [
+              {
+                "id": 21,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-24T01:11:24.41572",
+                "updatedAt": "2025-04-24T01:11:24.415756"
+              },
+              {
+                "id": 22,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-24T01:11:24.417181",
+                "updatedAt": "2025-04-24T01:11:24.417205"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T01:11:24.404979",
+            "updatedAt": null
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "createdAt": "2025-04-24T01:11:27.727054",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 6,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 23,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-24T01:11:27.735899",
+                "updatedAt": "2025-04-24T01:11:27.73594"
+              },
+              {
+                "id": 24,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-24T01:11:27.737026",
+                "updatedAt": "2025-04-24T01:11:27.737045"
+              }
+            ],
+            "educations": [
+              {
+                "id": 23,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-24T01:11:27.739594",
+                "updatedAt": "2025-04-24T01:11:27.739618"
+              },
+              {
+                "id": 24,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-24T01:11:27.740741",
+                "updatedAt": "2025-04-24T01:11:27.740758"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T01:11:27.729696",
+            "updatedAt": null
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "createdAt": "2025-04-24T01:55:30.005603",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 7,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 25,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-24T01:55:30.102598",
+                "updatedAt": "2025-04-24T01:55:30.102673"
+              },
+              {
+                "id": 26,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-24T01:55:30.106484",
+                "updatedAt": "2025-04-24T01:55:30.106525"
+              }
+            ],
+            "educations": [
+              {
+                "id": 25,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-24T01:55:30.118592",
+                "updatedAt": "2025-04-24T01:55:30.118638"
+              },
+              {
+                "id": 26,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-24T01:55:30.122774",
+                "updatedAt": "2025-04-24T01:55:30.122808"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T01:55:30.067014",
+            "updatedAt": null
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "createdAt": "2025-04-24T01:55:33.440059",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": []
+      },
+      {
+        "id": 9,
+        "createdAt": "2025-04-24T01:55:52.837673",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": []
+      }
+    ],
+    "userSubscriptions": [
+      {
+        "id": 11,
+        "stripeCustomerId": "cus_SBMspRz5TgfnjX",
+        "stripeSubscriptionId": "sub_1RH08pK6dhIc7YOmJP71s0YS",
+        "stripeCurrentPeriodEnd": "2025-05-23T17:02:54",
+        "stripeCancelAtPeriodEnd": false,
+        "createdAt": "2025-04-23T17:03:00.363793",
+        "updatedAt": null,
+        "isActive": false
+      },
+      {
+        "id": 12,
+        "stripeCustomerId": "cus_SBMu0ahcfAyuPE",
+        "stripeSubscriptionId": "sub_1RH0AXK6dhIc7YOm55vNPCe7",
+        "stripeCurrentPeriodEnd": "2025-05-23T17:04:41",
+        "stripeCancelAtPeriodEnd": false,
+        "createdAt": "2025-04-23T17:04:46.391603",
+        "updatedAt": null,
+        "isActive": true
+      }
+    ],
+    "createdAt": "2025-04-23T17:01:36.748371",
+    "updatedAt": "2025-04-23T23:16:03.481099",
+    "enabled": true,
+    "authorities": [
+      {
+        "authority": "ROLE_USER"
+      }
+    ],
+    "accountNonExpired": true,
+    "accountNonLocked": true,
+    "credentialsNonExpired": true
+  },
+  {
+    "id": 4,
+    "username": "admin",
+    "password": "$2a$10$mLFs75URJS4ztfLCJH6faOHr9LsXm4KUYEBF/eEl5fkPDbvA4qaue",
+    "email": "admin@gmail.com",
+    "role": "ROLE_ADMIN",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc0NjU0ODczOSwiZXhwIjoxNzQ3MTUzNTM5fQ.nOlznkojbGVLz6IXGQZrS-HKKHSMGkxITMr1HEu2CG0",
+    "userValues": [
+      {
+        "id": 10,
+        "createdAt": "2025-04-24T02:08:00.695866",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": []
+      },
+      {
+        "id": 11,
+        "createdAt": "2025-04-24T02:08:05.995224",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 11,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#abb8c3",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 54,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-05-01T17:52:39.872972",
+                "updatedAt": "2025-05-01T17:52:39.872983"
+              },
+              {
+                "id": 55,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-05-01T17:52:39.874757",
+                "updatedAt": "2025-05-01T17:52:39.874767"
+              }
+            ],
+            "educations": [
+              {
+                "id": 55,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-05-01T17:52:39.869796",
+                "updatedAt": "2025-05-01T17:52:39.869812"
+              },
+              {
+                "id": 56,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-05-01T17:52:39.871534",
+                "updatedAt": "2025-05-01T17:52:39.871548"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T02:08:05.997982",
+            "updatedAt": "2025-05-01T17:52:39.867926"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "createdAt": "2025-04-24T02:08:07.043661",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": []
+      },
+      {
+        "id": 13,
+        "createdAt": "2025-04-24T02:08:07.627896",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 13,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 37,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-24T02:08:07.640728",
+                "updatedAt": "2025-04-24T02:08:07.640759"
+              },
+              {
+                "id": 38,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-24T02:08:07.642723",
+                "updatedAt": "2025-04-24T02:08:07.642746"
+              }
+            ],
+            "educations": [
+              {
+                "id": 37,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-24T02:08:07.647667",
+                "updatedAt": "2025-04-24T02:08:07.647695"
+              },
+              {
+                "id": 38,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-24T02:08:07.651844",
+                "updatedAt": "2025-04-24T02:08:07.651868"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T02:08:07.630538",
+            "updatedAt": null
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "createdAt": "2025-04-24T02:08:10.864088",
+        "updatedAt": null,
+        "deletedAt": null,
+        "resume": [
+          {
+            "id": 14,
+            "title": "Senior Software Engineer",
+            "description": "A highly motivated and experienced software engineer with a passion for building scalable and robust applications.",
+            "photoUrl": "",
+            "colorHex": "#3498db",
+            "borderStyle": "solid 2px #2980b9",
+            "summary": "Results-oriented senior software engineer with over 8 years of experience in designing, developing, and deploying enterprise-level software solutions. Proven ability to lead and mentor teams, and a strong advocate for best practices and code quality.",
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "jobTitle": null,
+            "city": "Ho Chi Minh City",
+            "country": "Vietnam",
+            "phone": "0901234567",
+            "email": "alice.smith@example.com",
+            "type": null,
+            "workExperiences": [
+              {
+                "id": 39,
+                "position": "Senior Software Engineer",
+                "company": "Tech Solutions Inc.",
+                "startDate": "2023-01-15",
+                "endDate": "2025-04-11",
+                "description": "Led the development of a new microservices architecture for the company's flagship product, resulting in a 20% improvement in performance and scalability. Mentored junior developers and implemented CI/CD pipelines.",
+                "createdAt": "2025-04-24T02:08:10.872499",
+                "updatedAt": "2025-04-24T02:08:10.872536"
+              },
+              {
+                "id": 40,
+                "position": "Software Engineer",
+                "company": "Innovate Software Ltd.",
+                "startDate": "2020-06-01",
+                "endDate": "2022-12-31",
+                "description": "Developed and maintained key features for a large-scale web application using Java, Spring, and React. Contributed to the design and implementation of RESTful APIs.",
+                "createdAt": "2025-04-24T02:08:10.876725",
+                "updatedAt": "2025-04-24T02:08:10.876756"
+              }
+            ],
+            "educations": [
+              {
+                "id": 39,
+                "degree": "Master of Science in Computer Science",
+                "school": "Stanford University",
+                "startDate": "2018-09-05",
+                "endDate": "2020-05-20",
+                "createdAt": "2025-04-24T02:08:10.881182",
+                "updatedAt": "2025-04-24T02:08:10.881207"
+              },
+              {
+                "id": 40,
+                "degree": "Bachelor of Science in Software Engineering",
+                "school": "University of California, Berkeley",
+                "startDate": "2014-09-01",
+                "endDate": "2018-05-15",
+                "createdAt": "2025-04-24T02:08:10.882616",
+                "updatedAt": "2025-04-24T02:08:10.882636"
+              }
+            ],
+            "skills": [
+              "Java",
+              "Spring Framework",
+              "React",
+              "Microservices",
+              "RESTful APIs",
+              "Agile Methodologies",
+              "Git",
+              "Docker",
+              "Kubernetes"
+            ],
+            "createdAt": "2025-04-24T02:08:10.866056",
+            "updatedAt": null
+          }
+        ]
+      }
+    ],
+    "userSubscriptions": [
+      {
+        "id": 15,
+        "stripeCustomerId": "cus_SBVcS0wuHkuBYe",
+        "stripeSubscriptionId": "sub_1RH8bEK6dhIc7YOmnD0CfrX0",
+        "stripeCurrentPeriodEnd": "2025-05-24T02:04:48",
+        "stripeCancelAtPeriodEnd": false,
+        "createdAt": "2025-04-24T02:04:53.199282",
+        "updatedAt": null,
+        "isActive": true
+      }
+    ],
+    "createdAt": "2025-04-24T02:01:42.216623",
+    "updatedAt": "2025-05-06T23:25:39.177312",
+    "enabled": true,
+    "authorities": [
+      {
+        "authority": "ROLE_ADMIN"
+      }
+    ],
+    "accountNonExpired": true,
+    "accountNonLocked": true,
+    "credentialsNonExpired": true
+  }
+]
