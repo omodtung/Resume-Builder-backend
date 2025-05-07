@@ -38,7 +38,7 @@ public class OpenAiController extends BaseController {
     this.OpenService = OpenService;
   }
 
-  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  // @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("api/openai/summary")
   public ResponseEntity<String> generateSummary(
     @Valid @RequestBody SummaryCall input,

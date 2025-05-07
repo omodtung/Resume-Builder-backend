@@ -99,7 +99,7 @@ public class UserSubscriptionController extends BaseController {
     return ResponseEntity.ok(userSubscriptionList);
   }
 
-  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  // @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping(value = "user-subscription")
   public ResponseEntity<Map<String, Object>> fetchDataUserSubciption(
     @RequestParam(required = false) String filter,
