@@ -40,6 +40,7 @@ public class SecurityConfig implements WebMvcConfigurer {
       .disable()
       .authorizeHttpRequests()
       .requestMatchers(
+        "/",
         "/register",
         "/auth/authenticate/**",
         "/auth/refresh-token",
