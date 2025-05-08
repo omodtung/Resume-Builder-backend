@@ -149,6 +149,9 @@ public class UserSubscriptionController extends BaseController {
         );
         userMap.put("user", user.getUser());
         userMap.put("plan", user.getPlan());
+        userMap.put("createdAt", user.getCreatedAt());
+        userMap.put("updatedAt", user.getUpdatedAt());
+        userMap.put("isActive", user.getIsActive());
         usersSub1.add(userMap);
       }
       Map<String, Object> response = new HashMap<>();

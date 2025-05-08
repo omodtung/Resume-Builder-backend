@@ -55,7 +55,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         "/v3/api-docs/**", // Allow API docs
         "/api-docs/**",
         "/webjars/**",
-        "/images/**"
+        "/images/**",
+        "/api/openai/generate-work-experience"
       )
       .permitAll()
       .anyRequest()
