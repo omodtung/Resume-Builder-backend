@@ -68,7 +68,7 @@ public class UserSubscriptionController extends BaseController {
     this.userDC = userDC;
   }
 
-  @GetMapping(value = "user-subscription-follow-userId")
+    @GetMapping(value = "user-subscription-follow-userId")
   @Operation(
     summary = "API find Plans depend on subcription user have to check",
     description = "check user if user have this plan to do a cv creation or feature creation"
