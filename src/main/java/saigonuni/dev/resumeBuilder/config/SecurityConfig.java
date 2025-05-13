@@ -57,7 +57,8 @@ public class SecurityConfig implements WebMvcConfigurer {
         "/webjars/**",
         "/images/**",
         "/api/openai/generate-work-experience",
-        "/file-open-send"
+        "/file-open-send",
+        "/api/agentAI/reviewCv"
       )
       .permitAll()
       .anyRequest()
@@ -76,7 +77,7 @@ public class SecurityConfig implements WebMvcConfigurer {
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(
-      List.of("http://localhost:8080", "http://localhost:3000")
+      List.of("http://localhost:8080", "http://localhost:3000" ,"http://localhost:8081")
     );
     configuration.setAllowedMethods(
       List.of("GET", "POST", "PUT", "PATCH", "DELETE")
@@ -109,7 +110,4 @@ public class SecurityConfig implements WebMvcConfigurer {
       .addResourceHandler("/images/**")
       .addResourceLocations("classpath:/images/");
   }
-
-
-  
 }

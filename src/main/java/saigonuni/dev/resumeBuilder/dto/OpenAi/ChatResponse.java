@@ -1,15 +1,27 @@
 package saigonuni.dev.resumeBuilder.dto.OpenAi;
 
-public class ChatResponse {
-    private String response;
-    private String responseId; // Corresponds to conversationId
+import java.io.Serializable;
+import lombok.Data;
 
-    // Default constructor
-    public ChatResponse() {}
+@Data
+public class ChatResponse implements Serializable {
 
-    // Getters and Setters
-    public String getResponse() { return response; }
-    public void setResponse(String response) { this.response = response; }
-    public String getResponseId() { return responseId; }
-    public void setResponseId(String responseId) { this.responseId = responseId; }
+  private String responseId;
+  private String response;
+
+  public String getResponseId() {
+    return responseId;
+  }
+
+  public void setResponseId(String responseId) {
+    this.responseId = responseId;
+  }
+
+  public String getResponse() {
+    return response;
+  }
+
+  public void setResponse(String response) {
+    this.response = response;
+  }
 }
