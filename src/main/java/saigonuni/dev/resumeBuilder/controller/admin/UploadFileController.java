@@ -63,7 +63,7 @@ public class UploadFileController {
     return this.uploadService.handleSaveUpLoadFile(file, target);
   }
 
-  @CrossOrigin(origins = "http://localhost:3000/")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping(
     value = "upload-file-cv",
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE
