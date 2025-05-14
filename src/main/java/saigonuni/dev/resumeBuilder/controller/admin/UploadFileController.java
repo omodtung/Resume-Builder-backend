@@ -88,8 +88,7 @@ public class UploadFileController {
     this.resumeService.findIdResumeToUpdatePhotoUrlToNull(idResume);
     return "Success";
   }
-
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping(value = "link-jobCV-upload-file-cv")
   public ResponseEntity<String> sendCvToPortal(
     @RequestParam("type") String type,
@@ -151,7 +150,7 @@ public class UploadFileController {
     }
     return null;
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping(
     value = "file-open-send",
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE
