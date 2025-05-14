@@ -243,7 +243,7 @@ public class ResumeServiceImplement implements ResumeService {
       // String avatar =
       //   this.uploadServiceImplement.handleSaveUpLoadFile(file, "avatar");
 
-      String avatar = "";
+      // String avatar = "";
 
       System.err.println("Hello 1");
       Resume existingResume = resumeRepository
@@ -256,7 +256,7 @@ public class ResumeServiceImplement implements ResumeService {
       existingResume.setColorHex(request.getColorHex());
       existingResume.setBorderStyle(request.getBorderStyle());
       existingResume.setDescription(request.getDescription());
-      existingResume.setPhotoUrl(avatar);
+      // existingResume.setPhotoUrl(avatar);
       existingResume.setSummary(request.getSummary());
       existingResume.setFirstName(request.getFirstName());
       existingResume.setLastName(request.getLastName());

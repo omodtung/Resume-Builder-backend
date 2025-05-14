@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -191,7 +192,7 @@ public class PlanController extends BaseController {
     }
   }
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-  @PostMapping("plans/{id}")
+  @PatchMapping("plans/{id}")
   @Operation(summary = "API Update Plan ", description = "Update API Plan")
   @LogExecutionTime
   public ResponseEntity<UpdatePlanAdminResponse> updatePlan(
