@@ -187,4 +187,39 @@ public class UploadFileController {
         .body("Error: " + e.getMessage());
     }
   }
+
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  @PostMapping(
+    value = "file-cv-send-ai",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+  )
+  public ResponseEntity<String> SendFileToAISpringBoot2(
+    @RequestParam("File") MultipartFile file,
+    Principal principal
+  ) {
+    try {
+      User user = userRepository.findByUsername(principal.getName());
+      String uploadOpenUrl = "http://localhost:8081/upload-file";
+      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+      body.add("File", file.getResource());
+      body.add("userId", user.getId());
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+      HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(
+        body,
+        headers
+      );
+      ResponseEntity<String> response = restTemplate.postForEntity(
+        uploadOpenUrl,
+        requestEntity,
+        String.class
+      );
+      return response;
+    } catch (Exception e) {
+      // Handle any exceptions that occur during the request
+      return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Error: " + e.getMessage());
+    }
+  }
 }

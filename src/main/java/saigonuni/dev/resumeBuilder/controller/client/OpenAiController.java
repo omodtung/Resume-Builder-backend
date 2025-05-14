@@ -3,27 +3,20 @@ package saigonuni.dev.resumeBuilder.controller.client;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.security.Principal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.common.validate.CheckSubcriptionWithUserId;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
-import saigonuni.dev.resumeBuilder.dto.OpenAi.ChatResponse;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.DescriptionDTO;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.QueryRequest;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.SummaryCall;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.WorkExperience;
-// Add this import if QueryRequest exists in your project
 import saigonuni.dev.resumeBuilder.service.OpenAiResumeService;
 
 @Tag(
@@ -91,15 +84,17 @@ public class OpenAiController extends BaseController {
       return ResponseEntity.internalServerError().body(null); // Or a specific error object
     }
   }
-// to do response format again
+
+  // to do response format again
   @PostMapping("/api/agentAI/reviewCv")
   public ResponseEntity<?> reviewCv(@RequestBody QueryRequest input) {
     try {
       Object chatResponse = rabbitTemplate.convertSendAndReceive(
         "",
         "ragQueue",
-        input.getQuery()
+        input
       );
+
       System.out.println("ChatResponse after Decode " + chatResponse);
       if (chatResponse != null) {
         return ResponseEntity.ok(chatResponse);
