@@ -83,7 +83,7 @@ public class SecurityConfig implements WebMvcConfigurer {
       List.of("GET", "POST", "PUT", "PATCH", "DELETE")
     );
     configuration.setAllowedHeaders(
-      List.of("Authorization", "Content-Type", "idResume", "isResume")
+      List.of("Authorization", "Content-Type", "idResume", "isResume" ,"userId","query")
     );
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

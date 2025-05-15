@@ -179,7 +179,10 @@ public class UserAdminController {
 
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PatchMapping("users/{id}")
-  @Operation(summary = "Update user", description = "Updates using patch an existing user")
+  @Operation(
+    summary = "Update user",
+    description = "Updates using patch an existing user"
+  )
   public ResponseEntity<UpdateUserAdminResponse> updateUser(
     @PathVariable String id,
     @Valid @RequestBody UpdateUserAdminRequest request
@@ -189,7 +192,6 @@ public class UserAdminController {
       .status(HttpStatus.OK)
       .body(UpdateUserAdminResponse.builder().user(user).build());
   }
-
 
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @DeleteMapping("users/{id}")

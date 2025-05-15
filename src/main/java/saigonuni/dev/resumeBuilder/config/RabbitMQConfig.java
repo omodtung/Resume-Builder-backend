@@ -85,8 +85,6 @@ public class RabbitMQConfig {
   ) {
     RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
     rabbitTemplate.setMessageConverter(messageConverter);
-    // The reply-timeout can also be set here if not in properties
-    // Increased timeout from 100 seconds to 300 seconds (5 minutes)
     rabbitTemplate.setReplyTimeout(200000);
     return rabbitTemplate;
   }

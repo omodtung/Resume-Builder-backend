@@ -1,5 +1,6 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
+import com.openai.services.blocking.fineTuning.JobService;
 import com.stripe.model.Account;
 import java.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import saigonuni.dev.resumeBuilder.aop.logexecutiontime.LogExecutionTime;
 import saigonuni.dev.resumeBuilder.common.enums.Company;
+import saigonuni.dev.resumeBuilder.domain.Jobs;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
+import saigonuni.dev.resumeBuilder.service.JobsService;
 import saigonuni.dev.resumeBuilder.service.ResumeService;
 import saigonuni.dev.resumeBuilder.service.UploadService;
 
@@ -38,18 +41,21 @@ public class UploadFileController {
   private final ResumeService resumeService;
   private final RestTemplate restTemplate;
   private final UserRepository userRepository;
+  private final JobsService jobService;
 
   @Autowired
   UploadFileController(
     UploadService uploadService,
     ResumeService resumeService,
     RestTemplate restTemplate,
-    UserRepository userRepository
+    UserRepository userRepository,
+    JobsService jobService
   ) {
     this.uploadService = uploadService;
     this.resumeService = resumeService;
     this.restTemplate = restTemplate;
     this.userRepository = userRepository;
+    this.jobService = jobService;
   }
 
   @CrossOrigin(origins = "http://localhost:3000/")
@@ -88,6 +94,7 @@ public class UploadFileController {
     this.resumeService.findIdResumeToUpdatePhotoUrlToNull(idResume);
     return "Success";
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping(value = "link-jobCV-upload-file-cv")
   public ResponseEntity<String> sendCvToPortal(
@@ -143,13 +150,18 @@ public class UploadFileController {
         pipelineRequestEntity,
         String.class
       );
-
+      Jobs job = new Jobs();
+      job.setCompany(companyId);
+      job.setEmail(user.getEmail());
+      job.setJobId(jobId);
+      jobService.addJobs(job);
       return pipelineResponse;
     } catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
     }
     return null;
   }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping(
     value = "file-open-send",
@@ -160,7 +172,8 @@ public class UploadFileController {
   ) {
     try {
       String uploadOpenUrl = "http://localhost:8000/api/v1/files/upload-Open";
-
+      Jobs job = new Jobs();
+      job.setCompany(uploadOpenUrl);
       MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
       body.add("fileUpload", file.getResource());
 

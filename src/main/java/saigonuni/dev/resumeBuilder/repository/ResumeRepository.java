@@ -40,6 +40,7 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
   @Query(
     "SELECT r FROM Resume r WHERE " +
     "(:column = 'title' AND LOWER(r.title) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
+    "(:column = 'type' AND LOWER(r.type) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
     "(:column = 'description' AND LOWER(r.description) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
     "(:column = 'userValue' AND LOWER(r.userValue.user.username) LIKE LOWER(CONCAT('%', :searchTerm, '%')))"
   )
