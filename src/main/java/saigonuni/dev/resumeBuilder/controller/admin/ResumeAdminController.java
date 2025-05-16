@@ -35,6 +35,7 @@ import saigonuni.dev.resumeBuilder.dto.resume.CreateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.DeleteResumeResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.EditResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
+import saigonuni.dev.resumeBuilder.dto.resume.ListResumeResponse;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.UpdateResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.repository.ResumeRepository;
@@ -125,14 +126,15 @@ public class ResumeAdminController extends BaseController {
       .body(GetResumeAdminResponse.builder().resume(resume).build());
   }
 
-  // @GetMapping("resumes")
-  // @LogExecutionTime
-  // public ResponseEntity<ListResumeResponse> getResume() {
-  //   List<Resume> resumes = resumeService.listResumes();
-  //   return ResponseEntity
-  //     .status(HttpStatus.OK)
-  //     .body(ListResumeResponse.builder().resume(resumes).build());
-  // }
+  @GetMapping("resumes-data-train")
+  @LogExecutionTime
+  public ResponseEntity<ListResumeResponse> getResume() {
+    List<Resume> resumes = resumeService.listResumes();
+    return ResponseEntity
+      .status(HttpStatus.OK)
+      .body(ListResumeResponse.builder().resume(resumes).build());
+  }
+
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping("resumes")
   public ResponseEntity<Map<String, Object>> getResumes(
@@ -331,5 +333,4 @@ public class ResumeAdminController extends BaseController {
     resumeService.deleteResume(id);
     return ResponseEntity.ok().build();
   }
-
 }

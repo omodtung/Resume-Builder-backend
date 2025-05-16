@@ -53,7 +53,7 @@ public class OpenAiController extends BaseController {
         .status(HttpStatus.UNAUTHORIZED)
         .body("User not authenticated.");
     }
-    // checkSubcriptionWithUserId.checkPlanUsingAifeature(principal.getName());
+    checkSubcriptionWithUserId.checkPlanUsingAifeature(principal.getName());
     try {
       String summary = OpenService.generateSummary(input);
       return ResponseEntity.status(HttpStatus.OK).body(summary);
@@ -75,7 +75,7 @@ public class OpenAiController extends BaseController {
     if (principal == null) {
       throw new RuntimeException("User not authenticated.");
     }
-    // checkSubcriptionWithUserId.checkPlanUsingAifeature(principal.getName());
+    checkSubcriptionWithUserId.checkPlanUsingAifeature(principal.getName());
     try {
       WorkExperience workExperience = OpenService.generateWorkExperience(input);
       return ResponseEntity.ok(workExperience);
@@ -88,6 +88,7 @@ public class OpenAiController extends BaseController {
 
   // to do response format again
   @CrossOrigin(origins = "http://localhost:3000")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("/api/agentAI/reviewCv")
   public ResponseEntity<?> reviewCv(@RequestBody QueryRequest input) {
     try {

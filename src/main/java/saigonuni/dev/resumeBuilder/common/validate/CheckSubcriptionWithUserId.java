@@ -78,7 +78,7 @@ public class CheckSubcriptionWithUserId {
     // Corrected: Use .equals() for String comparison and compare with enum's name()
     if (Plan.BASIC.name().equals(userSubGet.getPlan().getPlansName())) {
       int countUser = userValueImplement.CountCvCreatedByUserId(userId);
-      if (countUser > 8) {
+      if (countUser > 3) {
         throw new BadRequestException(
           UserSubcription.LIMIT_BASIC_REACT,
           UserSubcription.LIMIT_BASIC_REACT_MESSAGE
@@ -88,7 +88,7 @@ public class CheckSubcriptionWithUserId {
       // Premium plan has no limits here
     } else if (Plan.FREE.name().equals(userSubGet.getPlan().getPlansName())) {
        int countUser = userValueImplement.CountCvCreatedByUserId(userId);
-        if (countUser > 2) {
+        if (countUser > 1) {
           throw new BadRequestException(
             UserSubcription.LIMIT_FREE_REACT_KEY,
             UserSubcription.LIMIT_FREE_REACT_MESSAGE
