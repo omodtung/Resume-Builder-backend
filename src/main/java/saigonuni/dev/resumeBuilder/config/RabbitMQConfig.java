@@ -72,6 +72,12 @@ public class RabbitMQConfig {
   }
 
   @Bean
+  public Queue ragSkillQueue() {
+    // Durable queue
+    return new Queue("ragSkillQueue", true);
+  }
+
+  @Bean
   public MessageConverter jsonMessageConverter() {
     return new Jackson2JsonMessageConverter();
   }

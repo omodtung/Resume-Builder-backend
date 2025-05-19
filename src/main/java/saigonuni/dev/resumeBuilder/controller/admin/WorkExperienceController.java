@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.domain.Jobs;
 import saigonuni.dev.resumeBuilder.domain.WorkExperience;
+import saigonuni.dev.resumeBuilder.dto.workExperience.WorkExperienceDomainResponse;
 import saigonuni.dev.resumeBuilder.repository.WorkExperienceRepository;
 
 @RestController
@@ -46,13 +47,13 @@ public class WorkExperienceController {
 
       if (filter != null && !filter.trim().isEmpty()) {
         pageJobs =
-        workExperienceRepo.searchByTermAcrossFieldsWithColumm(
+          workExperienceRepo.searchByTermAcrossFieldsWithColumm(
             filter.trim(),
             sort,
             paging
           );
       } else {
-        pageJobs = workExperienceRepo.findAll(paging);
+        pageJobs = workExperienceRepo.findAllFetchingResume(paging);
       }
 
       List<WorkExperience> jobs = pageJobs.getContent();

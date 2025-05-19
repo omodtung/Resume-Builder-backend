@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
 import saigonuni.dev.resumeBuilder.domain.UserSubscription;
+import saigonuni.dev.resumeBuilder.domain.WorkExperience;
 import saigonuni.dev.resumeBuilder.dto.UserSubscription.UserSupcriptionDTO;
 
 @Repository
@@ -87,11 +88,10 @@ public interface UserSubscriptionRepository
     "SELECT us FROM UserSubscription us JOIN FETCH us.user u JOIN FETCH us.plan p " +
     "WHERE u.id = :idUserSub AND us.isActive = :isActive"
   )
-UserSubscription findUserActivateSubscription(
+  UserSubscription findUserActivateSubscription(
     @Param("idUserSub") Long idUserSub,
     @Param("isActive") Boolean isActive
   );
-
 
   @Query(
     "SELECT u FROM UserSubscription u WHERE " +
@@ -99,11 +99,16 @@ UserSubscription findUserActivateSubscription(
     "(:column = 'stripeSubscriptionId' AND LOWER(u.stripeSubscriptionId) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
     "(:column = 'user' AND LOWER(u.user.username) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
     "(:column = 'plan' AND LOWER(u.plan.plansName) LIKE LOWER(CONCAT('%', :searchTerm, '%')))"
-)
-Page<UserSubscription> findByTermAcrossFieldsWithColumn(
+  )
+  Page<UserSubscription> findByTermAcrossFieldsWithColumn(
     @Param("searchTerm") String searchTerm,
     @Param("column") String column,
     Pageable pageable
-);
+  );
 
+  @Query(
+    value = "SELECT w FROM UserSubscription w LEFT JOIN FETCH w.user LEFT JOIN FETCH w.plan", // JOIN FETCH để tải resume
+    countQuery = "SELECT count(w) FROM UserSubscription w"
+  ) // Cần countQuery cho phân trang
+  Page<UserSubscription> findAllFetchingUserAndPlan(Pageable pageable);
 }

@@ -2,6 +2,7 @@ package saigonuni.dev.resumeBuilder.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,7 +43,7 @@ public class Education {
   // @ManyToOne
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "resume_id", nullable = false)
-  @JsonBackReference 
+  @JsonBackReference
   private Resume resume;
 
   // @Column(nullable = false, updatable = false)
@@ -64,6 +65,14 @@ public class Education {
   @PreUpdate
   public void setLastUpdate() {
     this.updatedAt = LocalDateTime.now();
+  }
+
+  @JsonProperty("resume_id")
+  public Long getResumeIdForSerialization() {
+    if (this.resume != null) {
+      return this.resume.getId();
+    }
+    return null;
   }
 
   public Education(

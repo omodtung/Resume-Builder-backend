@@ -2,6 +2,7 @@ package saigonuni.dev.resumeBuilder.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -69,6 +70,22 @@ public class UserSubscription {
   @PreUpdate
   public void setLastUpdate() {
     this.updatedAt = LocalDateTime.now();
+  }
+
+  @JsonProperty("user_id")
+  public Long getUserIdForSerialization() {
+    if (this.user != null) {
+      return this.user.getId();
+    }
+    return null;
+  }
+
+  @JsonProperty("stripePriceId")
+  public Long getPlanIdForSerialization() {
+    if (this.plan != null) {
+      return this.plan.getId();
+    }
+    return null;
   }
 
   // Getters and setters
@@ -144,9 +161,11 @@ public class UserSubscription {
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
+
   public Boolean getIsActive() {
     return isActive;
   }
+
   public void setIsActive(Boolean isActive) {
     this.isActive = isActive;
   }

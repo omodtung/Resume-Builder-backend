@@ -1,12 +1,8 @@
 package saigonuni.dev.resumeBuilder.dto.OpenAi;
 
-import lombok.Data;
-
-@Data
-public class QueryRequest {
-
-  private String query;
-  private String userId;
+public class ObjectModelAI {
+    public String query ;
+    public String userId ;
 
     public String getQuery() {
         return query;

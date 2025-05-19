@@ -5,8 +5,17 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import saigonuni.dev.resumeBuilder.domain.User;
 
 @Service
 public class UploadServiceImplement implements UploadService {
@@ -19,7 +28,8 @@ public class UploadServiceImplement implements UploadService {
 
   public String handleSaveUpLoadFile(MultipartFile file, String targetFoler) {
     System.err.println("Test 1");
-    String rootPath = "/home/dothetung/Projects/Spring-Boot/resumeBuilder/resumeBuilder/src/main/resources/images";
+    String rootPath =
+      "/home/dothetung/Projects/Spring-Boot/resumeBuilder/resumeBuilder/src/main/resources/images";
     System.out.println("Root path: " + rootPath); // Log the root path
     String finalName = "";
     try {
@@ -37,9 +47,11 @@ public class UploadServiceImplement implements UploadService {
         dir.getAbsolutePath() + File.separator + finalName
       );
 
-      try (BufferedOutputStream stream = new BufferedOutputStream(
-        new FileOutputStream(serverFile)
-      )) {
+      try (
+        BufferedOutputStream stream = new BufferedOutputStream(
+          new FileOutputStream(serverFile)
+        )
+      ) {
         stream.write(bytes);
       }
     } catch (IOException e) {

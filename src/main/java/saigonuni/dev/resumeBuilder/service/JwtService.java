@@ -30,10 +30,11 @@ public class JwtService {
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
   }
+
   public String extractEmail(String token) {
     // Extract the "email" claim from the token
     return extractClaim(token, claims -> claims.get("email", String.class));
-}
+  }
 
   // Trích xuất tất cả các claims từ token
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -47,7 +48,6 @@ public class JwtService {
   //   extraClaims.put("email", email); // Add email a
   //   return generateToken(new HashMap<>(), userDetails);
   // }
-
 
   public String generateToken(User user) {
     // String email = userDetails.getUsername();

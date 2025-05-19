@@ -1,8 +1,12 @@
 package saigonuni.dev.resumeBuilder.controller.admin;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openai.services.blocking.fineTuning.JobService;
 import com.stripe.model.Account;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +31,8 @@ import saigonuni.dev.resumeBuilder.common.enums.Company;
 import saigonuni.dev.resumeBuilder.domain.Jobs;
 import saigonuni.dev.resumeBuilder.domain.Resume;
 import saigonuni.dev.resumeBuilder.domain.User;
+import saigonuni.dev.resumeBuilder.dto.OpenAi.ObjectModelAI;
+import saigonuni.dev.resumeBuilder.dto.OpenAi.QueryRequest;
 import saigonuni.dev.resumeBuilder.dto.resume.GetResumeAdminResponse;
 import saigonuni.dev.resumeBuilder.repository.UserRepository;
 import saigonuni.dev.resumeBuilder.service.JobsService;
@@ -42,6 +48,9 @@ public class UploadFileController {
   private final RestTemplate restTemplate;
   private final UserRepository userRepository;
   private final JobsService jobService;
+
+  @Autowired // Đảm bảo bạn có dòng này để inject ObjectMapper
+  private ObjectMapper objectMapper;
 
   @Autowired
   UploadFileController(
@@ -233,5 +242,117 @@ public class UploadFileController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body("Error: " + e.getMessage());
     }
+  }
+
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  @PostMapping(
+    value = "file-cv-match-ai",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+  )
+  public ResponseEntity<String> SendFileToModelAI(
+    @RequestParam("File") MultipartFile file,
+    Principal principal
+  ) {
+    try {
+      User user = userRepository.findByUsername(principal.getName());
+      String uploadOpenUrl = "http://localhost:8081/upload-file-model-ai";
+      MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+      body.add("File", file.getResource());
+      body.add("userId", user.getId());
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+      HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(
+        body,
+        headers
+      );
+      ResponseEntity<String> response = restTemplate.postForEntity(
+        uploadOpenUrl,
+        requestEntity,
+        String.class
+      );
+      return response;
+    } catch (Exception e) {
+      // Handle any exceptions that occur during the request
+      return ResponseEntity
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Error: " + e.getMessage());
+    }
+  }
+
+  // @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  // @PostMapping(value = "send-skill-to-model-ai")
+  public QueryRequest sendSkillToModelAi(
+    //  ObjectModelAI input
+    String skills,
+    String userId
+  ) {
+    try {
+      String pipelineUrl = "http://192.168.1.69:5000/predict";
+
+    
+      Map<String, String> requestBodyMap = new HashMap<>();
+      requestBodyMap.put("skills_text", skills);
+      HttpHeaders pipelineHeaders = new HttpHeaders();
+      pipelineHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+      HttpEntity<Map<String, String>> pipelineRequestEntity = new HttpEntity<>(
+        requestBodyMap,
+        pipelineHeaders
+      );
+      ResponseEntity<String> pipelineResponse = restTemplate.postForEntity(
+        pipelineUrl, // URL của API /predict
+        pipelineRequestEntity, // HttpEntity chứa JSON body và JSON headers
+        String.class // Vẫn mong muốn nhận response từ /predict dưới dạng String (JSON thô)
+      );
+
+      // if (pipelineResponse.getStatusCode().is2xxSuccessful() && pipelineResponse.hasBody()) {
+      String jsonResponseFromPredict = pipelineResponse.getBody();
+      String predictedCategoryId = null;
+
+      try {
+        // Parse JSON thô để lấy predicted_category_id
+        JsonNode rootNode = objectMapper.readTree(jsonResponseFromPredict);
+        JsonNode categoryNode = rootNode.path("predicted_category_id");
+        if (!categoryNode.isMissingNode() && categoryNode.isTextual()) {
+          predictedCategoryId = categoryNode.asText();
+        } else {
+          System.err.println(
+            "Field 'predicted_category_id' not found or not a string in /predict response: " +
+            jsonResponseFromPredict
+          );
+          // Quyết định trả về lỗi hay một QueryRequest với query là thông báo lỗi
+          QueryRequest errorQueryRequest = new QueryRequest();
+          errorQueryRequest.setUserId(userId);
+          errorQueryRequest.setQuery(
+            "Error: Could not extract predicted_category_id from prediction service."
+          );
+          // return ResponseEntity
+          //   .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          //   .body(errorQueryRequest);
+        }
+      } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        System.err.println(
+          "Error parsing JSON response from /predict: " + e.getMessage()
+        );
+        QueryRequest errorQueryRequest = new QueryRequest();
+        errorQueryRequest.setUserId(userId);
+        errorQueryRequest.setQuery(
+          "Error: Could not parse response from prediction service."
+        );
+        // return ResponseEntity
+        //   .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        //   .body(errorQueryRequest);
+      }
+      // }
+      QueryRequest resultQueryRequest = new QueryRequest();
+      resultQueryRequest.setUserId(userId);
+      resultQueryRequest.setQuery(predictedCategoryId); // Đặt predicted_category_id vào trường 'query'
+
+      // return ResponseEntity.ok(resultQueryRequest);
+      return resultQueryRequest ;
+    } catch (Exception e) {
+      System.out.println("Error: " + e.getMessage());
+    }
+    return null;
   }
 }

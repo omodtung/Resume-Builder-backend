@@ -1,6 +1,8 @@
 package saigonuni.dev.resumeBuilder.controller.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.Query;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -13,12 +15,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import saigonuni.dev.resumeBuilder.common.validate.CheckSubcriptionWithUserId;
+import saigonuni.dev.resumeBuilder.controller.admin.UploadFileController;
 import saigonuni.dev.resumeBuilder.controller.base.BaseController;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.DescriptionDTO;
+import saigonuni.dev.resumeBuilder.dto.OpenAi.ObjectModelAI;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.QueryRequest;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.SummaryCall;
 import saigonuni.dev.resumeBuilder.dto.OpenAi.WorkExperience;
 import saigonuni.dev.resumeBuilder.service.OpenAiResumeService;
+import saigonuni.dev.resumeBuilder.service.UploadServiceImplement;
 
 @Tag(
   name = "OpenAi Call Controller",
@@ -30,16 +35,22 @@ public class OpenAiController extends BaseController {
   private final OpenAiResumeService OpenService;
   private final CheckSubcriptionWithUserId checkSubcriptionWithUserId;
   private static RabbitTemplate rabbitTemplate;
+  private static UploadFileController uploadFileController;
+
+  @Autowired // Đảm bảo bạn có dòng này để inject ObjectMapper
+  private ObjectMapper objectMapper;
 
   @Autowired
   public OpenAiController(
     OpenAiResumeService OpenService,
     CheckSubcriptionWithUserId checkSubcriptionWithUserId,
-    RabbitTemplate rabbitTemplate
+    RabbitTemplate rabbitTemplate,
+    UploadFileController uploadFileController
   ) {
     this.checkSubcriptionWithUserId = checkSubcriptionWithUserId;
     this.OpenService = OpenService;
     this.rabbitTemplate = rabbitTemplate;
+    this.uploadFileController = uploadFileController;
   }
 
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -110,6 +121,42 @@ public class OpenAiController extends BaseController {
       return ResponseEntity
         .internalServerError()
         .body("Error reviewing CV: " + e.getMessage());
+    }
+  }
+
+  @CrossOrigin(origins = "http://localhost:3000")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  @PostMapping("/api/agentAI/match")
+  public ResponseEntity<QueryRequest> rateCv(@RequestBody QueryRequest input) {
+    try {
+      Object chatResponse = rabbitTemplate.convertSendAndReceive(
+        "",
+        "ragSkillQueue",
+        input
+      );
+
+      QueryRequest skillExtractionResult = objectMapper.convertValue(
+        chatResponse,
+        QueryRequest.class
+      );
+      String extractedSkills = skillExtractionResult.getQuery();
+      System.out.println("Validate Match company" + extractedSkills);
+      QueryRequest process = uploadFileController.sendSkillToModelAi(
+        extractedSkills,
+        skillExtractionResult.getUserId()
+      );
+
+      if (chatResponse != null) {
+        return ResponseEntity.ok(process);
+      } else {
+        return ResponseEntity
+          .status(HttpStatus.NO_CONTENT)
+          .body(null);
+      }
+    } catch (Exception e) {
+      return ResponseEntity
+        .internalServerError()
+        .body(null);
     }
   }
 }

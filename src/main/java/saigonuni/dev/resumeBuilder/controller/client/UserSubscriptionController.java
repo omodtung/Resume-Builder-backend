@@ -41,7 +41,7 @@ import saigonuni.dev.resumeBuilder.service.UserSubcriptionService;
   description = "Operations pertaining user subcription "
 )
 @RestController
-@RequestMapping("user")
+@RequestMapping("admin")
 public class UserSubscriptionController extends BaseController {
 
   @Autowired
@@ -67,8 +67,8 @@ public class UserSubscriptionController extends BaseController {
     this.decode = decode;
     this.userDC = userDC;
   }
-
-    @GetMapping(value = "user-subscription-follow-userId")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  @GetMapping(value = "user-subscription-follow-userId")
   @Operation(
     summary = "API find Plans depend on subcription user have to check",
     description = "check user if user have this plan to do a cv creation or feature creation"
@@ -84,7 +84,7 @@ public class UserSubscriptionController extends BaseController {
     );
     return ResponseEntity.ok(userSubscriptionList);
   }
-
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping(
     value = "user-subscription-fetch",
     produces = { "application/json" }
@@ -99,12 +99,12 @@ public class UserSubscriptionController extends BaseController {
     return ResponseEntity.ok(userSubscriptionList);
   }
 
-  // @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @GetMapping(value = "user-subscription")
   public ResponseEntity<Map<String, Object>> fetchDataUserSubciption(
-    @RequestParam(required = false) String filter,
     @RequestParam(required = false) String sort,
-    @RequestParam(required = false) String order,
+    @RequestParam(required = false) String filter,
+    @RequestParam(defaultValue = "desc") String order,
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "3") int limit
   ) {
@@ -127,7 +127,10 @@ public class UserSubscriptionController extends BaseController {
       Page<UserSubscription> pageTuts;
       if (
         (filter == null || filter.isEmpty()) && (sort == null || sort.isEmpty())
-      ) pageTuts = userSubcriptionRepository.findAll(paging); else pageTuts =
+      ) pageTuts =
+        userSubcriptionRepository.findAllFetchingUserAndPlan(
+          paging
+        ); else pageTuts =
         userSubcriptionRepository.findByTermAcrossFieldsWithColumn(
           filter,
           sort,

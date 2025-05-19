@@ -2,6 +2,8 @@ package saigonuni.dev.resumeBuilder.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -57,7 +59,14 @@ public class WorkExperience {
   @Column(name = "updated_at", nullable = false) // Match column name, ensure NOT NULL
   private LocalDateTime updatedAt; // Use LocalDateTime or Instant or Date
 
-  // Getters and setters
+  @JsonProperty("resume_id") 
+  public Long getResumeIdForSerialization() {
+    if (this.resume != null) {
+      return this.resume.getId();
+    }
+    return null; 
+  }
+
 
   public WorkExperience(
     String position,
@@ -146,4 +155,6 @@ public class WorkExperience {
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }
+    
+ 
 }
