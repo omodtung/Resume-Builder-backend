@@ -40,8 +40,9 @@ public class SecurityConfig implements WebMvcConfigurer {
       .disable()
       .authorizeHttpRequests()
       .requestMatchers(
-        "/",
+        // "/",
         "/register",
+        "api/stripe-webhook",
         "/auth/authenticate/**",
         "/auth/refresh-token",
         "/auth/register",
@@ -58,6 +59,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         "/images/**",
         "/api/openai/generate-work-experience",
         "/file-open-send",
+        "/file-cv-match-ai",
         "/api/agentAI/reviewCv"
       )
       .permitAll()

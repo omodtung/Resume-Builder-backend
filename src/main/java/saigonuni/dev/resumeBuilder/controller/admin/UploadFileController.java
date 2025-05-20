@@ -123,7 +123,7 @@ public class UploadFileController {
       String companyId = "";
       String jobId = "";
 
-      if (Company.valueOf(type) == Company.VIETTEL) {
+      if (Company.valueOf(type) == Company.VETTEL) {
         companyId = "681ce4d6780e16b3909f4dab";
         jobId = "681ce5b0ef2a4617f0a90c7c";
       }

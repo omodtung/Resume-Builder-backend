@@ -48,7 +48,7 @@ public class CheckOutController {
     this.decode = decode;
     this.userDC = userDC;
   }
- @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   @PostMapping("user/checkout-payment")
   public ResponseEntity<StripeResponse> checkoutProducts(
     @RequestParam("PlanId") Long PlanId,

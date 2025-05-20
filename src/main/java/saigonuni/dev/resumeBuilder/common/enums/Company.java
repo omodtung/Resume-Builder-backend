@@ -3,7 +3,7 @@ package saigonuni.dev.resumeBuilder.common.enums;
 public enum Company {
   FPT,
   VNG,
-  VIETTEL,
+  VETTEL,
   NAB,
   DXC,
   NASHTECH,
